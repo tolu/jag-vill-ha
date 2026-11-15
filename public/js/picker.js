@@ -8,7 +8,8 @@
 // Without this script the forms still work: pick an icon or a file and submit.
 //
 //   data-max-side="400"   widest the saved picture may be (default 800)
-//   data-autosubmit       send the form as soon as the choice is made
+//   data-autosubmit       send the form as soon as the choice is made; a value
+//                         is sent along as `intent`, so the server can tell
 import { centred, cropRect, MAX_ZOOM, minZoom, pan, whole, zoomTo } from './crop-math.js';
 import { fillColour, renderCrop } from './image.js';
 
@@ -33,6 +34,7 @@ for (const root of document.querySelectorAll('.appearance')) {
   let crop = null;
   let fill = 'white'; // what shows where the picture does not reach
   let dirty = false; // the crop on screen differs from the file in the form
+  let changed = false; // a picture or icon was chosen since the form was last sent
 
   // Positions the picture inside the view so that exactly the crop is visible.
   function paint() {
@@ -60,6 +62,19 @@ for (const root of document.querySelectorAll('.appearance')) {
     preview.hidden = false;
     if (remove) remove.checked = false;
     dirty = false;
+    changed = true;
+  }
+
+  // Sends the form by itself, if it asks for that and has something new to send.
+  function autosubmit() {
+    if (!changed || !('autosubmit' in root.dataset)) return;
+    // A field that is not filled in right stops it; "Spara" sends everything later.
+    if (!form.reportValidity()) return;
+    changed = false;
+    if (root.dataset.autosubmit) {
+      form.append(Object.assign(document.createElement('input'), { type: 'hidden', name: 'intent', value: root.dataset.autosubmit }));
+    }
+    form.requestSubmit();
   }
 
   async function load(blob) {
@@ -90,11 +105,14 @@ for (const root of document.querySelectorAll('.appearance')) {
     preview.hidden = true;
     source = null;
     dirty = false;
+    changed = true;
     panel.hidden = true;
     if (remove) remove.checked = true;
   }
 
   file.addEventListener('change', () => useImage(file.files[0]));
+  // "Ta bort bilden" is a choice like the others: it is sent when the popover closes.
+  remove?.addEventListener('change', () => (changed = true));
   // "Lägg till från länk" hands over the picture it found; it is shown in the
   // box without interrupting the form that just opened.
   root.addEventListener('picker:image', (event) => useImage(event.detail, false));
@@ -110,9 +128,8 @@ for (const root of document.querySelectorAll('.appearance')) {
       return;
     }
     // Closing the popover is "done": keep what is on screen.
-    if (!source || !dirty) return;
-    await commit();
-    if ('autosubmit' in root.dataset) form.requestSubmit();
+    if (source && dirty) await commit();
+    autosubmit();
   });
 
   panel.querySelector('[data-crop-done]').addEventListener('click', () => menu.hidePopover());

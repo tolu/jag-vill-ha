@@ -18,7 +18,7 @@ export default function EditWishPage({ id, values, icon, failed, wasReset }: Pro
             </p>
           )}
           <form method="post" action={`/lista/${id}`} encType="multipart/form-data">
-            <WishFields prefix="andra" values={values} icon={icon} />
+            <WishFields prefix="andra" values={values} icon={icon} autosave />
             <div className="buttons">
               <button className="btn wide">Spara</button>
               <a className="btn quiet wide" href="/lista">
