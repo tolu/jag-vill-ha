@@ -3,7 +3,7 @@ import { APIError } from 'better-auth/api';
 import { magicLink } from 'better-auth/plugins';
 import { defineAuth } from 'void/auth';
 import { isPlaceholderEmail, placeholderEmail } from './src/recovery-email';
-import { checkClaim } from './src/username';
+import { checkClaim, defaultDisplayName } from './src/username';
 
 async function claim(input: string | null | undefined) {
   // Loaded lazily so `void prepare` can generate the auth schema on a fresh clone.
@@ -44,7 +44,7 @@ export default defineAuth(({ defaults }) => ({
             { name: username, email: placeholderEmail(username), emailVerified: false },
             ctx,
           );
-          await db.insert(lists).values({ username, displayName: username, ownerId: user.id });
+          await db.insert(lists).values({ username, displayName: defaultDisplayName(username), ownerId: user.id });
           return { userId: user.id, name: username };
         },
       },

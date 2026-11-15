@@ -19,16 +19,7 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
 
         <main>
           <header className="list-header compact">
-            <p className="address">
-              jagvillha.fyi/{username}
-              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
-              <button className="copy" type="button" data-copy={`/${username}`} aria-label="Dela listan">
-                <Icon name="copy" />
-                <Icon name="share" />
-                <Icon name="check" />
-              </button>
-              <span className="copied" role="status"></span>
-            </p>
+            <p className="address">jagvillha.fyi/{username}</p>
             <h1>Din lista</h1>
             <p className="intro">
               Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
@@ -43,7 +34,15 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
                 <Icon name="globe" />
                 Från länk
               </button>
+              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
+              <button className="btn quiet" type="button" hidden data-needs-js data-copy={`/${username}`}>
+                <Icon name="copy" />
+                <Icon name="share" />
+                <Icon name="check" />
+                Skicka listan
+              </button>
             </div>
+            <p className="hint ok copied" role="status"></p>
             {failed && (
               <p className="notice" role="alert">
                 Det gick inte att spara. Kolla att titeln är ifylld, att länken börjar med https:// och att bilden är en vanlig bildfil under 5 MB.

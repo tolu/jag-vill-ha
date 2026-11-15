@@ -348,30 +348,15 @@
 
   body:has([data-sorting]) { cursor: grabbing; }
 
-  /* Copy-link button after the list address */
-  .address {
-    & .copy {
-      vertical-align: middle;
-      margin-inline-start: 0.25rem;
-      padding: 0.25rem;
-      background: none;
-      border: 0;
-      border-radius: calc(var(--radius) - 0.125rem);
-      color: var(--accent);
-      cursor: pointer;
-      display: inline-grid;
-
-      &:hover { background: var(--accent-wash); }
-      & .ui-icon { inline-size: 1rem; block-size: 1rem; }
-      /* One icon at a time: copy by default, share where the device can, check after copying */
-      & [data-icon="check"], & [data-icon="share"] { display: none; }
-      &[data-share] [data-icon="copy"] { display: none; }
-      &[data-share] [data-icon="share"] { display: block; }
-      &[data-copied] :is([data-icon="copy"], [data-icon="share"]) { display: none; }
-      &[data-copied] [data-icon="check"] { display: block; }
-    }
-    & .copied { margin-inline-start: 0.25rem; color: var(--accent); }
+  /* "Skicka listan": one icon at a time. Copy by default, share where the device can, check after copying */
+  [data-copy] {
+    & [data-icon="check"], & [data-icon="share"] { display: none; }
+    &[data-share] [data-icon="copy"] { display: none; }
+    &[data-share] [data-icon="share"] { display: block; }
+    &[data-copied] :is([data-icon="copy"], [data-icon="share"]) { display: none; }
+    &[data-copied] [data-icon="check"] { display: block; }
   }
+  .list-header .copied { font-size: 1rem; margin-block-start: 0.75rem; }
 
   .list-header.compact { padding-block-start: 0.75rem; }
 
