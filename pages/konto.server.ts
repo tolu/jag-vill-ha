@@ -95,7 +95,7 @@ export const action = defineHandler(async (c) => {
 
   await db.update(userTable).set({ email, emailVerified: false }).where(eq(userTable.id, user.id));
   // A mail to the new address shows her at once whether she typed it right.
-  if (input !== '' && email !== user.email) await sendAddressConfirmation(email, user.name);
+  if (input !== '' && email !== user.email) await sendAddressConfirmation(email);
   return c.redirect(back('epost', 'epost-rubrik'), 303);
 });
 

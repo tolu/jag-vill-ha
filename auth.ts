@@ -61,7 +61,7 @@ export default defineAuth(({ defaults }) => ({
           await db.insert(lists).values({ username, displayName: defaultDisplayName(username), ownerId: user.id });
           if (email) {
             const { sendAddressConfirmation } = await import('./src/recovery-mail');
-            await sendAddressConfirmation(email, username);
+            await sendAddressConfirmation(email);
           }
           return { userId: user.id, name: username };
         },
