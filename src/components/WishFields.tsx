@@ -50,6 +50,9 @@ export function WishFields({ values, prefix, icon }: { values?: Values; prefix: 
               <span className="sr-only">Zoom</span>
               <input type="range" min="1" max="5" step="0.01" defaultValue="1" />
             </label>
+            <button type="button" className="btn quiet wide" data-crop-whole>
+              Visa hela bilden
+            </button>
             <button type="button" className="btn wide" data-crop-done>
               Klar
             </button>

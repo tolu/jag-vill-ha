@@ -2,13 +2,15 @@
 // form and the round profile picture on the account page. Both are a box that
 // opens a popover with a file input. This adds a preview, dropping a picture,
 // and choosing which part of it to keep: drag to move, zoom with the slider,
-// two fingers or the scroll wheel. Only the chosen square is uploaded.
+// two fingers or the scroll wheel. The picture may be moved partly out of the
+// frame and zoomed out until all of it fits; what is left empty takes the
+// colour of the picture's edge. Only the chosen square is uploaded.
 // Without this script the forms still work: pick an icon or a file and submit.
 //
 //   data-max-side="400"   widest the saved picture may be (default 800)
 //   data-autosubmit       send the form as soon as the choice is made
-import { centred, cropRect, MAX_ZOOM, pan, zoomTo } from './crop-math.js';
-import { renderCrop } from './image.js';
+import { centred, cropRect, MAX_ZOOM, minZoom, pan, whole, zoomTo } from './crop-math.js';
+import { fillColour, renderCrop } from './image.js';
 
 const DEFAULT_MAX_SIDE = 800;
 const KEY_STEP = 16; // view pixels per arrow-key press
@@ -29,6 +31,7 @@ for (const root of document.querySelectorAll('.appearance')) {
 
   let source = null; // the picture being cropped, as an ImageBitmap
   let crop = null;
+  let fill = 'white'; // what shows where the picture does not reach
   let dirty = false; // the crop on screen differs from the file in the form
 
   // Positions the picture inside the view so that exactly the crop is visible.
@@ -49,7 +52,7 @@ for (const root of document.querySelectorAll('.appearance')) {
 
   // Puts the current crop in the form and in the box.
   async function commit() {
-    const image = await renderCrop(source, cropRect(source, crop), maxSide);
+    const image = await renderCrop(source, cropRect(source, crop), maxSide, fill);
     const transfer = new DataTransfer();
     transfer.items.add(image);
     file.files = transfer.files;
@@ -62,6 +65,9 @@ for (const root of document.querySelectorAll('.appearance')) {
   async function load(blob) {
     source = await createImageBitmap(blob);
     crop = centred(source);
+    fill = fillColour(source);
+    view.style.background = fill;
+    slider.min = minZoom(source);
     shown.src = URL.createObjectURL(blob);
     panel.hidden = false;
   }
@@ -95,7 +101,7 @@ for (const root of document.querySelectorAll('.appearance')) {
 
   menu.addEventListener('toggle', async (event) => {
     if (event.newState === 'open') {
-      // A picture saved earlier can be cropped tighter: fetch it back as the source.
+      // A picture saved earlier can be framed again: fetch it back as the source.
       if (!source && !preview.hidden && preview.src) {
         const stored = await fetch(preview.src).then((response) => response.blob()).catch(() => null);
         if (stored) await load(stored);
@@ -152,6 +158,8 @@ for (const root of document.querySelectorAll('.appearance')) {
   );
 
   slider.addEventListener('input', () => source && change(zoomTo(source, crop, Number(slider.value))));
+
+  panel.querySelector('[data-crop-whole]').addEventListener('click', () => source && change(whole(source)));
 
   // Arrow keys move the picture for those who do not drag.
   view.addEventListener('keydown', (event) => {
