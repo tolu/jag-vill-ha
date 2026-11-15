@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "source": {},
+  "resolved": {
+    "account_id": "25b5c1e5fa76ec2926c5e103e9662f5d",
+    "send_email": [
+      {
+        "name": "SEND_EMAIL"
+      }
+    ],
+    "vars": {
+      "__VOID_EMAIL_FROM": "Jag vill ha <noreply@mail.jagvillha.fyi>"
+    },
+    "d1_databases": [
+      {
+        "binding": "DB",
+        "database_name": "jag-vill-ha-db",
+        "database_id": "2483cd5b-0233-4532-a9c0-ca5fc4cee941",
+        "migrations_dir": "./db/migrations"
+      }
+    ],
+    "r2_buckets": [
+      {
+        "binding": "STORAGE",
+        "bucket_name": "jag-vill-ha-storage"
+      }
+    ],
+    "name": "jag-vill-ha",
+    "compatibility_date": "2026-02-24",
+    "routes": [
+      {
+        "pattern": "jagvillha.fyi",
+        "custom_domain": true
+      }
+    ]
+  },
+  "text": "// void:published-traffic:v1:eyJ3b3JrZXJzX2RldiI6ZmFsc2UsInByZXZpZXdfdXJscyI6ZmFsc2UsInJvdXRlcyI6W3sicGF0dGVybiI6ImphZ3ZpbGxoYS5meWkiLCJjdXN0b21fZG9tYWluIjp0cnVlfV19\n{\n  \"account_id\": \"25b5c1e5fa76ec2926c5e103e9662f5d\",\n  \"send_email\": [\n    {\n      \"name\": \"SEND_EMAIL\"\n    }\n  ],\n  \"vars\": {\n    \"__VOID_EMAIL_FROM\": \"Jag vill ha <noreply@mail.jagvillha.fyi>\"\n  },\n  \"d1_databases\": [\n    {\n      \"binding\": \"DB\",\n      \"database_name\": \"jag-vill-ha-db\",\n      \"database_id\": \"2483cd5b-0233-4532-a9c0-ca5fc4cee941\",\n      \"migrations_dir\": \"./db/migrations\"\n    }\n  ],\n  \"r2_buckets\": [\n    {\n      \"binding\": \"STORAGE\",\n      \"bucket_name\": \"jag-vill-ha-storage\"\n    }\n  ],\n  \"name\": \"jag-vill-ha\",\n  \"compatibility_date\": \"2026-02-24\",\n  \"routes\": [\n    {\n      \"pattern\": \"jagvillha.fyi\",\n      \"custom_domain\": true\n    }\n  ]\n}\n"
+}

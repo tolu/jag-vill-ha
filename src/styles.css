@@ -35,13 +35,16 @@
 }
 
 @layer components {
+  /* One page width everywhere, so the top bar sits in the same place on every
+     page. 65ch is a comfortable line length; narrow screens keep a 1rem gutter. */
   .page {
-    max-inline-size: 40rem;
+    max-inline-size: 65ch;
     margin-inline: auto;
     padding-inline: 1rem;
   }
 
-  .page.narrow { max-inline-size: 26rem; }
+  /* Form pages keep their fields short, centred inside the shared width */
+  .page.narrow main { max-inline-size: 26rem; margin-inline: auto; }
 
   /* Landing page: new and returning visitors get equally sized buttons */
   .list-header.hero .header-actions { display: grid; grid-template-columns: 1fr 1fr; inline-size: min(100%, 24rem); }
