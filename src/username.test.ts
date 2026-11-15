@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { checkUsername, normalizeUsername } from './username';
+import { checkClaim, checkUsername, normalizeUsername } from './username';
 
 describe('normalizeUsername', () => {
   it('lowercases and trims', () => {
@@ -29,5 +29,32 @@ describe('checkUsername', () => {
 
   it.each(['login', 'api', 'icons', 'admin'])('rejects reserved name: %s', (name) => {
     expect(checkUsername(name)).toBe('reserved');
+  });
+});
+
+describe('checkClaim', () => {
+  const free = async () => false;
+  const taken = async () => true;
+
+  it('accepts a free, valid name and normalizes it', async () => {
+    expect(await checkClaim(' Anna ', free)).toEqual({ ok: true, username: 'anna' });
+  });
+
+  it('rejects a taken name', async () => {
+    expect(await checkClaim('anna', taken)).toMatchObject({ ok: false, problem: 'taken' });
+  });
+
+  it('rejects a reserved name without asking the database', async () => {
+    let asked = false;
+    const result = await checkClaim('login', async () => {
+      asked = true;
+      return false;
+    });
+    expect(result).toMatchObject({ ok: false, problem: 'reserved' });
+    expect(asked).toBe(false);
+  });
+
+  it('rejects an invalid name with a message', async () => {
+    expect(await checkClaim('a b', free)).toMatchObject({ ok: false, problem: 'characters', message: expect.any(String) });
   });
 });

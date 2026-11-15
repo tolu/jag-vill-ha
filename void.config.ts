@@ -7,6 +7,10 @@ export default defineConfig({
   worker: {
     compatibility_date: '2026-02-24',
   },
+  // Only used for recovery links. A mail subdomain keeps the root domain free.
+  email: {
+    from: 'Jag vill ha <noreply@mail.jagvillha.fyi>',
+  },
   head: {
     htmlAttrs: { lang: 'sv' },
     meta: [

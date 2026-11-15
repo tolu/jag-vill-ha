@@ -82,10 +82,24 @@
   .step {
     & .step-label { color: var(--ink-soft); font-size: 0.8125rem; margin-block-end: 0.5rem; }
     & h1 { font: 500 2rem/1.15 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
+    & h2 { font: 500 1.375rem/1.2 var(--font-display); }
     & .lede { color: var(--ink-soft); margin-block: 0.5rem 1.5rem; }
+    & > .hint { color: var(--ink-soft); font-size: 0.8125rem; margin-block-start: 1.25rem; }
     & form { display: grid; gap: 1rem; }
     & .buttons { display: grid; gap: 0.5rem; }
     & + .step { border-block-start: 1px dashed var(--line); padding-block-start: 2rem; }
+  }
+
+  /* A form button that reads as a link, e.g. "Logga ut" */
+  button.link {
+    font: inherit;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    cursor: pointer;
   }
 
   .topbar {
@@ -253,6 +267,8 @@
     & .hint { color: var(--ink-soft); font-size: 0.8125rem; margin-block-start: 0.35rem; }
 
     & .hint.ok { color: var(--accent); font-weight: 600; }
+    & .hint.error { color: var(--danger); font-weight: 600; }
+    & .hint:empty { display: none; }
 
     & input.code {
       font: 600 1.5rem var(--font-body);
@@ -271,7 +287,7 @@
 
       &:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
       & span { color: var(--ink-soft); white-space: nowrap; }
-      & input { border: 0; background: none; padding-inline-start: 0; outline: 0; min-inline-size: 0; }
+      & input[type] { border: 0; background: none; padding-inline-start: 0; outline: 0; min-inline-size: 0; }
     }
 
     & input:is([type="text"], [type="url"], [type="email"]) {

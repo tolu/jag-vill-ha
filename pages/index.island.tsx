@@ -18,7 +18,7 @@ export default function HomePage() {
             Skriv upp vad du vill ha och skicka länken till släkten. De paxar utan konto.
           </p>
           <div className="header-actions">
-            <a className="btn" href="/login">
+            <a className="btn" href="/ny">
               Skapa din lista
             </a>
           </div>
