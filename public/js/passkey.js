@@ -15,13 +15,17 @@ const MESSAGES = {
   cancelled: {
     register: 'Det blev ingen lista den här gången. Försök igen, och svara ja när telefonen eller datorn frågar.',
     login: 'Det blev ingen inloggning. Försök igen när du vill.',
-    add: 'Det blev ingen passkey. Försök igen när du vill.',
+    add: 'Det blev ingen ny nyckel. Försök igen när du vill.',
   },
-  exists: 'Den här enheten har redan en passkey för kontot.',
-  unsupported: 'Den här webbläsaren stöder inte passkeys.',
-  unknown: 'Den passkeyn hör inte till något konto här.',
-  failed: 'Något gick fel. Försök igen.',
+  exists: 'Den här telefonen eller datorn har redan en nyckel till din lista. Du behöver ingen ny.',
+  unsupported: 'Den här telefonen eller datorn behöver uppdateras för att det ska fungera.',
+  unknown: 'Den nyckeln hör inte till någon lista här. Listan kan vara borttagen.',
+  failed: 'Det gick inte just nu. Kolla att du har internet och försök igen.',
 };
+
+// A message that is ours and in Swedish, as opposed to whatever the browser
+// or the login library put in an Error.
+class Told extends Error {}
 
 async function call(path, body) {
   const response = await fetch(API + path, {
@@ -31,10 +35,11 @@ async function call(path, body) {
   });
   const data = await response.json().catch(() => null);
   if (!response.ok) {
-    // The server answers in English; the one message an owner can run into
-    // (a passkey whose account is gone) gets a Swedish one.
-    const message = data?.message || MESSAGES.failed;
-    throw new Error(/passkey not found/i.test(message) ? MESSAGES.unknown : message);
+    // Our own refusals (auth.ts marks them) are shown as they are. The login
+    // library answers in English: the one an owner can run into, a passkey
+    // whose account is gone, gets its own message and the rest a general one.
+    if (data?.code === 'JVH') throw new Told(data.message);
+    throw new Told(/passkey not found/i.test(data?.message ?? '') ? MESSAGES.unknown : MESSAGES.failed);
   }
   return data;
 }
@@ -44,7 +49,7 @@ async function call(path, body) {
 function explain(error, action) {
   if (error?.name === 'InvalidStateError') return MESSAGES.exists;
   if (error instanceof DOMException) return MESSAGES.cancelled[action];
-  return error?.message || MESSAGES.failed;
+  return error instanceof Told ? error.message : MESSAGES.failed;
 }
 
 async function create(query, extra) {
@@ -65,7 +70,9 @@ const actions = {
   },
   async register(element) {
     const name = toUsername(element.elements.namn.value);
-    await create({ context: name, name }, { name, createSession: true });
+    // The address and the e-mail travel together; src/signup.ts reads them.
+    const context = new URLSearchParams({ namn: name, epost: element.elements.epost.value }).toString();
+    await create({ context, name }, { name, createSession: true });
   },
   async add(element) {
     await create({ name: element.dataset.name }, { name: element.dataset.name });

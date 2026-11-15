@@ -25,14 +25,22 @@ export default function NewListPage() {
                   spellCheck={false}
                   autoCorrect="off"
                   maxLength={30}
-                  aria-describedby="namn-hjalp namn-fel"
+                  aria-describedby="namn-hjalp"
                   required
                 />
               </div>
               <p className="hint" id="namn-hjalp">
                 Minst tre tecken. Mellanslag blir bindestreck, och å, ä och ö blir a och o.
               </p>
-              <p className="hint error" id="namn-fel" role="alert"></p>
+            </div>
+            <div className="field">
+              <label htmlFor="epost">
+                E-post <span className="optional">valfritt</span>
+              </label>
+              <input type="email" id="epost" name="epost" autoComplete="email" />
+              <p className="hint">
+                Används till en enda sak: att mejla dig en länk om du inte kan logga in, till exempel med ny telefon. Ingen reklam.
+              </p>
             </div>
             <p className="lede">
               Du behöver inget lösenord. Telefonen eller datorn frågar om den får spara en nyckel åt dig: svara ja och godkänn med ansiktet,
@@ -41,10 +49,8 @@ export default function NewListPage() {
             <div className="buttons">
               <button className="btn wide">Skapa min lista</button>
             </div>
+            <p className="hint error" id="namn-fel" role="alert"></p>
           </form>
-          <p className="hint">
-            Nyckeln finns bara i dina egna prylar. Lägg till din e-post under Konto när listan är klar, så kan vi mejla dig in om du byter telefon.
-          </p>
           <noscript>
             <p className="notice">Passkeys kräver JavaScript. Slå på det för att skapa en lista.</p>
           </noscript>

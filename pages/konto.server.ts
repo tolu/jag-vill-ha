@@ -1,12 +1,14 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { getAuth, requireAuth } from 'void/auth';
 import { db, eq } from 'void/db';
+import type { RouteUrl } from 'void/routes';
 import { userTable } from '@auth-schema';
 import { lists } from '@schema';
 import { deleteAccount } from '../src/account';
 import { resolveImageChange, writeWithImage } from '../src/image-lifecycle';
 import { deleteImage, saveImage } from '../src/images';
 import { isPlaceholderEmail, parseRecoveryEmail, placeholderEmail } from '../src/recovery-email';
+import { sendAddressConfirmation } from '../src/recovery-mail';
 import { confirmsDeletion } from '../src/username';
 
 export type Props = InferProps<typeof loader>;
@@ -25,8 +27,13 @@ export const loader = defineHandler(async (c) => {
     intro: list.intro ?? '',
     email: isPlaceholderEmail(user.email) ? null : user.email,
     saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' || saved === 'fel-namn' || saved === 'fel-bild' || saved === 'bild' ? saved : null,
+    // She came in through the mailed link and has no key on this device yet.
+    recovered: c.req.query('aterstalld') === '1',
   };
 });
+
+// Back to the section that was saved, so the answer is on screen.
+const back = (saved: string, section: string) => `/konto?sparat=${saved}#${section}` as RouteUrl;
 
 export const action = defineHandler(async (c) => {
   const user = requireAuth(c, { throwRedirect: '/login' });
@@ -40,7 +47,7 @@ export const action = defineHandler(async (c) => {
 
   if (body['intent'] === 'delete') {
     const [list] = await db.select({ username: lists.username }).from(lists).where(eq(lists.ownerId, user.id));
-    if (!list || !confirmsDeletion(body['bekrafta'], list.username)) return c.redirect('/konto?sparat=fel-namn', 303);
+    if (!list || !confirmsDeletion(body['bekrafta'], list.username)) return c.redirect(back('fel-namn', 'fara-rubrik'), 303);
     // Signs out first, while the session still exists, to get the cookies cleared.
     const response = await getAuth(c).api.signOut({ headers: c.req.raw.headers, asResponse: true });
     await deleteAccount(user.id);
@@ -75,19 +82,21 @@ export const action = defineHandler(async (c) => {
         .set({ displayName, intro: intro === '' ? null : intro })
         .where(eq(lists.ownerId, user.id));
     }
-    return c.redirect('/konto?sparat=lista', 303);
+    return c.redirect(back('lista', 'lista-rubrik'), 303);
   }
 
   const input = String(body['epost'] ?? '').trim();
   // An empty field removes the address again.
   const email = input === '' ? placeholderEmail(user.name) : parseRecoveryEmail(input);
-  if (!email) return c.redirect('/konto?sparat=ogiltig', 303);
+  if (!email) return c.redirect(back('ogiltig', 'epost-rubrik'), 303);
 
   const [other] = await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, email));
-  if (other && other.id !== user.id) return c.redirect('/konto?sparat=upptagen', 303);
+  if (other && other.id !== user.id) return c.redirect(back('upptagen', 'epost-rubrik'), 303);
 
   await db.update(userTable).set({ email, emailVerified: false }).where(eq(userTable.id, user.id));
-  return c.redirect('/konto?sparat=epost', 303);
+  // A mail to the new address shows her at once whether she typed it right.
+  if (input !== '' && email !== user.email) await sendAddressConfirmation(email, user.name);
+  return c.redirect(back('epost', 'epost-rubrik'), 303);
 });
 
 export const head = defineHead(() => ({ title: 'Ditt konto – Jag vill ha' }));

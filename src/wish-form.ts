@@ -4,10 +4,18 @@ type FormBody = Record<string, unknown>;
 
 const text = (body: FormBody, key: string) => (typeof body[key] === 'string' ? (body[key] as string).trim() : '');
 
-function parseUrl(input: string) {
+/**
+ * A link as people type it. "www.butik.se/sak" has no "https://" in front, and
+ * nobody should have to know that it needs one. Returns null for an empty
+ * field and undefined for something that is not a web address.
+ */
+export function parseUrl(input: string) {
   if (input === '') return null;
   try {
-    const url = new URL(input);
+    const typed = /^[a-z][a-z0-9+.-]*:/i.test(input) ? input : `https://${input}`;
+    const url = new URL(typed);
+    // "kanske" alone parses as a host; a real address has a dot in it.
+    if (!url.hostname.includes('.')) return undefined;
     return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : undefined;
   } catch {
     return undefined;

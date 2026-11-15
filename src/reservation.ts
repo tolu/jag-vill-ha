@@ -13,6 +13,24 @@ export function newToken() {
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
+/**
+ * Which token a reservation is made with. The cookie wins. A first-time giver
+ * has none, so the page hands out a token in the form: two presses on "Paxa"
+ * then arrive with the same one, and the second is recognised as hers.
+ */
+export function giverToken(cookie: string | undefined, fromForm: unknown) {
+  if (cookie) return cookie;
+  return typeof fromForm === 'string' && /^[0-9a-f]{64}$/.test(fromForm) ? fromForm : newToken();
+}
+
+/**
+ * What a press on "Paxa" led to. Losing the race to her own earlier press is
+ * not losing: the wish is hers either way.
+ */
+export function reserveOutcome(inserted: boolean, holderHash: string | undefined, giverHash: string) {
+  return inserted || holderHash === giverHash ? 'reserved' : 'taken';
+}
+
 /** Only the hash is stored, so a leaked database cannot be used to undo reservations. */
 export async function hashToken(token: string) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));

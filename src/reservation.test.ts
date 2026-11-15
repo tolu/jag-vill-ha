@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vite-plus/test';
-import { hashToken, newToken, parseGiverName, publicWishes, reservationsForViewer } from './reservation';
+import { giverToken, hashToken, newToken, parseGiverName, publicWishes, reserveOutcome, reservationsForViewer } from './reservation';
 
 const wish = (id: number, title: string) => ({ id, title, url: null, note: null, icon: null, imageKey: null });
 const wishes = [wish(1, 'Skor'), wish(2, 'Bok'), wish(3, 'Vinglas')];
@@ -61,5 +61,38 @@ describe('what the owner sees', () => {
     const view = publicWishes(wishes, forOwner, null);
     expect(view.every((row) => row.state === 'hidden' && row.takenBy === null)).toBe(true);
     expect(JSON.stringify(view)).not.toMatch(/Erik|Anna|hash/);
+  });
+});
+
+describe('giverToken', () => {
+  const fromPage = 'ab'.repeat(32);
+
+  it('keeps the cookie she already has', () => {
+    expect(giverToken('cookie-token', fromPage)).toBe('cookie-token');
+  });
+
+  // Regression: each press on "Paxa" used to make up its own token, so a
+  // first-time giver who pressed twice was locked out of her own reservation.
+  it('uses the token the page handed out, so two presses share one', () => {
+    expect(giverToken(undefined, fromPage)).toBe(fromPage);
+    expect(giverToken(undefined, fromPage)).toBe(giverToken(undefined, fromPage));
+  });
+
+  it.each([undefined, '', 'kort', 'G'.repeat(64), 42])('makes a new one when the form sends %s', (value) => {
+    expect(giverToken(undefined, value)).toMatch(/^[0-9a-f]{64}$/);
+  });
+});
+
+describe('reserveOutcome', () => {
+  it('is reserved when the row went in', () => {
+    expect(reserveOutcome(true, undefined, 'mine')).toBe('reserved');
+  });
+
+  it('is reserved when she already holds it: the second press', () => {
+    expect(reserveOutcome(false, 'mine', 'mine')).toBe('reserved');
+  });
+
+  it('is taken when someone else holds it', () => {
+    expect(reserveOutcome(false, 'theirs', 'mine')).toBe('taken');
   });
 });
