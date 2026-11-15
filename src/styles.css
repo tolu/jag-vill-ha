@@ -93,6 +93,8 @@
     & h2 { font: 500 1.375rem/1.2 var(--font-display); }
     & .lede { color: var(--ink-soft); margin-block: 0.5rem 1.5rem; }
     & > .hint { color: var(--ink-soft); font-size: 0.9375rem; margin-block-start: 1.25rem; }
+    /* An answer above a form keeps its distance from the first field */
+    & > .notice { margin-block-end: 1.5rem; }
     & form { display: grid; gap: 1rem; }
     & .buttons { display: grid; gap: 0.5rem; }
     & + .step { border-block-start: 1px dashed var(--line); padding-block-start: 2rem; }
