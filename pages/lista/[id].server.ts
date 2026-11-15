@@ -55,6 +55,8 @@ export const action = defineHandler(async (c) => {
     deleteImage,
   );
   await deleteImage(discard);
+  // A picture or icon saves itself when chosen: stay, there may be more to change.
+  if (body['intent'] === 'utseende') return c.redirect(`/lista/${wish.id}`, 303);
   return c.redirect('/lista', 303);
 });
 

@@ -59,6 +59,15 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - CSS: `[hidden]` and other rules that must win go in `@layer overrides`.
 - Void's docs are in `node_modules/void/docs/`. Read them before guessing.
 
+## Local data
+
+- `npm run dev` and the `app` server keep their data in the main checkout's
+  `.void`, shared by every worktree: these are the owner's own accounts.
+  Run one server on it at a time, and mind that a migration applied from one
+  branch is applied for all of them.
+- Anything automated uses the `app-test` server in `.claude/launch.json`. Its
+  data is in this checkout's `.void/test-state` and may be thrown away.
+
 ## Verifying
 
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.

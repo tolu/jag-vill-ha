@@ -66,7 +66,16 @@ const actions = {
     const credential = await navigator.credentials.get({
       publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(options),
     });
-    await call('/verify-authentication', { response: credential.toJSON() });
+    try {
+      await call('/verify-authentication', { response: credential.toJSON() });
+    } catch (error) {
+      // A passkey for an account that is gone: tell the browser, so it stops
+      // offering it next to the ones that work.
+      if (error.message === MESSAGES.unknown) {
+        await PublicKeyCredential.signalUnknownCredential?.({ rpId: options.rpId, credentialId: credential.id }).catch(() => {});
+      }
+      throw error;
+    }
   },
   async register(element) {
     const name = toUsername(element.elements.namn.value);

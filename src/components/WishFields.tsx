@@ -13,14 +13,18 @@ type Values = {
  * The fields shared by "Ny önskning" and "Ändra önskning". Works as plain HTML:
  * the box shows whichever icon radio is checked (CSS :has), and /js/picker.js
  * adds image preview, drag-and-drop and downscaling on top.
+ *
+ * `autosave` is for a wish that already exists: there the picture or icon is
+ * saved when it is chosen, without waiting for "Spara".
  */
-export function WishFields({ values, prefix, icon }: { values?: Values; prefix: string; icon: string }) {
+export function WishFields({ values, prefix, icon, autosave }: { values?: Values; prefix: string; icon: string; autosave?: boolean }) {
   const id = (name: string) => `${prefix}-${name}`;
   const menu = id('utseende');
   const anchor = `--${menu}`;
   return (
     <>
-      <div className="appearance">
+      {/* With `autosave` the form is sent, with intent "utseende", as soon as a picture or icon is chosen. */}
+      <div className="appearance" data-autosubmit={autosave ? 'utseende' : undefined}>
         <button
           type="button"
           className="thumb picker"
@@ -50,6 +54,9 @@ export function WishFields({ values, prefix, icon }: { values?: Values; prefix: 
               <span className="sr-only">Zoom</span>
               <input type="range" min="1" max="5" step="0.01" defaultValue="1" />
             </label>
+            <button type="button" className="btn quiet wide" data-crop-whole>
+              Visa hela bilden
+            </button>
             <button type="button" className="btn wide" data-crop-done>
               Klar
             </button>

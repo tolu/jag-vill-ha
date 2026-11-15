@@ -1,7 +1,23 @@
+import { execFileSync } from "node:child_process";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import { voidPlugin } from "void";
 import { voidReact } from "@void/react/plugin";
+
+// Where the local database and pictures live. Every worktree of this clone
+// shares the main checkout's `.void`, so accounts made by hand are still there
+// in the next worktree. LOCAL_STATE points somewhere else: the `app-test`
+// server in .claude/launch.json uses it to get data that may be thrown away.
+function localState() {
+  if (process.env.LOCAL_STATE) return resolve(process.env.LOCAL_STATE);
+  try {
+    const gitDir = execFileSync("git", ["rev-parse", "--path-format=absolute", "--git-common-dir"], { encoding: "utf8" });
+    return resolve(gitDir.trim(), "..", ".void");
+  } catch {
+    return undefined; // not a git checkout: Void's own default, `.void` here
+  }
+}
 
 export default defineConfig({
   resolve: {
@@ -11,7 +27,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    voidPlugin(),
+    voidPlugin({ persistTo: localState() }),
     voidReact({ react: { compiler: true } }),
   ],
 });
