@@ -623,7 +623,8 @@
       user-select: none;
 
       &:active { cursor: grabbing; }
-      & img { position: absolute; inset: 0 auto auto 0; max-inline-size: none; pointer-events: none; }
+      /* White behind a see-through picture, as in the saved file */
+      & img { position: absolute; inset: 0 auto auto 0; max-inline-size: none; pointer-events: none; background: white; }
     }
 
     & .crop-zoom input { inline-size: 100%; accent-color: var(--accent); }

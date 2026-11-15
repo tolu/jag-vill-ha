@@ -9,6 +9,15 @@
         "source ~/.zshenv 2>/dev/null; npm run dev -- --port 5173"
       ],
       "port": 5173
+    },
+    {
+      "name": "app-test",
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": [
+        "-c",
+        "source ~/.zshenv 2>/dev/null; LOCAL_STATE=.void/test-state npm run dev -- --port 5183"
+      ],
+      "port": 5183
     }
   ]
 }
