@@ -1,4 +1,5 @@
 import '../../src/styles.css';
+import { Icon } from '../../src/components/Icon';
 import { Topbar } from '../../src/components/Topbar';
 import { WishFields } from '../../src/components/WishFields';
 import type { Props } from './[id].server';
@@ -7,7 +8,10 @@ export default function EditWishPage({ id, values, icon, failed, wasReset }: Pro
   return (
     <div className="page narrow">
       <Topbar>
-        <a href="/lista">Din lista</a>
+        <a href="/lista">
+          <Icon name="list" />
+          Din lista
+        </a>
       </Topbar>
       <main className="steps">
         <section className="step" aria-labelledby="rubrik">

@@ -6,10 +6,17 @@
 //   <button data-passkey="login" data-status="id">       log in, then go to data-next
 //   <form   data-passkey="register" data-status="id">    reads the "namn" field
 //   <button data-passkey="add" data-status="id">         needs a session
+import { toUsername, toUsernameWhileTyping } from './username.js';
+
 const API = '/api/auth/passkey';
 
 const MESSAGES = {
-  cancelled: 'Det blev ingen passkey. Försök igen när du vill.',
+  // Cancelling means something different depending on what she was doing.
+  cancelled: {
+    register: 'Det blev ingen lista den här gången. Försök igen, och svara ja när telefonen eller datorn frågar.',
+    login: 'Det blev ingen inloggning. Försök igen när du vill.',
+    add: 'Det blev ingen passkey. Försök igen när du vill.',
+  },
   exists: 'Den här enheten har redan en passkey för kontot.',
   unsupported: 'Den här webbläsaren stöder inte passkeys.',
   unknown: 'Den passkeyn hör inte till något konto här.',
@@ -34,9 +41,9 @@ async function call(path, body) {
 
 // The browser rejects with a DOMException when the user cancels or the
 // authenticator already holds a credential for this account.
-function explain(error) {
+function explain(error, action) {
   if (error?.name === 'InvalidStateError') return MESSAGES.exists;
-  if (error instanceof DOMException) return MESSAGES.cancelled;
+  if (error instanceof DOMException) return MESSAGES.cancelled[action];
   return error?.message || MESSAGES.failed;
 }
 
@@ -66,13 +73,23 @@ const actions = {
     }
   },
   async register(element) {
-    const name = element.elements.namn.value.trim().toLowerCase();
+    const name = toUsername(element.elements.namn.value);
     await create({ context: name, name }, { name, createSession: true });
   },
   async add(element) {
     await create({ name: element.dataset.name }, { name: element.dataset.name });
   },
 };
+
+// The address field shows what the address will be: "Görel Lundin" turns into
+// "gorel-lundin" as she types, instead of being refused afterwards.
+for (const input of document.querySelectorAll('[data-passkey="register"] [name="namn"]')) {
+  input.addEventListener('input', (event) => {
+    if (event.isComposing) return;
+    const tidy = toUsernameWhileTyping(input.value);
+    if (tidy !== input.value) input.value = tidy;
+  });
+}
 
 for (const element of document.querySelectorAll('[data-passkey]')) {
   const status = document.getElementById(element.dataset.status);
@@ -93,7 +110,7 @@ for (const element of document.querySelectorAll('[data-passkey]')) {
       status.className = 'hint ok';
       status.textContent = element.dataset.done ?? '';
     } catch (error) {
-      status.textContent = explain(error);
+      status.textContent = explain(error, element.dataset.passkey);
     }
     button.disabled = false;
   });

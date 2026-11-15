@@ -9,26 +9,21 @@ import type { Props } from './index.server';
 // Invoker commands open dialogs without JS; React has no typed props for them yet.
 const opens = (id: string) => ({ commandfor: id, command: 'show-modal' });
 
-export default function OwnerListPage({ username, wishes, failed, suggestedIcon }: Props) {
+export default function OwnerListPage({ username, avatarKey, wishes, failed, suggestedIcon }: Props) {
   return (
     <>
       <div className="page">
         <Topbar>
-          <a href="/konto">Konto</a>
+          {/* Her own picture says "this is me"; the word stays, since most owners have no picture. */}
+          <a className="account" href="/konto">
+            {avatarKey ? <img className="avatar" src={`/bild/${avatarKey}`} alt="" /> : <Icon name="user" />}
+            Konto
+          </a>
         </Topbar>
 
         <main>
           <header className="list-header compact">
-            <p className="address">
-              jagvillha.fyi/{username}
-              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
-              <button className="copy" type="button" data-copy={`/${username}`} aria-label="Dela listan">
-                <Icon name="copy" />
-                <Icon name="share" />
-                <Icon name="check" />
-              </button>
-              <span className="copied" role="status"></span>
-            </p>
+            <p className="address">jagvillha.fyi/{username}</p>
             <h1>Din lista</h1>
             <p className="intro">
               Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
@@ -43,7 +38,15 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
                 <Icon name="globe" />
                 Från länk
               </button>
+              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
+              <button className="btn quiet" type="button" hidden data-needs-js data-copy={`/${username}`}>
+                <Icon name="copy" />
+                <Icon name="share" />
+                <Icon name="check" />
+                Skicka listan
+              </button>
             </div>
+            <p className="hint ok copied" role="status"></p>
             {failed && (
               <p className="notice" role="alert">
                 Det gick inte att spara. Kolla att titeln är ifylld, att länken börjar med https:// och att bilden är en vanlig bildfil under 5 MB.

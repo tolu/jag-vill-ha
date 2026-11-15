@@ -8,9 +8,13 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
   return (
     <div className="page narrow">
       <Topbar>
-        <a href="/lista">Din lista</a>
+        <a href="/lista">
+          <Icon name="list" />
+          Din lista
+        </a>
         <form method="post" action="/konto">
           <button className="link" name="intent" value="logout">
+            <Icon name="sign-out" />
             Logga ut
           </button>
         </form>
