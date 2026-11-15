@@ -6,7 +6,7 @@ import type { RouteUrl } from 'void/routes';
 import { lists, reservations, wishes } from '@schema';
 import { hashToken, newToken, parseGiverName, publicWishes, reservationsForViewer } from '../src/reservation';
 import { checkUsername, normalizeUsername } from '../src/username';
-import { possessive, thumbHue } from '../src/wish';
+import { possessive, shopLabel, thumbHue } from '../src/wish';
 
 export type Props = InferProps<typeof loader>;
 
@@ -55,6 +55,7 @@ export const loader = defineHandler(async (c) => {
     wishes: publicWishes(wishRows, reservationRows, token ? await hashToken(token) : null).map((wish) => ({
       ...wish,
       hue: thumbHue(wish.title),
+      shop: wish.url ? shopLabel(wish.url) : null,
     })),
   };
 });

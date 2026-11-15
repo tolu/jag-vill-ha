@@ -23,6 +23,8 @@ for (const root of document.querySelectorAll('.appearance')) {
   }
 
   file.addEventListener('change', () => useImage(file.files[0]));
+  // "Lägg till från länk" hands over the picture it found on the page.
+  root.addEventListener('picker:image', (event) => useImage(event.detail));
 
   // Picking an icon replaces the image. Listens for click, not change, so that
   // choosing the icon that is already selected closes the popover too.

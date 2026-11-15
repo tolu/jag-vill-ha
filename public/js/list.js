@@ -132,3 +132,90 @@ for (const row of list?.children ?? []) {
     }).then(() => save(before));
   });
 }
+
+// --- Add from a link ---------------------------------------------------------
+// Step one asks only for a link. The page is fetched, and the ordinary
+// "Ny önskning" form then opens filled in, so the owner sees and can correct
+// what was found before anything is saved.
+const linkDialog = document.getElementById('fran-lank');
+const linkForm = linkDialog?.querySelector('form[data-from-link]');
+const wishDialog = document.getElementById('ny');
+
+const REASONS = {
+  blocked: 'Butiken släppte inte in oss. Fyll i själv i stället.',
+  empty: 'Sidan sa inget om vad det är för sak. Fyll i själv i stället.',
+  unreachable: 'Vi kom inte fram till den adressen. Stämmer länken?',
+};
+
+if (linkForm && wishDialog) {
+  for (const button of document.querySelectorAll('[data-needs-js]')) button.hidden = false;
+
+  const input = linkForm.elements.lank;
+  const status = linkForm.querySelector('[role="alert"]');
+  const fetchButton = linkForm.querySelector('button:not([type="button"]):not([formmethod])');
+  const manual = linkForm.querySelector('[data-manual]');
+  const wishForm = wishDialog.querySelector('form');
+
+  // Moves on to the ordinary form with whatever is known so far.
+  function review({ title, image }) {
+    wishForm.elements.titel.value = title ?? '';
+    wishForm.elements.lank.value = input.value;
+    linkDialog.close();
+    wishDialog.showModal();
+    wishForm.elements.titel.focus();
+    if (image) usePicture(image);
+  }
+
+  // The picture comes through our own server (the shop would not allow the
+  // browser to read it), and then takes the same path as a chosen file:
+  // downscaled here, shown in the box, uploaded with the form.
+  async function usePicture(url) {
+    const body = new FormData();
+    body.set('bild', url);
+    const response = await fetch('/api/bild', { method: 'POST', body }).catch(() => null);
+    if (!response?.ok) return;
+    const blob = await response.blob();
+    const picture = new File([blob], 'bild', { type: blob.type });
+    wishForm.querySelector('.appearance').dispatchEvent(new CustomEvent('picker:image', { detail: picture }));
+  }
+
+  linkForm.addEventListener('submit', async (event) => {
+    if (event.submitter?.formMethod === 'dialog') return;
+    event.preventDefault();
+    status.textContent = '';
+    manual.hidden = true;
+    fetchButton.dataset.busy = '';
+    fetchButton.disabled = true;
+    input.readOnly = true;
+
+    const body = new FormData();
+    body.set('lank', input.value);
+    const found = await fetch('/api/lank', { method: 'POST', body })
+      .then((response) => (response.ok ? response.json() : { reason: 'unreachable' }))
+      .catch(() => ({ reason: 'unreachable' }));
+
+    delete fetchButton.dataset.busy;
+    fetchButton.disabled = false;
+    input.readOnly = false;
+
+    if (found.reason) {
+      status.textContent = REASONS[found.reason] ?? REASONS.unreachable;
+      manual.hidden = false;
+      return;
+    }
+    review(found);
+  });
+
+  manual.addEventListener('click', () => review({}));
+
+  // Each visit to either dialog starts clean.
+  linkDialog.addEventListener('close', () => {
+    linkForm.reset();
+    status.textContent = '';
+    manual.hidden = true;
+  });
+  wishDialog.addEventListener('close', () => {
+    wishForm.reset();
+    wishForm.querySelector('.picker img').hidden = true;
+  });
+}

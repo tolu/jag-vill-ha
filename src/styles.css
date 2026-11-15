@@ -242,8 +242,6 @@
     grid-template-columns: auto auto 1fr auto;
 
     & .grip {
-      grid-row: span 2;
-      align-self: center;
       inline-size: 1.75rem;
       block-size: 2.75rem;
       margin-inline-start: -0.5rem;
@@ -260,8 +258,12 @@
       &:hover { color: var(--ink); background: var(--accent-wash); }
     }
 
-    & .meta { grid-column: 3; }
-    & .row-actions { grid-column: 4; grid-row: 1 / span 2; align-self: center; display: flex; gap: 0.25rem; }
+    /* Title, comment and shop link stack in one cell, so the row is a single line of boxes */
+    & .thumb { grid-row: auto; }
+    & .wish-text { display: grid; gap: 0.125rem; min-inline-size: 0; }
+    & .wish-text > * { grid-column: 1; grid-row: auto; }
+    & .wish-text :is(h2, a) { overflow-wrap: anywhere; }
+    & .row-actions { display: flex; gap: 0.25rem; }
     & .row-actions .btn { padding-inline: 0.6rem; }
 
     /* Picked up: lifted above the others and following the pointer */
@@ -341,6 +343,17 @@
     &.wide { inline-size: 100%; }
     & .ui-icon { inline-size: 1.15em; block-size: 1.15em; }
     &:disabled { opacity: 0.6; cursor: progress; }
+
+    /* Waiting for the server: a spinner in front of the label */
+    &[data-busy]::before {
+      content: '';
+      inline-size: 1em;
+      block-size: 1em;
+      border: 2px solid currentColor;
+      border-inline-end-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
     &.icon { padding-inline: 0.7rem; font-size: 1.25rem; line-height: 1; }
   }
 
@@ -607,7 +620,15 @@
   }
 }
 
+@keyframes spin { to { rotate: 1turn; } }
+
 @layer overrides {
+  /* The hidden attribute must win over component display rules. */
+  [hidden] { display: none !important; }
+
+  /* A form that has been sent is not editable until the answer arrives. */
+  form[inert] { opacity: 0.7; }
+
   /* Status lines that scripts fill in take no space while empty. */
   .hint:empty { display: none; }
   .hint.error { color: var(--danger); font-weight: 600; }

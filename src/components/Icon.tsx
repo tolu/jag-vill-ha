@@ -1,4 +1,4 @@
-type IconName = 'key' | 'grip' | 'edit' | 'trash' | 'copy' | 'check';
+type IconName = 'key' | 'grip' | 'edit' | 'trash' | 'copy' | 'check' | 'plus' | 'globe';
 
 /** An interface icon from public/icons/ui-icons.svg (Phosphor, light weight). */
 export function Icon({ name }: { name: IconName }) {

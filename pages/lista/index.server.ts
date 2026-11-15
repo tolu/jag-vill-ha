@@ -5,7 +5,7 @@ import { WISH_ICONS } from '../../src/icons';
 import { deleteImage, saveImage } from '../../src/images';
 import { parseOrder } from '../../src/order';
 import { findOwnWish, requireOwnerList } from '../../src/owner';
-import { thumbHue } from '../../src/wish';
+import { shopLabel, thumbHue } from '../../src/wish';
 import { parseWishForm } from '../../src/wish-form';
 
 export type Props = InferProps<typeof loader>;
@@ -31,6 +31,8 @@ export const loader = defineHandler(async (c) => {
       imageKey: wish.imageKey,
       hue: thumbHue(wish.title),
       note: wish.note,
+      url: wish.url,
+      shop: wish.url ? shopLabel(wish.url) : null,
     })),
   };
 });

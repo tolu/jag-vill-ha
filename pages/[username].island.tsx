@@ -65,7 +65,7 @@ export default function ListPage({ username, displayName, intro, wishes, isOwner
                 {wish.url && (
                   <p className="links">
                     <a href={wish.url} rel="noopener nofollow">
-                      Visa i butik
+                      {wish.shop}
                     </a>
                   </p>
                 )}

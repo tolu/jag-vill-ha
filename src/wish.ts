@@ -11,3 +11,12 @@ export function thumbHue(title: string) {
 export function possessive(name: string) {
   return /[sxz]$/i.test(name) ? name : `${name}s`;
 }
+
+/** "Se hos komplett.no": names the shop a wish links to, without the www. */
+export function shopLabel(url: string) {
+  try {
+    return `Se hos ${new URL(url).hostname.replace(/^www\./, '')}`;
+  } catch {
+    return 'Se länken';
+  }
+}

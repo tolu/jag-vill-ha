@@ -28,14 +28,19 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
               <span className="copied" role="status"></span>
             </p>
             <h1>Din lista</h1>
-            <p className="intro">Du ser inte vad som är paxat.</p>
+            <p className="intro">
+              Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
+            </p>
             <div className="header-actions">
               <button className="btn" {...opens('ny')}>
+                <Icon name="plus" />
                 Lägg till önskning
               </button>
-              <a className="btn quiet" href={`/${username}`}>
-                Visa som besökare
-              </a>
+              {/* Needs JS to fetch and fill in the form, so /js/list.js reveals it. */}
+              <button className="btn quiet" hidden data-needs-js {...opens('fran-lank')}>
+                <Icon name="globe" />
+                Från länk
+              </button>
             </div>
             {failed && (
               <p className="notice" role="alert">
@@ -61,8 +66,17 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
                   <div className="thumb" aria-hidden="true">
                     <Thumb title={wish.title} icon={wish.icon} imageKey={wish.imageKey} />
                   </div>
-                  <h2>{wish.title}</h2>
-                  {wish.note && <p className="meta">{wish.note}</p>}
+                  <div className="wish-text">
+                    <h2>{wish.title}</h2>
+                    {wish.note && <p className="meta">{wish.note}</p>}
+                    {wish.url && (
+                      <p className="links">
+                        <a href={wish.url} rel="noopener nofollow">
+                          {wish.shop}
+                        </a>
+                      </p>
+                    )}
+                  </div>
                   <div className="row-actions">
                     <a className="btn quiet icon" href={`/lista/${wish.id}`} aria-label={`Ändra ${wish.title}`} title="Ändra">
                       <Icon name="edit" />
@@ -113,6 +127,27 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
           </div>
         </form>
       </dialog>
+      <dialog id="fran-lank" className="sheet" {...{ closedby: 'any' }} aria-labelledby="fran-lank-rubrik">
+        <h2 id="fran-lank-rubrik">Lägg till från länk</h2>
+        <p className="reassure">Klistra in länken till det du vill ha, så hämtar vi namn och bild.</p>
+        <form data-from-link>
+          <div className="field">
+            <label htmlFor="hamta-lank">Länk</label>
+            <input type="url" id="hamta-lank" name="lank" placeholder="https://butik.se/produkt" required autoFocus />
+            <p className="hint error" role="alert"></p>
+          </div>
+          <div className="buttons">
+            <button className="btn wide">Hämta</button>
+            <button className="btn quiet wide" type="button" hidden data-manual>
+              Fyll i själv
+            </button>
+            <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate>
+              Avbryt
+            </button>
+          </div>
+        </form>
+      </dialog>
+      <script type="module" src="/js/forms.js"></script>
       <script type="module" src="/js/picker.js"></script>
       <script type="module" src="/js/list.js"></script>
     </>
