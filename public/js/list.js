@@ -1,11 +1,22 @@
 // Owner's list: copy the list link, and reorder wishes by dragging the grip
 // or with the arrow keys while a grip has focus.
 
-// --- Copy link -------------------------------------------------------------
+// --- Share or copy the list link -----------------------------------------------
+// Phones get their own share sheet (which also offers "copy"); elsewhere the
+// link is copied straight to the clipboard.
 for (const button of document.querySelectorAll('[data-copy]')) {
   const status = button.parentElement.querySelector('[role="status"]');
+  const url = new URL(button.dataset.copy, location.origin).href;
+  const canShare = navigator.canShare?.({ url }) && matchMedia('(pointer: coarse)').matches;
+  if (canShare) button.dataset.share = '';
+
   button.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(new URL(button.dataset.copy, location.origin).href);
+    if (canShare) {
+      // Closing the share sheet rejects; that is not an error.
+      await navigator.share({ url }).catch(() => {});
+      return;
+    }
+    await navigator.clipboard.writeText(url);
     button.dataset.copied = '';
     status.textContent = 'Kopierad';
     setTimeout(() => {

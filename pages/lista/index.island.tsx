@@ -21,8 +21,10 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
           <header className="list-header compact">
             <p className="address">
               jagvillha.fyi/{username}
-              <button className="copy" type="button" data-copy={`/${username}`} aria-label="Kopiera länken till listan">
+              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
+              <button className="copy" type="button" data-copy={`/${username}`} aria-label="Dela listan">
                 <Icon name="copy" />
+                <Icon name="share" />
                 <Icon name="check" />
               </button>
               <span className="copied" role="status"></span>
@@ -71,7 +73,7 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
                     {wish.note && <p className="meta">{wish.note}</p>}
                     {wish.url && (
                       <p className="links">
-                        <a href={wish.url} rel="noopener nofollow">
+                        <a href={wish.url} target="_blank" rel="noopener nofollow" referrerPolicy="no-referrer">
                           {wish.shop}
                         </a>
                       </p>

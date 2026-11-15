@@ -229,7 +229,8 @@
     /* A title with nothing under it centres against the thumb */
     & h2:not(:has(+ .meta, + .links)) { grid-row: span 2; }
     & .meta { color: var(--ink-soft); font-size: 0.875rem; grid-column: 2; }
-    & .links { font-size: 0.875rem; grid-column: 2; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    & .links { font-size: 0.875rem; grid-column: 2; display: flex; gap: 0.125rem 0.75rem; flex-wrap: wrap; }
+    & .links .link { font-size: inherit; }
     & .action { grid-column: 3; grid-row: 1 / span 2; }
 
     &[data-state="taken"] {
@@ -303,7 +304,11 @@
 
       &:hover { background: var(--accent-wash); }
       & .ui-icon { inline-size: 1rem; block-size: 1rem; }
-      & [data-icon="check"], &[data-copied] [data-icon="copy"] { display: none; }
+      /* One icon at a time: copy by default, share where the device can, check after copying */
+      & [data-icon="check"], & [data-icon="share"] { display: none; }
+      &[data-share] [data-icon="copy"] { display: none; }
+      &[data-share] [data-icon="share"] { display: block; }
+      &[data-copied] :is([data-icon="copy"], [data-icon="share"]) { display: none; }
       &[data-copied] [data-icon="check"] { display: block; }
     }
     & .copied { margin-inline-start: 0.25rem; color: var(--accent); }
@@ -590,6 +595,7 @@
   /* Per-wish menu in the owner view, anchored to its trigger */
   .menu {
     position-area: bottom span-left;
+    .links + & { position-area: bottom span-right; }
     position-try-fallbacks: flip-block;
     margin: 0.25rem 0;
     border: 1px solid var(--line);

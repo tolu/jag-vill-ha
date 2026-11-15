@@ -6,7 +6,7 @@ import type { RouteUrl } from 'void/routes';
 import { lists, reservations, wishes } from '@schema';
 import { hashToken, newToken, parseGiverName, publicWishes, reservationsForViewer } from '../src/reservation';
 import { checkUsername, normalizeUsername } from '../src/username';
-import { possessive, shopLabel, thumbHue } from '../src/wish';
+import { isNorwegianVisitor, possessive, priceSearchLinks, shopLabel, thumbHue } from '../src/wish';
 
 export type Props = InferProps<typeof loader>;
 
@@ -43,6 +43,9 @@ export const loader = defineHandler(async (c) => {
   );
 
   const token = getCookie(c, TOKEN_COOKIE);
+  // Cloudflare adds the visitor's country to every request it serves.
+  const country = (c.req.raw as Request & { cf?: { country?: string } }).cf?.country ?? c.req.header('cf-ipcountry');
+  const norwegian = isNorwegianVisitor(country, c.req.header('accept-language'));
   const notice = c.req.query('upptagen') === '1' ? 'taken' : c.req.query('fel') === '1' ? 'name' : null;
 
   return {
@@ -56,6 +59,7 @@ export const loader = defineHandler(async (c) => {
       ...wish,
       hue: thumbHue(wish.title),
       shop: wish.url ? shopLabel(wish.url) : null,
+      priceSearch: priceSearchLinks(wish.title, norwegian),
     })),
   };
 });

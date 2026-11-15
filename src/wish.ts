@@ -20,3 +20,22 @@ export function shopLabel(url: string) {
     return 'Se länken';
   }
 }
+
+/**
+ * Whether the visitor is in Norway. Cloudflare tells us the country in
+ * production; without it (local development) the browser's language decides.
+ */
+export function isNorwegianVisitor(country: string | null | undefined, acceptLanguage: string | null | undefined) {
+  if (country) return country.toUpperCase() === 'NO';
+  const preferred = (acceptLanguage ?? '').split(',')[0]!.trim().toLowerCase();
+  return /^(nb|nn|no)(-|$)/.test(preferred);
+}
+
+/** Price-comparison searches for a wish. Plain links: nothing is fetched or tracked by us. */
+export function priceSearchLinks(title: string, norwegian = false) {
+  const query = encodeURIComponent(title.trim());
+  return [
+    { label: 'Sök på Prisjakt', href: `https://www.prisjakt.${norwegian ? 'no' : 'nu'}/search?query=${query}` },
+    { label: 'Sök på Google Shopping', href: `https://www.google.com/search?udm=28&q=${query}` },
+  ];
+}

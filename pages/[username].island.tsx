@@ -62,13 +62,28 @@ export default function ListPage({ username, displayName, intro, wishes, isOwner
                 </div>
                 <h2>{wish.title}</h2>
                 {wish.note && <p className="meta">{wish.note}</p>}
-                {wish.url && (
-                  <p className="links">
-                    <a href={wish.url} rel="noopener nofollow">
+                <p className="links">
+                  {wish.url && (
+                    <a href={wish.url} target="_blank" rel="noopener nofollow" referrerPolicy="no-referrer">
                       {wish.shop}
                     </a>
-                  </p>
-                )}
+                  )}
+                  <button
+                    className="link"
+                    type="button"
+                    popoverTarget={`pris-${wish.id}`}
+                    style={{ anchorName: `--pris-${wish.id}` } as CSSProperties}
+                  >
+                    Hitta billigast
+                  </button>
+                </p>
+                <div id={`pris-${wish.id}`} className="menu" popover="auto" style={{ positionAnchor: `--pris-${wish.id}` } as CSSProperties}>
+                  {wish.priceSearch.map((search) => (
+                    <a key={search.href} href={search.href} target="_blank" rel="noopener nofollow" referrerPolicy="no-referrer">
+                      {search.label}
+                    </a>
+                  ))}
+                </div>
 
                 {wish.state === 'free' && (
                   <>
