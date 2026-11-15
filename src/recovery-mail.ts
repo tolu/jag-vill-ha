@@ -12,7 +12,7 @@ export async function sendRecoveryMail(to: string, url: string) {
       'Du bad om en länk för att komma in i din önskelista på jagvillha.fyi. Öppna den på telefonen eller datorn du vill använda:',
       url,
       'Då är du inloggad och kan spara en ny nyckel där. Länken gäller i en timme och bara en gång.',
-      'Bad du inte om den? Strunta i mejlet, då händer ingenting.',
+      'Bad du inte om den? Strunta i mejlet.',
     ].join('\n\n'),
   });
   if (!result.ok) console.error('Recovery mail failed', result);
@@ -29,7 +29,7 @@ export async function sendAddressConfirmation(to: string, username: string) {
     text: [
       'Hej!',
       `Den här adressen hör nu till önskelistan jagvillha.fyi/${username}.`,
-      'Vi använder den till en enda sak: att mejla dig en länk om du inte kan logga in. Ingen reklam, inga nyhetsbrev.',
+      'Vi använder den till en enda sak: att mejla dig en länk om du inte kan logga in.',
       'Var det inte du som lade till den? Strunta i mejlet.',
     ].join('\n\n'),
   });

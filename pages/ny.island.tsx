@@ -39,7 +39,7 @@ export default function NewListPage() {
               </label>
               <input type="email" id="epost" name="epost" autoComplete="email" />
               <p className="hint">
-                Används till en enda sak: att mejla dig en länk om du inte kan logga in, till exempel med ny telefon. Ingen reklam.
+                Används till en enda sak: att mejla dig en länk om du inte kan logga in, till exempel med ny telefon.
               </p>
             </div>
             <p className="lede">

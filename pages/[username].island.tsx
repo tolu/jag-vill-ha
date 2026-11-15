@@ -34,13 +34,11 @@ export default function ListPage({
         )}
         {/* "Paxa" is the whole point of the page, so it is explained before the first button, not only inside the dialog. */}
         {!isOwner && wishes.length > 0 && (
-          <p className="intro">
-            Paxa det du tänker köpa, så köper ingen annan samma sak. {displayName} ser inte vad som är paxat.
-          </p>
+          <p className="intro">Paxa det du tänker köpa, så köper ingen annan samma sak.</p>
         )}
         {reservedTitle && (
           <p className="notice calm" role="status">
-            Du har paxat <strong>{reservedTitle}</strong>. Nu är det bara att köpa den. {displayName} ser ingenting.
+            Du har paxat <strong>{reservedTitle}</strong>. Nu är det bara att köpa den.
           </p>
         )}
         {releasedTitle && (
@@ -50,7 +48,7 @@ export default function ListPage({
         )}
         {notice === 'taken' && (
           <p className="notice" role="alert">
-            Någon hann före. Den är redan paxad. Välj något annat.
+            Någon hann före. Den är redan paxad.
           </p>
         )}
         {notice === 'gone' && (

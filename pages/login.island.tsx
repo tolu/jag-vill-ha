@@ -8,7 +8,7 @@ export default function LoginPage() {
       <main className="steps">
         <section className="step" aria-labelledby="rubrik">
           <h1 id="rubrik">Logga in</h1>
-          <p className="lede">Telefonen eller datorn frågar efter ansiktet, fingret eller din kod, precis som när du skapade listan.</p>
+          <p className="lede">Telefonen eller datorn frågar efter ansiktet, fingret eller din kod.</p>
           <div className="buttons">
             <button className="btn wide" type="button" data-passkey="login" data-status="login-fel" data-next="/lista">
               Logga in

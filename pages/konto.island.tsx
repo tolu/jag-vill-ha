@@ -24,8 +24,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
           <section className="step" aria-labelledby="inne-rubrik">
             <h2 id="inne-rubrik">Du är inne</h2>
             <p className="lede">
-              Spara en ny nyckel på den här telefonen eller datorn nu, så loggar du in som vanligt nästa gång. Annars behöver du en ny länk
-              då.
+              Spara en ny nyckel på den här telefonen eller datorn nu, så loggar du in som vanligt nästa gång.
             </p>
             <div className="buttons">
               <button
@@ -143,8 +142,8 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
           <h2 id="epost-rubrik">Om du inte kan logga in</h2>
           <p className="lede">
             {email
-              ? 'Då mejlar vi en länk hit som loggar in dig. Adressen används inte till något annat.'
-              : 'Lägg till din e-post, så kan vi mejla dig en länk som loggar in dig, till exempel med ny telefon. Utan e-post finns ingen väg in. Adressen används inte till något annat.'}
+              ? 'Då mejlar vi en länk hit.'
+              : 'Lägg till din e-post, så kan vi mejla dig en länk. Den används inte till något annat.'}
           </p>
           {saved === 'epost' && (
             <p className="notice calm" role="status">
