@@ -7,6 +7,8 @@ export const lists = sqliteTable('lists', {
   username: text('username').notNull().unique(),
   displayName: text('display_name').notNull(),
   intro: text('intro'),
+  // The owner's own picture, shown at the top of the public list.
+  avatarKey: text('avatar_key'),
   // Set when login exists (step 3); references the auth user.
   ownerId: text('owner_id'),
   createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),

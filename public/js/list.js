@@ -227,6 +227,6 @@ if (linkForm && wishDialog) {
   });
   wishDialog.addEventListener('close', () => {
     wishForm.reset();
-    wishForm.querySelector('.picker img').hidden = true;
+    wishForm.querySelector('.appearance').dispatchEvent(new CustomEvent('picker:reset'));
   });
 }

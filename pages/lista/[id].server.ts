@@ -2,6 +2,7 @@ import { defineHandler, defineHead, type InferProps } from 'void';
 import { db, eq } from 'void/db';
 import { reservations, wishes } from '@schema';
 import { WISH_ICONS } from '../../src/icons';
+import { resolveImageChange, writeWithImage } from '../../src/image-lifecycle';
 import { deleteImage, saveImage } from '../../src/images';
 import { findOwnWish, requireOwnerList } from '../../src/owner';
 import { parseWishForm } from '../../src/wish-form';
@@ -37,13 +38,23 @@ export const action = defineHandler(async (c) => {
   const form = parseWishForm(body);
   if (!form.ok) return c.redirect(`/lista/${wish.id}?fel=1`, 303);
 
-  // A new file replaces the image; the checkbox (or picking an icon) removes it.
+  // A new file replaces the picture; the checkbox (or picking an icon) removes it.
   const uploaded = await saveImage(list.id, body['bild']);
   if (uploaded === 'bad') return c.redirect(`/lista/${wish.id}?fel=1`, 303);
-  const imageKey = uploaded ?? (body['tabortbild'] !== undefined ? null : wish.imageKey);
+  const { imageKey, discard } = resolveImageChange({
+    uploaded,
+    removeRequested: body['tabortbild'] !== undefined,
+    current: wish.imageKey,
+  });
 
-  await db.update(wishes).set({ ...form.values, imageKey }).where(eq(wishes.id, wish.id));
-  if (imageKey !== wish.imageKey) await deleteImage(wish.imageKey);
+  // The old picture is only removed once the wish no longer points at it, and
+  // a new one is removed again if the wish could not be saved.
+  await writeWithImage(
+    uploaded,
+    () => db.update(wishes).set({ ...form.values, imageKey }).where(eq(wishes.id, wish.id)),
+    deleteImage,
+  );
+  await deleteImage(discard);
   return c.redirect('/lista', 303);
 });
 

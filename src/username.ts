@@ -72,3 +72,8 @@ export async function checkClaim(input: string, isTaken: (username: string) => P
   const problem: ClaimProblem | null = checkUsername(username) ?? ((await isTaken(username)) ? 'taken' : null);
   return problem ? ({ ok: false, problem, message: claimMessage(problem) } as const) : ({ ok: true, username } as const);
 }
+
+/** Deleting an account asks the owner to type their username; case and spaces are forgiven. */
+export function confirmsDeletion(typed: unknown, username: string) {
+  return typeof typed === 'string' && normalizeUsername(typed) === username;
+}

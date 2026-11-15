@@ -12,6 +12,7 @@ const MESSAGES = {
   cancelled: 'Det blev ingen passkey. Försök igen när du vill.',
   exists: 'Den här enheten har redan en passkey för kontot.',
   unsupported: 'Den här webbläsaren stöder inte passkeys.',
+  unknown: 'Den passkeyn hör inte till något konto här.',
   failed: 'Något gick fel. Försök igen.',
 };
 
@@ -22,7 +23,12 @@ async function call(path, body) {
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(data?.message || MESSAGES.failed);
+  if (!response.ok) {
+    // The server answers in English; the one message an owner can run into
+    // (a passkey whose account is gone) gets a Swedish one.
+    const message = data?.message || MESSAGES.failed;
+    throw new Error(/passkey not found/i.test(message) ? MESSAGES.unknown : message);
+  }
   return data;
 }
 

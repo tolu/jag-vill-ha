@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { checkClaim, checkUsername, normalizeUsername } from './username';
+import { checkClaim, checkUsername, confirmsDeletion, normalizeUsername } from './username';
 
 describe('normalizeUsername', () => {
   it('lowercases and trims', () => {
@@ -56,5 +56,16 @@ describe('checkClaim', () => {
 
   it('rejects an invalid name with a message', async () => {
     expect(await checkClaim('a b', free)).toMatchObject({ ok: false, problem: 'characters', message: expect.any(String) });
+  });
+});
+
+describe('confirmsDeletion', () => {
+  it('accepts the username, forgiving case and surrounding spaces', () => {
+    expect(confirmsDeletion('anna', 'anna')).toBe(true);
+    expect(confirmsDeletion('  Anna ', 'anna')).toBe(true);
+  });
+
+  it.each(['', 'ann', 'anna-karin', 'ja', undefined, null])('refuses %s', (typed) => {
+    expect(confirmsDeletion(typed, 'anna')).toBe(false);
   });
 });

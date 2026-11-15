@@ -123,6 +123,62 @@
   /* "Paxad av dig" with its undo link underneath */
   .wish .mine { display: grid; justify-items: end; gap: 0.25rem; font-size: 0.875rem; }
 
+  /* The owner's own picture: small on the account page, larger on the list */
+  .avatar {
+    --size: 3rem;
+    inline-size: var(--size);
+    block-size: var(--size);
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+
+    &.large { --size: 4.5rem; display: block; margin-block-end: 0.75rem; }
+  }
+
+  /* Account page heading with the round profile picture to its right */
+  .account-head { display: flex; gap: 1rem; align-items: start; justify-content: space-between; }
+
+  /* The profile picture reuses the icon picker's box and popover, as a circle */
+  .appearance.round {
+    display: block;
+
+    & .picker {
+      --size: 4.5rem;
+      position: relative;
+      overflow: visible;
+      border-radius: 50%;
+      border-style: dashed;
+      background: none;
+      color: var(--ink-soft);
+
+      &:hover { color: var(--accent); }
+      & img { border-radius: 50%; }
+      /* Empty: the outline of a person fills the circle */
+      & [data-icon="user"] { display: block; inline-size: 2.25rem; block-size: 2.25rem; }
+      &:has(img:not([hidden])) { border-style: solid; }
+    }
+
+    & + .appearance-menu, & .appearance-menu { position-area: bottom span-left; }
+  }
+
+  /* Destructive account actions, set apart at the bottom of the account page */
+  .danger-zone {
+    & .danger-row {
+      margin-block-start: 0.75rem;
+      padding: 1rem;
+      border: 1px solid color-mix(in oklch, var(--danger) 45%, var(--line));
+      border-radius: var(--radius);
+      display: grid;
+      gap: 0.75rem;
+
+      & p { color: var(--ink-soft); font-size: 0.875rem; margin-block-start: 0.125rem; }
+    }
+    & h2 { color: var(--danger); }
+  }
+
+  .btn.quiet.danger-outline { --btn-fg: var(--danger); --btn-line: color-mix(in oklch, var(--danger) 45%, var(--line)); }
+  .btn.quiet.danger-outline:hover { --btn-bg: color-mix(in oklch, var(--danger) 10%, var(--surface)); }
+
   .btn.danger { --btn-bg: var(--danger); --btn-line: var(--danger); --btn-fg: var(--on-accent); }
 
   .topbar {
@@ -548,6 +604,47 @@
     & .remove-image { display: flex; gap: 0.5rem; align-items: center; font-size: 0.875rem; accent-color: var(--accent); }
   }
 
+  /* Choosing which part of a picture to keep: drag the picture inside the frame */
+  .crop {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+
+    & .crop-view {
+      /* The picture is taken out of the flow: it is far larger than the frame
+         when zoomed in, and must not stretch the frame it is measured against. */
+      position: relative;
+      aspect-ratio: 1;
+      overflow: clip;
+      border-radius: var(--radius);
+      background: var(--bg);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+
+      &:active { cursor: grabbing; }
+      & img { position: absolute; inset: 0 auto auto 0; max-inline-size: none; pointer-events: none; }
+    }
+
+    & .crop-zoom input { inline-size: 100%; accent-color: var(--accent); }
+  }
+
+  /* While a picture is being cropped the icons step aside, so the popover stays short */
+  .appearance-menu:has(.crop:not([hidden])) .icons { display: none; }
+  .appearance-menu { max-block-size: calc(100dvh - 1rem); overflow-y: auto; }
+
+  /* The profile picture is shown round, so it is cropped round too */
+  .appearance.round .crop-view { border-radius: 50%; }
+
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   /* Fetched link preview in the add-wish form */
   .preview {
     display: flex;
@@ -646,6 +743,22 @@
   /* A chosen image replaces the icon in the picker box. The per-icon rules that
      show the checked icon are more specific, so this sits in a later layer. */
   .picker:has(img:not([hidden])) svg { display: none; }
+
+  /* On the round profile picture the pencil is always a badge in the corner,
+     with or without a picture. */
+  .appearance.round .picker [data-icon="edit"] {
+    display: block;
+    position: absolute;
+    inset-block-end: -0.25rem;
+    inset-inline-end: -0.25rem;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    padding: 0.3rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--accent);
+  }
 }
 
 /* Reordering finishes with a view transition: quick, and off when motion is unwanted */

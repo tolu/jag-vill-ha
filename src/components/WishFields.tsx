@@ -41,6 +41,22 @@ export function WishFields({ values, prefix, icon }: { values?: Values; prefix: 
         </div>
 
         <div id={menu} className="appearance-menu" popover="auto" style={{ positionAnchor: anchor } as CSSProperties}>
+          {/* Shown by /js/picker.js once there is a picture to crop. */}
+          <div className="crop" hidden>
+            <div className="crop-view" tabIndex={0} role="group" aria-label="Utsnitt. Dra eller använd piltangenterna för att flytta bilden.">
+              <img alt="" draggable={false} />
+            </div>
+            <label className="crop-zoom">
+              <span className="sr-only">Zoom</span>
+              <input type="range" min="1" max="5" step="0.01" defaultValue="1" />
+            </label>
+            <button type="button" className="btn wide" data-crop-done>
+              Klar
+            </button>
+            <button type="button" className="btn quiet wide" data-crop-clear>
+              Byt till ikon
+            </button>
+          </div>
           <fieldset className="icons" aria-label="Ikon">
             {WISH_ICONS.map(([name, label]) => (
               <label key={name} title={label}>

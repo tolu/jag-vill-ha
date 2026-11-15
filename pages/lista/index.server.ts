@@ -2,6 +2,7 @@ import { defineHandler, defineHead, type InferProps } from 'void';
 import { asc, db, eq, max } from 'void/db';
 import { wishes } from '@schema';
 import { WISH_ICONS } from '../../src/icons';
+import { writeWithImage } from '../../src/image-lifecycle';
 import { deleteImage, saveImage } from '../../src/images';
 import { parseOrder } from '../../src/order';
 import { findOwnWish, requireOwnerList } from '../../src/owner';
@@ -47,8 +48,15 @@ export const action = defineHandler(async (c) => {
     if (!form.ok) return c.redirect('/lista?fel=1', 303);
     const imageKey = await saveImage(list.id, body['bild']);
     if (imageKey === 'bad') return c.redirect('/lista?fel=1', 303);
-    const [last] = await db.select({ position: max(wishes.position) }).from(wishes).where(eq(wishes.listId, list.id));
-    await db.insert(wishes).values({ ...form.values, imageKey, listId: list.id, position: (last?.position ?? 0) + 1 });
+    // If saving the wish fails, the picture stored a moment ago is removed again.
+    await writeWithImage(
+      imageKey,
+      async () => {
+        const [last] = await db.select({ position: max(wishes.position) }).from(wishes).where(eq(wishes.listId, list.id));
+        await db.insert(wishes).values({ ...form.values, imageKey, listId: list.id, position: (last?.position ?? 0) + 1 });
+      },
+      deleteImage,
+    );
     return c.redirect('/lista', 303);
   }
 
