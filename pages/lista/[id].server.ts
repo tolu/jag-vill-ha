@@ -1,6 +1,6 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { db, eq } from 'void/db';
-import { wishes } from '@schema';
+import { reservations, wishes } from '@schema';
 import { WISH_ICONS } from '../../src/icons';
 import { deleteImage, saveImage } from '../../src/images';
 import { findOwnWish, requireOwnerList } from '../../src/owner';
@@ -15,6 +15,7 @@ export const loader = defineHandler(async (c) => {
   return {
     id: wish.id,
     failed: c.req.query('fel') === '1',
+    wasReset: c.req.query('nollstalld') === '1',
     icon: wish.icon ?? WISH_ICONS[0][0],
     values: { title: wish.title, url: wish.url, note: wish.note, icon: wish.icon, imageKey: wish.imageKey },
   };
@@ -25,6 +26,14 @@ export const action = defineHandler(async (c) => {
   const wish = await findOwnWish(list.id, Number(c.req.param('id')));
   if (!wish) return c.notFound();
   const body = await c.req.parseBody();
+
+  // Blind on purpose: deletes without reading, and answers the same either way,
+  // so the owner cannot tell whether the wish was reserved.
+  if (body['intent'] === 'reset') {
+    await db.delete(reservations).where(eq(reservations.wishId, wish.id));
+    return c.redirect(`/lista/${wish.id}?nollstalld=1`, 303);
+  }
+
   const form = parseWishForm(body);
   if (!form.ok) return c.redirect(`/lista/${wish.id}?fel=1`, 303);
 

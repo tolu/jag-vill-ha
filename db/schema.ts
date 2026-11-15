@@ -1,5 +1,5 @@
 import { sql } from 'void/db';
-import { integer, sqliteTable, text } from 'void/schema-d1';
+import { integer, sqliteTable, text, uniqueIndex } from 'void/schema-d1';
 
 // One list per account for now; the username is its public address.
 export const lists = sqliteTable('lists', {
@@ -27,12 +27,17 @@ export const wishes = sqliteTable('wishes', {
 });
 
 // Never read for the list owner. The token lets the giver undo on the same device.
-export const reservations = sqliteTable('reservations', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  wishId: integer('wish_id')
-    .notNull()
-    .references(() => wishes.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  tokenHash: text('token_hash').notNull(),
-  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
-});
+export const reservations = sqliteTable(
+  'reservations',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    wishId: integer('wish_id')
+      .notNull()
+      .references(() => wishes.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    tokenHash: text('token_hash').notNull(),
+    createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  },
+  // One reservation per wish: two givers pressing "Paxa" at once cannot both win.
+  (table) => [uniqueIndex('reservations_wish_id_unique').on(table.wishId)],
+);

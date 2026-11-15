@@ -115,6 +115,11 @@
     font-size: 0.875rem;
   }
 
+  .notice.calm { background: var(--accent-wash); color: var(--ink); }
+
+  /* "Paxad av dig" with its undo link underneath */
+  .wish .mine { display: grid; justify-items: end; gap: 0.25rem; font-size: 0.875rem; }
+
   .btn.danger { --btn-bg: var(--danger); --btn-line: var(--danger); --btn-fg: var(--on-accent); }
 
   .topbar {
@@ -221,6 +226,8 @@
     }
 
     & h2 { font: 600 1.0625rem/1.3 var(--font-body); text-wrap: balance; }
+    /* A title with nothing under it centres against the thumb */
+    & h2:not(:has(+ .meta, + .links)) { grid-row: span 2; }
     & .meta { color: var(--ink-soft); font-size: 0.875rem; grid-column: 2; }
     & .links { font-size: 0.875rem; grid-column: 2; display: flex; gap: 0.75rem; flex-wrap: wrap; }
     & .action { grid-column: 3; grid-row: 1 / span 2; }
@@ -253,8 +260,6 @@
       &:hover { color: var(--ink); background: var(--accent-wash); }
     }
 
-    /* A title without a comment centres against the thumb */
-    & h2:not(:has(+ .meta)) { grid-row: span 2; }
     & .meta { grid-column: 3; }
     & .row-actions { grid-column: 4; grid-row: 1 / span 2; align-self: center; display: flex; gap: 0.25rem; }
     & .row-actions .btn { padding-inline: 0.6rem; }

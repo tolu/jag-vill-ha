@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `reservations_wish_id_unique` ON `reservations` (`wish_id`);

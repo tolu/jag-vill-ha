@@ -3,7 +3,7 @@ import { Topbar } from '../../src/components/Topbar';
 import { WishFields } from '../../src/components/WishFields';
 import type { Props } from './[id].server';
 
-export default function EditWishPage({ id, values, icon, failed }: Props) {
+export default function EditWishPage({ id, values, icon, failed, wasReset }: Props) {
   return (
     <div className="page narrow">
       <Topbar>
@@ -25,6 +25,22 @@ export default function EditWishPage({ id, values, icon, failed }: Props) {
                 Avbryt
               </a>
             </div>
+          </form>
+        </section>
+
+        <section className="step" aria-labelledby="nollstall-rubrik">
+          <h2 id="nollstall-rubrik">Nollställ paxning</h2>
+          <p className="lede">
+            Har du ändrat önskningen så mycket att en gammal paxning inte längre stämmer? Då kan du göra den ledig igen. Du
+            får inte veta om den var paxad.
+          </p>
+          <form method="post" action={`/lista/${id}`}>
+            <div className="buttons">
+              <button className="btn quiet wide" name="intent" value="reset">
+                Nollställ paxning
+              </button>
+            </div>
+            {wasReset && <p className="hint ok">Klart. Önskningen är ledig, oavsett hur det var innan.</p>}
           </form>
         </section>
       </main>
