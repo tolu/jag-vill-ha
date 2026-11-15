@@ -9,12 +9,16 @@ import type { Props } from './index.server';
 // Invoker commands open dialogs without JS; React has no typed props for them yet.
 const opens = (id: string) => ({ commandfor: id, command: 'show-modal' });
 
-export default function OwnerListPage({ username, wishes, failed, suggestedIcon }: Props) {
+export default function OwnerListPage({ username, avatarKey, wishes, failed, suggestedIcon }: Props) {
   return (
     <>
       <div className="page">
         <Topbar>
-          <a href="/konto">Konto</a>
+          {/* Her own picture says "this is me"; the word stays, since most owners have no picture. */}
+          <a className="account" href="/konto">
+            {avatarKey ? <img className="avatar" src={`/bild/${avatarKey}`} alt="" /> : <Icon name="user" />}
+            Konto
+          </a>
         </Topbar>
 
         <main>

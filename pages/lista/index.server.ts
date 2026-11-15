@@ -22,6 +22,7 @@ export const loader = defineHandler(async (c) => {
   const rows = await ordered(list.id);
   return {
     username: list.username,
+    avatarKey: list.avatarKey,
     failed: c.req.query('fel') === '1',
     // A new wish starts with a random icon, so nobody has to pick one.
     suggestedIcon: WISH_ICONS[Math.floor(Math.random() * WISH_ICONS.length)]![0],

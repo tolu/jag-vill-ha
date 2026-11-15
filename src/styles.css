@@ -186,7 +186,22 @@
     gap: 1rem;
     align-items: center;
     padding-block: 1rem;
-    font-size: 0.875rem;
+
+    /* Everything in the bar is one tap-sized row high, the brand included, so
+       the bar is the same height on every page whatever it holds. */
+    & :is(a, button.link) {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-block-size: 2.75rem;
+      white-space: nowrap;
+    }
+    & .avatar { --size: 2.25rem; }
+    & .ui-icon { inline-size: 1.5rem; block-size: 1.5rem; }
+    /* The narrowest phones have room for the words but not their icons */
+    @media (width < 22rem) {
+      & .ui-icon { display: none; }
+    }
 
     & .brand {
       font: 500 1.125rem var(--font-display);
