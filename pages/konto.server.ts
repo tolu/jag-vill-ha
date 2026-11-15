@@ -4,6 +4,8 @@ import { db, eq } from 'void/db';
 import { userTable } from '@auth-schema';
 import { lists } from '@schema';
 import { deleteAccount } from '../src/account';
+import { resolveImageChange, writeWithImage } from '../src/image-lifecycle';
+import { deleteImage, saveImage } from '../src/images';
 import { isPlaceholderEmail, parseRecoveryEmail, placeholderEmail } from '../src/recovery-email';
 import { confirmsDeletion } from '../src/username';
 
@@ -19,9 +21,10 @@ export const loader = defineHandler(async (c) => {
   return {
     username: list.username,
     displayName: list.displayName,
+    avatarKey: list.avatarKey,
     intro: list.intro ?? '',
     email: isPlaceholderEmail(user.email) ? null : user.email,
-    saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' || saved === 'fel-namn' ? saved : null,
+    saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' || saved === 'fel-namn' || saved === 'fel-bild' || saved === 'bild' ? saved : null,
   };
 });
 
@@ -43,6 +46,24 @@ export const action = defineHandler(async (c) => {
     await deleteAccount(user.id);
     for (const cookie of response.headers.getSetCookie()) c.header('Set-Cookie', cookie, { append: true });
     return c.redirect('/?borttaget=1', 303);
+  }
+
+  // The profile picture saves on its own, as soon as one is chosen or removed.
+  if (body['intent'] === 'avatar') {
+    const [list] = await db.select().from(lists).where(eq(lists.ownerId, user.id));
+    if (!list) return c.redirect('/konto', 303);
+
+    const uploaded = await saveImage(list.id, body['bild'], 'a');
+    if (uploaded === 'bad') return c.redirect('/konto?sparat=fel-bild', 303);
+    const { imageKey: avatarKey, discard } = resolveImageChange({
+      uploaded,
+      removeRequested: body['tabortbild'] !== undefined,
+      current: list.avatarKey,
+    });
+
+    await writeWithImage(uploaded, () => db.update(lists).set({ avatarKey }).where(eq(lists.id, list.id)), deleteImage);
+    await deleteImage(discard);
+    return c.redirect('/konto?sparat=bild', 303);
   }
 
   if (body['intent'] === 'list') {

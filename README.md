@@ -39,7 +39,7 @@ affiliate links, no tracking, nothing sold. The interface is in Swedish.
 |---|---|
 | **Önskelista** | One list per account, at `jagvillha.fyi/<name>`. A wish is a title, plus an optional link, comment and an icon or a picture. |
 | **Paxa** | A giver types their name and the wish is theirs. Other givers see "Paxad av Anna". A cookie on that device lets them undo it. |
-| **Ägaren** | Signs in with a passkey. No password, and no email unless they add one for recovery. |
+| **Ägaren** | Signs in with a passkey. No password, and no email unless they add one for recovery. Can add a picture of themselves, and can delete the account with everything in it. |
 | **Hitta billigast** | Each wish links to a search on Prisjakt and Google Shopping. Plain links, nothing fetched or tracked. |
 
 The owner is kept out on the server, not in the interface. When the person
@@ -47,6 +47,20 @@ looking at a list is its owner, the reservation query is never run, and the
 owner's own pages do not read the table at all. The owner can reset a wish
 without being told whether it was reserved. One hole is known and accepted: an
 owner who signs out and opens their own link sees what a giver sees.
+
+## What is kept, and for how long
+
+Nothing is meant to pile up.
+
+- **Replacing or removing a picture, or deleting a wish,** removes the stored
+  picture in the same request. So does a save that fails after the upload.
+- **Deleting the account** removes the list, its wishes and reservations, every
+  stored picture, the passkeys, the sessions and the user. The username is free
+  again at once.
+- **Once a week** a scheduled job removes login rows that have expired and any
+  stored picture that no wish or list refers to. It leaves pictures less than a
+  day old alone, and refuses to run if it would delete more than half of what is
+  stored, since that points to a bug rather than to litter.
 
 ## Stack
 
@@ -57,8 +71,9 @@ owner who signs out and opens their own link sees what a giver sees.
   `<form method="post">` with a redirect afterwards.
 - **D1** through Drizzle, with migrations in `db/migrations`.
 - **R2** for pictures, served through the worker at `/bild/…` with `nosniff`.
-  Pictures are downscaled to 800 px in the browser before upload: a phone photo
-  is several megabytes and the list shows it 64 px wide.
+  Pictures are downscaled in the browser before upload, to 800 px for a wish and
+  400 px for a profile picture: a phone photo is several megabytes and the list
+  shows it 64 px wide.
 - **Better Auth** with its passkey plugin. An account and its list are created
   only after the passkey is verified, so an abandoned sign-up leaves nothing
   behind. Email and password sign-up is switched off.
@@ -73,13 +88,13 @@ used directly, without fallbacks.
 ### The JavaScript there is
 
 The public list and the landing page work with JavaScript turned off. What is
-shipped is four small hand-written files, about 400 lines together:
+shipped is a handful of small hand-written files, about 450 lines together:
 
 | File | Does | Without it |
 |---|---|---|
 | `passkey.js` | Sign-up, login, adding a passkey | Nothing: WebAuthn needs script |
 | `list.js` | Drag to reorder, share or copy the link, "Från länk" | Add, edit and delete still work |
-| `picker.js` | Picture preview, drop a picture, downscaling | Picking an icon or a file still works |
+| `picker.js` | Picture preview, drop a picture, downscaling, for wishes and the profile picture | Picking an icon or a file still works, without preview |
 | `forms.js` | Spinner and locked fields while a form is sent | The form is sent anyway |
 
 ## Run it locally
@@ -121,10 +136,10 @@ The auth secret lives in Cloudflare, not in the repository.
 ```
 pages/        one file per page, with its loader and action in *.server.ts
 routes/       /bild (pictures) and two small JSON endpoints for "Från länk"
+crons/        the weekly clean-up
 src/          rules, with their tests, and a few shared components
-public/js/    the four scripts
+public/js/    the scripts
 db/           schema, migrations, seed
-design/       the static prototype the design was agreed on, kept for reference
 auth.ts       passkey sign-up, sessions, recovery mail
 ```
 

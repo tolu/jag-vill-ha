@@ -10,7 +10,7 @@ import { deleteImage } from './images';
  * picture but never a wish pointing at a picture that is gone.
  */
 export async function deleteAccount(userId: string) {
-  const ownLists = await db.select({ id: lists.id }).from(lists).where(eq(lists.ownerId, userId));
+  const ownLists = await db.select({ id: lists.id, avatarKey: lists.avatarKey }).from(lists).where(eq(lists.ownerId, userId));
   const listIds = ownLists.map((list) => list.id);
   const ownWishes = listIds.length
     ? await db.select({ id: wishes.id, imageKey: wishes.imageKey }).from(wishes).where(inArray(wishes.listId, listIds))
@@ -29,4 +29,5 @@ export async function deleteAccount(userId: string) {
   await db.delete(userTable).where(eq(userTable.id, userId));
 
   for (const wish of ownWishes) await deleteImage(wish.imageKey);
+  for (const list of ownLists) await deleteImage(list.avatarKey);
 }

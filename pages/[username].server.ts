@@ -51,6 +51,7 @@ export const loader = defineHandler(async (c) => {
   return {
     username: list.username,
     displayName: list.displayName,
+    avatarKey: list.avatarKey,
     intro: list.intro,
     isOwner,
     notice: notice as 'taken' | 'name' | null,
@@ -110,7 +111,8 @@ export const action = defineHandler(async (c) => {
 
 export const head = defineHead<Props>((_c, props) => {
   const title = `${props.displayName} vill ha`;
-  const description = `${possessive(props.displayName)} önskelista. Paxa det du tänker köpa, utan konto.`;
+  // The owner's own greeting makes the best link preview; the standard line is the fallback.
+  const description = props.intro?.trim() || `${possessive(props.displayName)} önskelista. Paxa det du tänker köpa, utan konto.`;
   return {
     title,
     meta: [
@@ -119,7 +121,7 @@ export const head = defineHead<Props>((_c, props) => {
       { property: 'og:description', content: description },
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: `/${props.username}` },
-      { property: 'og:image', content: '/icons/icon-512.png' },
+      { property: 'og:image', content: props.avatarKey ? `/bild/${props.avatarKey}` : '/icons/icon-512.png' },
     ],
   };
 });

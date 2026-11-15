@@ -123,6 +123,44 @@
   /* "Paxad av dig" with its undo link underneath */
   .wish .mine { display: grid; justify-items: end; gap: 0.25rem; font-size: 0.875rem; }
 
+  /* The owner's own picture: small on the account page, larger on the list */
+  .avatar {
+    --size: 3rem;
+    inline-size: var(--size);
+    block-size: var(--size);
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+
+    &.large { --size: 4.5rem; display: block; margin-block-end: 0.75rem; }
+  }
+
+  /* Account page heading with the round profile picture to its right */
+  .account-head { display: flex; gap: 1rem; align-items: start; justify-content: space-between; }
+
+  /* The profile picture reuses the icon picker's box and popover, as a circle */
+  .appearance.round {
+    display: block;
+
+    & .picker {
+      --size: 4.5rem;
+      position: relative;
+      overflow: visible;
+      border-radius: 50%;
+      border-style: dashed;
+      background: none;
+      color: var(--ink-soft);
+
+      &:hover { color: var(--accent); }
+      & img { border-radius: 50%; }
+      /* Empty: the outline of a person fills the circle */
+      & [data-icon="user"] { display: block; inline-size: 2.25rem; block-size: 2.25rem; }
+      &:has(img:not([hidden])) { border-style: solid; }
+    }
+
+    & + .appearance-menu, & .appearance-menu { position-area: bottom span-left; }
+  }
+
   /* Destructive account actions, set apart at the bottom of the account page */
   .danger-zone {
     & .danger-row {
@@ -664,6 +702,22 @@
   /* A chosen image replaces the icon in the picker box. The per-icon rules that
      show the checked icon are more specific, so this sits in a later layer. */
   .picker:has(img:not([hidden])) svg { display: none; }
+
+  /* On the round profile picture the pencil is always a badge in the corner,
+     with or without a picture. */
+  .appearance.round .picker [data-icon="edit"] {
+    display: block;
+    position: absolute;
+    inset-block-end: -0.25rem;
+    inset-inline-end: -0.25rem;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    padding: 0.3rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--accent);
+  }
 }
 
 /* Reordering finishes with a view transition: quick, and off when motion is unwanted */

@@ -1,6 +1,13 @@
-// Progressive enhancement for the icon/image box in the wish form.
-// Without this script the form still works: pick an icon or a file and submit.
-const MAX_SIDE = 800;
+// Progressive enhancement for the picture boxes: the icon/image box in the wish
+// form and the round profile picture on the account page. Both are a box that
+// opens a popover with a file input; this adds preview, drop and downscaling.
+// Without this script the forms still work: pick an icon or a file and submit.
+//
+//   data-max-side="400"   longest side after downscaling (default 800)
+//   data-autosubmit       send the form as soon as a picture is chosen
+import { downscale } from './image.js';
+
+const DEFAULT_MAX_SIDE = 800;
 
 for (const root of document.querySelectorAll('.appearance')) {
   const form = root.closest('form');
@@ -9,10 +16,11 @@ for (const root of document.querySelectorAll('.appearance')) {
   const menu = root.querySelector('[popover]');
   const file = root.querySelector('input[type="file"]');
   const remove = root.querySelector('input[name="tabortbild"]');
+  const maxSide = Number(root.dataset.maxSide) || DEFAULT_MAX_SIDE;
 
   async function useImage(picked) {
     if (!picked?.type.startsWith('image/')) return;
-    const image = await downscale(picked);
+    const image = await downscale(picked, maxSide);
     const transfer = new DataTransfer();
     transfer.items.add(image);
     file.files = transfer.files;
@@ -20,6 +28,7 @@ for (const root of document.querySelectorAll('.appearance')) {
     preview.hidden = false;
     if (remove) remove.checked = false;
     menu.hidePopover();
+    if ('autosubmit' in root.dataset) form.requestSubmit();
   }
 
   file.addEventListener('change', () => useImage(file.files[0]));
@@ -47,19 +56,4 @@ for (const root of document.querySelectorAll('.appearance')) {
     delete box.dataset.drop;
     useImage(event.dataTransfer.files[0]);
   });
-}
-
-// Phone photos are several megabytes; a list thumbnail needs a fraction of that.
-async function downscale(picked) {
-  if (picked.type === 'image/gif') return picked;
-  const bitmap = await createImageBitmap(picked);
-  const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
-  if (scale === 1 && picked.size < 300_000) return picked;
-  const canvas = new OffscreenCanvas(Math.round(bitmap.width * scale), Math.round(bitmap.height * scale));
-  const context = canvas.getContext('2d');
-  context.fillStyle = 'white';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.85 });
-  return new File([blob], 'bild.jpg', { type: 'image/jpeg' });
 }

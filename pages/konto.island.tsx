@@ -1,8 +1,10 @@
+import type { CSSProperties } from 'react';
 import '../src/styles.css';
+import { Icon } from '../src/components/Icon';
 import { Topbar } from '../src/components/Topbar';
 import type { Props } from './konto.server';
 
-export default function AccountPage({ username, displayName, intro, email, saved }: Props) {
+export default function AccountPage({ username, displayName, intro, avatarKey, email, saved }: Props) {
   return (
     <div className="page narrow">
       <Topbar>
@@ -14,11 +16,57 @@ export default function AccountPage({ username, displayName, intro, email, saved
         </form>
       </Topbar>
       <main className="steps">
-        <section className="step" aria-labelledby="rubrik">
-          <h1 id="rubrik">Ditt konto</h1>
-          <p className="lede">
-            Din lista finns på <a href={`/${username}`}>jagvillha.fyi/{username}</a>.
-          </p>
+        <section className="step account-head" aria-labelledby="rubrik">
+          <div>
+            <h1 id="rubrik">Ditt konto</h1>
+            <p className="lede">
+              Din lista finns på <a href={`/${username}`}>jagvillha.fyi/{username}</a>.
+            </p>
+            {saved === 'fel-bild' && (
+              <p className="hint error" role="alert">
+                Det där var ingen vanlig bildfil under 5 MB.
+              </p>
+            )}
+          </div>
+
+          {/* Same box-and-popover as the icon picker; /js/picker.js saves as soon as a picture is chosen. */}
+          <form
+            className="appearance round"
+            method="post"
+            action="/konto"
+            encType="multipart/form-data"
+            data-max-side="400"
+            data-autosubmit
+          >
+            <input type="hidden" name="intent" value="avatar" />
+            <button
+              type="button"
+              className="picker"
+              popoverTarget="profilbild"
+              style={{ anchorName: '--profilbild' } as CSSProperties}
+              aria-label={avatarKey ? 'Byt bild på dig' : 'Lägg till en bild på dig'}
+            >
+              <img src={avatarKey ? `/bild/${avatarKey}` : undefined} alt="" hidden={!avatarKey} />
+              {/* The outline of a person says what the empty circle is for; the pencil says it can be changed. */}
+              <Icon name="user" />
+              <Icon name="edit" />
+            </button>
+            <div id="profilbild" className="appearance-menu" popover="auto" style={{ positionAnchor: '--profilbild' } as CSSProperties}>
+              <label className="btn quiet wide file">
+                Välj en bild
+                <input type="file" name="bild" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" />
+              </label>
+              {avatarKey && (
+                <button className="btn quiet wide" name="tabortbild" value="1">
+                  Ta bort bilden
+                </button>
+              )}
+              <p className="hint">Bilden syns för alla som har länken, och när länken delas.</p>
+              <noscript>
+                <button className="btn wide">Spara</button>
+              </noscript>
+            </div>
+          </form>
         </section>
 
         <section className="step" aria-labelledby="lista-rubrik">
@@ -139,6 +187,7 @@ export default function AccountPage({ username, displayName, intro, email, saved
         </form>
       </dialog>
       <script type="module" src="/js/forms.js"></script>
+      <script type="module" src="/js/picker.js"></script>
       <script type="module" src="/js/passkey.js"></script>
     </div>
   );
