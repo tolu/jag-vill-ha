@@ -604,6 +604,47 @@
     & .remove-image { display: flex; gap: 0.5rem; align-items: center; font-size: 0.875rem; accent-color: var(--accent); }
   }
 
+  /* Choosing which part of a picture to keep: drag the picture inside the frame */
+  .crop {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+
+    & .crop-view {
+      /* The picture is taken out of the flow: it is far larger than the frame
+         when zoomed in, and must not stretch the frame it is measured against. */
+      position: relative;
+      aspect-ratio: 1;
+      overflow: clip;
+      border-radius: var(--radius);
+      background: var(--bg);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+
+      &:active { cursor: grabbing; }
+      & img { position: absolute; inset: 0 auto auto 0; max-inline-size: none; pointer-events: none; }
+    }
+
+    & .crop-zoom input { inline-size: 100%; accent-color: var(--accent); }
+  }
+
+  /* While a picture is being cropped the icons step aside, so the popover stays short */
+  .appearance-menu:has(.crop:not([hidden])) .icons { display: none; }
+  .appearance-menu { max-block-size: calc(100dvh - 1rem); overflow-y: auto; }
+
+  /* The profile picture is shown round, so it is cropped round too */
+  .appearance.round .crop-view { border-radius: 50%; }
+
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   /* Fetched link preview in the add-wish form */
   .preview {
     display: flex;

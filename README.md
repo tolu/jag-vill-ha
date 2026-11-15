@@ -37,7 +37,7 @@ affiliate links, no tracking, nothing sold. The interface is in Swedish.
 
 | | |
 |---|---|
-| **Önskelista** | One list per account, at `jagvillha.fyi/<name>`. A wish is a title, plus an optional link, comment and an icon or a picture. |
+| **Önskelista** | One list per account, at `jagvillha.fyi/<name>`. A wish is a title, plus an optional link, comment and an icon or a picture. A picture can be moved and zoomed to choose which part is shown. |
 | **Paxa** | A giver types their name and the wish is theirs. Other givers see "Paxad av Anna". A cookie on that device lets them undo it. |
 | **Ägaren** | Signs in with a passkey. No password, and no email unless they add one for recovery. Can add a picture of themselves, and can delete the account with everything in it. |
 | **Hitta billigast** | Each wish links to a search on Prisjakt and Google Shopping. Plain links, nothing fetched or tracked. |
@@ -71,9 +71,10 @@ Nothing is meant to pile up.
   `<form method="post">` with a redirect afterwards.
 - **D1** through Drizzle, with migrations in `db/migrations`.
 - **R2** for pictures, served through the worker at `/bild/…` with `nosniff`.
-  Pictures are downscaled in the browser before upload, to 800 px for a wish and
-  400 px for a profile picture: a phone photo is several megabytes and the list
-  shows it 64 px wide.
+  Pictures are cropped and downscaled in the browser before upload, to a square
+  of at most 800 px for a wish and 400 px for a profile picture: a phone photo
+  is several megabytes and the list shows it 64 px wide. Only the chosen square
+  is stored, so there is nothing to keep in step afterwards.
 - **Better Auth** with its passkey plugin. An account and its list are created
   only after the passkey is verified, so an abandoned sign-up leaves nothing
   behind. Email and password sign-up is switched off.
@@ -88,13 +89,13 @@ used directly, without fallbacks.
 ### The JavaScript there is
 
 The public list and the landing page work with JavaScript turned off. What is
-shipped is a handful of small hand-written files, about 450 lines together:
+shipped is a handful of small hand-written files, about 600 lines together:
 
 | File | Does | Without it |
 |---|---|---|
 | `passkey.js` | Sign-up, login, adding a passkey | Nothing: WebAuthn needs script |
 | `list.js` | Drag to reorder, share or copy the link, "Från länk" | Add, edit and delete still work |
-| `picker.js` | Picture preview, drop a picture, downscaling, for wishes and the profile picture | Picking an icon or a file still works, without preview |
+| `picker.js` | Picture preview, drop a picture, choosing the part to keep, for wishes and the profile picture | Picking an icon or a file still works; the whole picture is uploaded |
 | `forms.js` | Spinner and locked fields while a form is sent | The form is sent anyway |
 
 ## Run it locally
@@ -150,7 +151,9 @@ auth.ts       passkey sign-up, sessions, recovery mail
   it does not, the owner types them.
 - **Tested in Chromium.** Safari and touch dragging have not been tried
   properly yet.
-- **A picture uploaded with JavaScript off is stored as it is**, up to 5 MB.
+- **A picture uploaded with JavaScript off is stored as it is**, up to 5 MB,
+  and cannot be cropped.
+- **A crop can be made tighter later, not wider.** The original is never stored.
 - **Nothing stops someone with the link from reserving everything.** The owner
   can reset a wish, but is not told that there is a reason to.
 - **Undoing a reservation needs the same device.** Clear the cookies and only

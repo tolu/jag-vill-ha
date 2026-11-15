@@ -52,6 +52,19 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
               <Icon name="edit" />
             </button>
             <div id="profilbild" className="appearance-menu" popover="auto" style={{ positionAnchor: '--profilbild' } as CSSProperties}>
+              {/* Shown by /js/picker.js once there is a picture to crop. */}
+              <div className="crop" hidden>
+                <div className="crop-view" tabIndex={0} role="group" aria-label="Utsnitt. Dra eller använd piltangenterna för att flytta bilden.">
+                  <img alt="" draggable={false} />
+                </div>
+                <label className="crop-zoom">
+                  <span className="sr-only">Zoom</span>
+                  <input type="range" min="1" max="5" step="0.01" defaultValue="1" />
+                </label>
+                <button type="button" className="btn wide" data-crop-done>
+                  Klar
+                </button>
+              </div>
               <label className="btn quiet wide file">
                 Välj en bild
                 <input type="file" name="bild" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" />
