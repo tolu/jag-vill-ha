@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Din lista – designprototyp</title>
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F8F5EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1A1814" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="page">
+  <nav class="topbar" aria-label="Konto">
+    <a class="brand" href="#"><img src="icons/icon.svg" alt="" width="24" height="24">jagvillha</a>
+    <a href="#">Logga ut</a>
+  </nav>
+
+  <main>
+    <header class="list-header">
+      <p class="address">jagvillha.fyi/tobias</p>
+      <h1>Din lista</h1>
+      <p class="intro">Du ser inte vad som är paxat.</p>
+      <div class="header-actions">
+        <button class="btn" commandfor="ny" command="show-modal">Lägg till önskning</button>
+        <button class="btn quiet">Dela listan</button>
+        <a class="btn quiet" href="prototype.html">Visa som besökare</a>
+      </div>
+    </header>
+
+    <ul class="wishes">
+      <li class="wish" style="--thumb-hue: 40">
+        <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#cooking-pot"/></svg></div>
+        <div>
+          <span class="most">Önskar mest</span>
+          <h2>Non-stick pajform</h2>
+        </div>
+        <p class="meta">Lékué 28 cm · 349 kr</p>
+        <button class="btn quiet icon action" popovertarget="meny-1" style="anchor-name: --meny-1" aria-label="Fler val för non-stick pajform">⋯</button>
+        <div id="meny-1" class="menu" popover style="position-anchor: --meny-1">
+          <button>Ändra</button>
+          <button>Flytta upp</button>
+          <button>Flytta ner</button>
+          <button>Nollställ paxning<small>Du får inte veta om den var paxad.</small></button>
+          <button class="danger">Ta bort</button>
+        </div>
+      </li>
+
+      <li class="wish" style="--thumb-hue: 170">
+        <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#sneaker"/></svg></div>
+        <h2>Gore-Tex-skor</h2>
+        <p class="meta">Storlek 44 · 1 899 kr</p>
+        <button class="btn quiet icon action" aria-label="Fler val för Gore-Tex-skor">⋯</button>
+      </li>
+
+      <li class="wish" style="--thumb-hue: 290">
+        <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#book-open"/></svg></div>
+        <h2>Kokbok, gärna vegetarisk</h2>
+        <p class="meta">Valfri · ca 300 kr</p>
+        <button class="btn quiet icon action" aria-label="Fler val för kokbok">⋯</button>
+      </li>
+
+      <li class="wish" style="--thumb-hue: 85">
+        <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#wine"/></svg></div>
+        <h2>Vinglas</h2>
+        <p class="meta">4 st · 129 kr/st</p>
+        <button class="btn quiet icon action" aria-label="Fler val för vinglas">⋯</button>
+      </li>
+    </ul>
+  </main>
+</div>
+
+<dialog id="ny" class="sheet" closedby="any" aria-labelledby="ny-rubrik">
+  <h2 id="ny-rubrik">Ny önskning</h2>
+  <p class="reassure">Skriv vad du vill ha. Har du en länk fyller vi i resten åt dig.</p>
+  <form method="dialog">
+    <div class="field">
+      <label for="titel">Vad vill du ha?</label>
+      <input type="text" id="titel" name="titel" placeholder="Non-stick pajform" required>
+    </div>
+    <div class="field">
+      <label for="lank">Länk <span class="optional">valfritt</span></label>
+      <input type="url" id="lank" name="lank" placeholder="https://butik.se/produkt">
+      <p class="hint">Vi försöker hämta namn, bild och pris. Går det inte fyller du i själv.</p>
+    </div>
+    <div class="field">
+      <label for="bild">Bild eller ikon <span class="optional">valfritt</span></label>
+      <input type="file" id="bild" name="bild" accept="image/*">
+      <p class="hint">Välj en bild eller dra hit en.</p>
+      <details class="icon-picker">
+        <summary>Välj en ikon i stället</summary>
+        <fieldset class="icons" aria-label="Ikon">
+          <label title="Ingen ikon" class="none"><input type="radio" name="ikon" value="" aria-label="Ingen ikon" checked>–</label>
+          <label title="Present"><input type="radio" name="ikon" value="gift" aria-label="Present"><svg aria-hidden="true"><use href="icons/wish-icons.svg#gift"/></svg></label>
+          <label title="Bok"><input type="radio" name="ikon" value="book-open" aria-label="Bok"><svg aria-hidden="true"><use href="icons/wish-icons.svg#book-open"/></svg></label>
+          <label title="Kläder"><input type="radio" name="ikon" value="t-shirt" aria-label="Kläder"><svg aria-hidden="true"><use href="icons/wish-icons.svg#t-shirt"/></svg></label>
+          <label title="Skor"><input type="radio" name="ikon" value="sneaker" aria-label="Skor"><svg aria-hidden="true"><use href="icons/wish-icons.svg#sneaker"/></svg></label>
+          <label title="Hörlurar"><input type="radio" name="ikon" value="headphones" aria-label="Hörlurar"><svg aria-hidden="true"><use href="icons/wish-icons.svg#headphones"/></svg></label>
+          <label title="Spel"><input type="radio" name="ikon" value="game-controller" aria-label="Spel"><svg aria-hidden="true"><use href="icons/wish-icons.svg#game-controller"/></svg></label>
+          <label title="Cykel"><input type="radio" name="ikon" value="bicycle" aria-label="Cykel"><svg aria-hidden="true"><use href="icons/wish-icons.svg#bicycle"/></svg></label>
+          <label title="Kök"><input type="radio" name="ikon" value="cooking-pot" aria-label="Kök"><svg aria-hidden="true"><use href="icons/wish-icons.svg#cooking-pot"/></svg></label>
+          <label title="Vin"><input type="radio" name="ikon" value="wine" aria-label="Vin"><svg aria-hidden="true"><use href="icons/wish-icons.svg#wine"/></svg></label>
+          <label title="Kaffe"><input type="radio" name="ikon" value="coffee" aria-label="Kaffe"><svg aria-hidden="true"><use href="icons/wish-icons.svg#coffee"/></svg></label>
+          <label title="Växt"><input type="radio" name="ikon" value="plant" aria-label="Växt"><svg aria-hidden="true"><use href="icons/wish-icons.svg#plant"/></svg></label>
+          <label title="Möbel"><input type="radio" name="ikon" value="armchair" aria-label="Möbel"><svg aria-hidden="true"><use href="icons/wish-icons.svg#armchair"/></svg></label>
+          <label title="Lampa"><input type="radio" name="ikon" value="lamp" aria-label="Lampa"><svg aria-hidden="true"><use href="icons/wish-icons.svg#lamp"/></svg></label>
+          <label title="Verktyg"><input type="radio" name="ikon" value="wrench" aria-label="Verktyg"><svg aria-hidden="true"><use href="icons/wish-icons.svg#wrench"/></svg></label>
+          <label title="Kamera"><input type="radio" name="ikon" value="camera" aria-label="Kamera"><svg aria-hidden="true"><use href="icons/wish-icons.svg#camera"/></svg></label>
+          <label title="Musik"><input type="radio" name="ikon" value="music-notes" aria-label="Musik"><svg aria-hidden="true"><use href="icons/wish-icons.svg#music-notes"/></svg></label>
+          <label title="Biljett"><input type="radio" name="ikon" value="ticket" aria-label="Biljett"><svg aria-hidden="true"><use href="icons/wish-icons.svg#ticket"/></svg></label>
+          <label title="Resa"><input type="radio" name="ikon" value="airplane" aria-label="Resa"><svg aria-hidden="true"><use href="icons/wish-icons.svg#airplane"/></svg></label>
+          <label title="Friluftsliv"><input type="radio" name="ikon" value="tent" aria-label="Friluftsliv"><svg aria-hidden="true"><use href="icons/wish-icons.svg#tent"/></svg></label>
+          <label title="Klocka"><input type="radio" name="ikon" value="watch" aria-label="Klocka"><svg aria-hidden="true"><use href="icons/wish-icons.svg#watch"/></svg></label>
+          <label title="Teknik"><input type="radio" name="ikon" value="device-mobile" aria-label="Teknik"><svg aria-hidden="true"><use href="icons/wish-icons.svg#device-mobile"/></svg></label>
+          <label title="Skapande"><input type="radio" name="ikon" value="paint-brush" aria-label="Skapande"><svg aria-hidden="true"><use href="icons/wish-icons.svg#paint-brush"/></svg></label>
+          <label title="Pussel"><input type="radio" name="ikon" value="puzzle-piece" aria-label="Pussel"><svg aria-hidden="true"><use href="icons/wish-icons.svg#puzzle-piece"/></svg></label>
+          <label title="Annat"><input type="radio" name="ikon" value="heart" aria-label="Annat"><svg aria-hidden="true"><use href="icons/wish-icons.svg#heart"/></svg></label>
+        </fieldset>
+      </details>
+    </div>
+    <details class="more">
+      <summary>Fler val</summary>
+      <div class="field">
+        <label for="pris">Pris</label>
+        <input type="text" id="pris" name="pris" inputmode="numeric" placeholder="349">
+      </div>
+      <div class="field">
+        <label for="kommentar">Kommentar</label>
+        <input type="text" id="kommentar" name="kommentar" placeholder="Storlek 44, gärna blå">
+      </div>
+      <label class="check"><input type="checkbox" name="mest">Önskar mest</label>
+    </details>
+    <div class="buttons">
+      <button class="btn wide">Lägg till</button>
+      <button class="btn quiet wide" formnovalidate>Avbryt</button>
+    </div>
+  </form>
+</dialog>
+
+</body>
+</html>

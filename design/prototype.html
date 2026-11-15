@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tobias vill ha – designprototyp</title>
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F8F5EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1A1814" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<main class="page">
+  <header class="list-header">
+    <p class="address">jagvillha.fyi/tobias</p>
+    <h1>Tobias vill ha</h1>
+    <p class="intro">Paxa det du tänker köpa, så slipper jag få tre likadana. Jag kan inte se vad som är paxat.</p>
+  </header>
+
+  <fieldset class="filters" aria-label="Filtrera önskningar">
+    <label><input type="radio" name="filter" id="f-alla" checked>Alla</label>
+    <label><input type="radio" name="filter" id="f-lediga">Lediga</label>
+    <label><input type="radio" name="filter" id="f-500">Under 500 kr</label>
+  </fieldset>
+
+  <ul class="wishes">
+    <li class="wish" data-under-500 style="--thumb-hue: 40">
+      <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#cooking-pot"/></svg></div>
+      <div>
+        <span class="most">Önskar mest</span>
+        <h2>Non-stick pajform</h2>
+      </div>
+      <p class="meta">Lékué 28 cm · 349 kr</p>
+      <p class="links"><a href="#">Hitta billigast</a><a href="#">Visa i butik</a></p>
+      <button class="btn action" commandfor="paxa" command="show-modal">Paxa</button>
+    </li>
+
+    <li class="wish" data-state="taken" style="--thumb-hue: 170">
+      <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#sneaker"/></svg></div>
+      <h2>Gore-Tex-skor</h2>
+      <p class="meta">Storlek 44 · 1 899 kr</p>
+      <span class="badge other action">Paxad av Erik</span>
+    </li>
+
+    <li class="wish" data-under-500 style="--thumb-hue: 290">
+      <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#book-open"/></svg></div>
+      <h2>Kokbok, gärna vegetarisk</h2>
+      <p class="meta">Valfri · ca 300 kr</p>
+      <p class="links"><a href="#">Hitta billigast</a></p>
+      <button class="btn action" commandfor="paxa" command="show-modal">Paxa</button>
+    </li>
+
+    <li class="wish" data-under-500 style="--thumb-hue: 85">
+      <div class="thumb" aria-hidden="true"><svg><use href="icons/wish-icons.svg#wine"/></svg></div>
+      <h2>Vinglas</h2>
+      <p class="meta">2 av 4 kvar · 129 kr/st</p>
+      <p class="links"><a href="#">Hitta billigast</a><a href="#">Visa i butik</a></p>
+      <button class="btn action" commandfor="paxa" command="show-modal">Paxa</button>
+    </li>
+
+    <li class="wish" data-state="taken" data-under-500 style="--thumb-hue: 230">
+      <div class="thumb" aria-hidden="true">S</div>
+      <h2>Stickade sockor</h2>
+      <p class="meta">Ull · 199 kr</p>
+      <p class="links"><a href="#">Hitta billigast</a><a href="#">Ångra</a></p>
+      <span class="badge action">Paxad av dig</span>
+    </li>
+  </ul>
+</main>
+
+<dialog id="paxa" class="sheet" closedby="any" aria-labelledby="paxa-rubrik">
+  <h2 id="paxa-rubrik">Paxa non-stick pajform</h2>
+  <p class="reassure">Tobias ser inte vad som är paxat.</p>
+  <form method="dialog">
+    <div class="field">
+      <label for="namn">Ditt namn</label>
+      <input type="text" id="namn" name="namn" autocomplete="given-name" value="Anna" required>
+      <p class="hint">Syns för andra som handlar, så att ni inte krockar.</p>
+    </div>
+    <div class="buttons">
+      <button class="btn wide">Paxa</button>
+      <button class="btn quiet wide" formnovalidate>Avbryt</button>
+    </div>
+  </form>
+</dialog>
+
+</body>
+</html>
