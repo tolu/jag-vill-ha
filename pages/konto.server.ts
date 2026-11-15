@@ -3,7 +3,9 @@ import { getAuth, requireAuth } from 'void/auth';
 import { db, eq } from 'void/db';
 import { userTable } from '@auth-schema';
 import { lists } from '@schema';
+import { deleteAccount } from '../src/account';
 import { isPlaceholderEmail, parseRecoveryEmail, placeholderEmail } from '../src/recovery-email';
+import { confirmsDeletion } from '../src/username';
 
 export type Props = InferProps<typeof loader>;
 
@@ -19,7 +21,7 @@ export const loader = defineHandler(async (c) => {
     displayName: list.displayName,
     intro: list.intro ?? '',
     email: isPlaceholderEmail(user.email) ? null : user.email,
-    saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' ? saved : null,
+    saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' || saved === 'fel-namn' ? saved : null,
   };
 });
 
@@ -31,6 +33,16 @@ export const action = defineHandler(async (c) => {
     const response = await getAuth(c).api.signOut({ headers: c.req.raw.headers, asResponse: true });
     for (const cookie of response.headers.getSetCookie()) c.header('Set-Cookie', cookie, { append: true });
     return c.redirect('/', 303);
+  }
+
+  if (body['intent'] === 'delete') {
+    const [list] = await db.select({ username: lists.username }).from(lists).where(eq(lists.ownerId, user.id));
+    if (!list || !confirmsDeletion(body['bekrafta'], list.username)) return c.redirect('/konto?sparat=fel-namn', 303);
+    // Signs out first, while the session still exists, to get the cookies cleared.
+    const response = await getAuth(c).api.signOut({ headers: c.req.raw.headers, asResponse: true });
+    await deleteAccount(user.id);
+    for (const cookie of response.headers.getSetCookie()) c.header('Set-Cookie', cookie, { append: true });
+    return c.redirect('/?borttaget=1', 303);
   }
 
   if (body['intent'] === 'list') {

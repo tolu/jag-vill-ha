@@ -1,7 +1,8 @@
 import '../src/styles.css';
+import type { Props } from './index.server';
 import { Icon } from '../src/components/Icon';
 
-export default function HomePage() {
+export default function HomePage({ deleted }: Props) {
   return (
     <div className="page">
       <nav className="topbar" aria-label="Konto">
@@ -13,6 +14,11 @@ export default function HomePage() {
 
       <main>
         <header className="list-header hero">
+          {deleted && (
+            <p className="notice calm" role="status">
+              Kontot och listan är borttagna.
+            </p>
+          )}
           <h1>Tre brödrostar är två för många</h1>
           <p className="intro">
             Skriv upp vad du vill ha och skicka länken till släkten. De paxar utan konto.

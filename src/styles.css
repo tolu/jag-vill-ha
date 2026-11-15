@@ -123,6 +123,24 @@
   /* "Paxad av dig" with its undo link underneath */
   .wish .mine { display: grid; justify-items: end; gap: 0.25rem; font-size: 0.875rem; }
 
+  /* Destructive account actions, set apart at the bottom of the account page */
+  .danger-zone {
+    & .danger-row {
+      margin-block-start: 0.75rem;
+      padding: 1rem;
+      border: 1px solid color-mix(in oklch, var(--danger) 45%, var(--line));
+      border-radius: var(--radius);
+      display: grid;
+      gap: 0.75rem;
+
+      & p { color: var(--ink-soft); font-size: 0.875rem; margin-block-start: 0.125rem; }
+    }
+    & h2 { color: var(--danger); }
+  }
+
+  .btn.quiet.danger-outline { --btn-fg: var(--danger); --btn-line: color-mix(in oklch, var(--danger) 45%, var(--line)); }
+  .btn.quiet.danger-outline:hover { --btn-bg: color-mix(in oklch, var(--danger) 10%, var(--surface)); }
+
   .btn.danger { --btn-bg: var(--danger); --btn-line: var(--danger); --btn-fg: var(--on-accent); }
 
   .topbar {

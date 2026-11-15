@@ -1,13 +1,15 @@
-import { defineHandler, defineHead } from 'void';
+import { defineHandler, defineHead, type InferProps } from 'void';
 import { getUser } from 'void/auth';
 
 // Looks at the session, so the page cannot be built ahead of time.
 export const prerender = false;
 
+export type Props = InferProps<typeof loader>;
+
 // Signed-in owners never see the landing page: "home" is their list.
 export const loader = defineHandler((c) => {
   if (getUser()) return c.redirect('/lista');
-  return {};
+  return { deleted: c.req.query('borttaget') === '1' };
 });
 
 export const head = defineHead(() => ({

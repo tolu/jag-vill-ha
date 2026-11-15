@@ -87,7 +87,58 @@ export default function AccountPage({ username, displayName, intro, email, saved
           </div>
           <p className="hint" id="passkey-status" role="status"></p>
         </section>
+        <section className="step danger-zone" aria-labelledby="fara-rubrik">
+          <h2 id="fara-rubrik">Farligt område</h2>
+          <div className="danger-row">
+            <div>
+              <strong>Ta bort kontot</strong>
+              <p>Listan, alla önskningar, bilder och paxningar försvinner. Det går inte att ångra.</p>
+            </div>
+            <button className="btn quiet danger-outline" type="button" {...{ commandfor: 'ta-bort-konto', command: 'show-modal' }}>
+              Ta bort kontot
+            </button>
+          </div>
+          {saved === 'fel-namn' && (
+            <p className="hint error" role="alert">
+              Användarnamnet stämde inte, så inget togs bort.
+            </p>
+          )}
+        </section>
       </main>
+
+      <dialog id="ta-bort-konto" className="sheet" {...{ closedby: 'any' }} aria-labelledby="ta-bort-rubrik">
+        <h2 id="ta-bort-rubrik">Ta bort kontot?</h2>
+        <p className="reassure">
+          jagvillha.fyi/{username} slutar fungera direkt, och allt som hör till listan raderas. De som har paxat något får
+          inget veta.
+        </p>
+        <form method="post" action="/konto">
+          <div className="field">
+            <label htmlFor="bekrafta">
+              Skriv <strong>{username}</strong> för att bekräfta
+            </label>
+            <input
+              type="text"
+              id="bekrafta"
+              name="bekrafta"
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
+              pattern={username}
+              required
+            />
+          </div>
+          <div className="buttons">
+            <button className="btn wide danger" name="intent" value="delete">
+              Ta bort kontot och listan
+            </button>
+            <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate>
+              Avbryt
+            </button>
+          </div>
+        </form>
+      </dialog>
+      <script type="module" src="/js/forms.js"></script>
       <script type="module" src="/js/passkey.js"></script>
     </div>
   );
