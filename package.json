@@ -5,6 +5,8 @@
     "dev": "vp dev",
     "build": "vp build",
     "preview": "vp preview",
+    "test": "vp test run",
+    "typecheck": "tsc --noEmit",
     "postinstall": "void prepare"
   },
   "license": "ISC",
