@@ -141,6 +141,7 @@ auth.ts       passkey sign-up, sessions, recovery mail
 - **Undoing a reservation needs the same device.** Clear the cookies and only
   the owner's reset can free the wish.
 
-## Credits
+## Licence and credits
 
-Icons from [Phosphor](https://phosphoricons.com), MIT.
+[MIT](LICENSE). Icons from [Phosphor](https://phosphoricons.com), also MIT;
+their licence is in `public/icons/PHOSPHOR-LICENSE`.
