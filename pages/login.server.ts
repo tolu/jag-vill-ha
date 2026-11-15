@@ -4,7 +4,7 @@ import { getUser } from 'void/auth';
 export const prerender = false;
 
 export const loader = defineHandler((c) => {
-  if (getUser()) return c.redirect('/konto');
+  if (getUser()) return c.redirect('/lista');
   return {};
 });
 

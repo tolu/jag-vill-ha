@@ -14,11 +14,11 @@ export default defineSeed<typeof import('./schema')>(async ({ db, schema }) => {
   const rows = await db
     .insert(schema.wishes)
     .values([
-      { listId: list.id, position: 1, title: 'Non-stick pajform', note: 'Lékué 28 cm', price: 349, icon: 'cooking-pot', mostWanted: true, url: 'https://example.com/pajform' },
-      { listId: list.id, position: 2, title: 'Gore-Tex-skor', note: 'Storlek 44', price: 1899, icon: 'sneaker' },
-      { listId: list.id, position: 3, title: 'Kokbok, gärna vegetarisk', note: 'Valfri', price: 300, icon: 'book-open' },
-      { listId: list.id, position: 4, title: 'Vinglas', price: 129, quantity: 4, icon: 'wine', url: 'https://example.com/vinglas' },
-      { listId: list.id, position: 5, title: 'Stickade sockor', note: 'Ull', price: 199 },
+      { listId: list.id, position: 1, title: 'Non-stick pajform', note: 'Lékué 28 cm', icon: 'cooking-pot', url: 'https://example.com/pajform' },
+      { listId: list.id, position: 2, title: 'Gore-Tex-skor', note: 'Storlek 44', icon: 'sneaker' },
+      { listId: list.id, position: 3, title: 'Kokbok, gärna vegetarisk', icon: 'book-open' },
+      { listId: list.id, position: 4, title: 'Vinglas', note: '4 st', icon: 'wine', url: 'https://example.com/vinglas' },
+      { listId: list.id, position: 5, title: 'Stickade sockor', note: 'Ull', icon: 'heart' },
     ])
     .returning();
 
@@ -26,7 +26,6 @@ export default defineSeed<typeof import('./schema')>(async ({ db, schema }) => {
 
   await db.insert(schema.reservations).values([
     { wishId: byTitle('Gore-Tex-skor'), name: 'Erik', tokenHash: 'seed' },
-    { wishId: byTitle('Vinglas'), name: 'Maja', quantity: 2, tokenHash: 'seed' },
     { wishId: byTitle('Stickade sockor'), name: 'Anna', tokenHash: 'seed' },
   ]);
 });

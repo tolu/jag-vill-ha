@@ -21,11 +21,7 @@ export const wishes = sqliteTable('wishes', {
   url: text('url'),
   imageKey: text('image_key'),
   icon: text('icon'),
-  // Whole kronor.
-  price: integer('price'),
   note: text('note'),
-  quantity: integer('quantity').notNull().default(1),
-  mostWanted: integer('most_wanted', { mode: 'boolean' }).notNull().default(false),
   position: integer('position').notNull().default(0),
   createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
 });
@@ -37,7 +33,6 @@ export const reservations = sqliteTable('reservations', {
     .notNull()
     .references(() => wishes.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
-  quantity: integer('quantity').notNull().default(1),
   tokenHash: text('token_hash').notNull(),
   createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
 });

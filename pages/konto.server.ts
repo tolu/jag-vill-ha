@@ -16,8 +16,10 @@ export const loader = defineHandler(async (c) => {
   const saved = c.req.query('sparat');
   return {
     username: list.username,
+    displayName: list.displayName,
+    intro: list.intro ?? '',
     email: isPlaceholderEmail(user.email) ? null : user.email,
-    saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' ? saved : null,
+    saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' ? saved : null,
   };
 });
 
@@ -29,6 +31,18 @@ export const action = defineHandler(async (c) => {
     const response = await getAuth(c).api.signOut({ headers: c.req.raw.headers, asResponse: true });
     for (const cookie of response.headers.getSetCookie()) c.header('Set-Cookie', cookie, { append: true });
     return c.redirect('/', 303);
+  }
+
+  if (body['intent'] === 'list') {
+    const displayName = String(body['namn'] ?? '').trim().slice(0, 40);
+    const intro = String(body['intro'] ?? '').trim().slice(0, 300);
+    if (displayName) {
+      await db
+        .update(lists)
+        .set({ displayName, intro: intro === '' ? null : intro })
+        .where(eq(lists.ownerId, user.id));
+    }
+    return c.redirect('/konto?sparat=lista', 303);
   }
 
   const input = String(body['epost'] ?? '').trim();

@@ -2,7 +2,7 @@ import { defineHandler, defineHead, type InferProps } from 'void';
 import { asc, db, eq, inArray } from 'void/db';
 import { lists, reservations, wishes } from '@schema';
 import { checkUsername, normalizeUsername } from '../src/username';
-import { isTaken, metaLine, possessive, thumbHue } from '../src/wish';
+import { possessive, thumbHue } from '../src/wish';
 
 export type Props = InferProps<typeof loader>;
 
@@ -31,20 +31,16 @@ export const loader = defineHandler(async (c) => {
     displayName: list.displayName,
     intro: list.intro,
     wishes: wishRows.map((wish) => {
-      const mine = reservationRows.filter((reservation) => reservation.wishId === wish.id);
-      const reserved = mine.reduce((sum, reservation) => sum + reservation.quantity, 0);
-      const taken = isTaken(wish.quantity, reserved);
+      const takenBy = reservationRows.filter((reservation) => reservation.wishId === wish.id).map((reservation) => reservation.name);
       return {
         id: wish.id,
         title: wish.title,
         url: wish.url,
         icon: wish.icon,
+        imageKey: wish.imageKey,
         hue: thumbHue(wish.title),
-        mostWanted: wish.mostWanted,
-        meta: metaLine(wish, reserved),
-        under500: wish.price !== null && wish.price < 500,
-        taken,
-        takenBy: taken ? mine.map((reservation) => reservation.name).join(', ') : null,
+        note: wish.note,
+        takenBy: takenBy.length > 0 ? takenBy.join(', ') : null,
       };
     }),
   };

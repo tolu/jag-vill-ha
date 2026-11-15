@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import '../src/styles.css';
+import { Thumb } from '../src/components/Thumb';
 import type { Props } from './[username].server';
 
 export default function ListPage({ username, displayName, intro, wishes }: Props) {
@@ -25,10 +26,6 @@ export default function ListPage({ username, displayName, intro, wishes }: Props
               <input type="radio" name="filter" id="f-lediga" />
               Lediga
             </label>
-            <label>
-              <input type="radio" name="filter" id="f-500" />
-              Under 500 kr
-            </label>
           </fieldset>
 
           <ul className="wishes">
@@ -36,28 +33,14 @@ export default function ListPage({ username, displayName, intro, wishes }: Props
               <li
                 key={wish.id}
                 className="wish"
-                data-state={wish.taken ? 'taken' : undefined}
-                data-under-500={wish.under500 ? '' : undefined}
+                data-state={wish.takenBy ? 'taken' : undefined}
                 style={{ '--thumb-hue': wish.hue } as CSSProperties}
               >
                 <div className="thumb" aria-hidden="true">
-                  {wish.icon ? (
-                    <svg>
-                      <use href={`/icons/wish-icons.svg#${wish.icon}`} />
-                    </svg>
-                  ) : (
-                    wish.title.charAt(0).toUpperCase()
-                  )}
+                  <Thumb title={wish.title} icon={wish.icon} imageKey={wish.imageKey} />
                 </div>
-                {wish.mostWanted ? (
-                  <div>
-                    <span className="most">Önskar mest</span>
-                    <h2>{wish.title}</h2>
-                  </div>
-                ) : (
-                  <h2>{wish.title}</h2>
-                )}
-                {wish.meta && <p className="meta">{wish.meta}</p>}
+                <h2>{wish.title}</h2>
+                {wish.note && <p className="meta">{wish.note}</p>}
                 {wish.url && (
                   <p className="links">
                     <a href={wish.url} rel="noopener nofollow">
@@ -65,7 +48,7 @@ export default function ListPage({ username, displayName, intro, wishes }: Props
                     </a>
                   </p>
                 )}
-                {wish.taken && <span className="badge other action">Paxad av {wish.takenBy}</span>}
+                {wish.takenBy && <span className="badge other action">Paxad av {wish.takenBy}</span>}
               </li>
             ))}
           </ul>

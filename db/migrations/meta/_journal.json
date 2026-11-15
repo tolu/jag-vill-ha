@@ -15,6 +15,13 @@
       "when": 1794747160519,
       "tag": "20261115125240_misty_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794750170249,
+      "tag": "20261115134250_faithful_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }

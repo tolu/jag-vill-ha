@@ -1,4 +1,5 @@
 import '../src/styles.css';
+import { Icon } from '../src/components/Icon';
 
 export default function HomePage() {
   return (
@@ -8,7 +9,6 @@ export default function HomePage() {
           <img src="/icons/icon.svg" alt="" width="24" height="24" />
           jagvillha
         </a>
-        <a href="/login">Logga in</a>
       </nav>
 
       <main>
@@ -21,13 +21,19 @@ export default function HomePage() {
             <a className="btn" href="/ny">
               Skapa din lista
             </a>
+            {/* A link without JS; with JS the passkey prompt opens right here. */}
+            <a className="btn quiet" href="/login" data-passkey="login" data-status="login-fel" data-next="/lista">
+              <Icon name="key" />
+              Logga in
+            </a>
           </div>
+          <p className="hint error" id="login-fel" role="alert"></p>
         </header>
 
         <ol className="points">
           <li>
             <h2>Skriv vad du vill ha</h2>
-            <p>En titel räcker. Lägg till länk, bild och pris om du vill.</p>
+            <p>En titel räcker. Lägg till länk, bild och kommentar om du vill.</p>
           </li>
           <li>
             <h2>Skicka länken</h2>
@@ -43,6 +49,7 @@ export default function HomePage() {
       <footer className="site-footer">
         <p>Gratis. Ingen reklam, inga affiliate-länkar. Du är inte produkten.</p>
       </footer>
+      <script type="module" src="/js/passkey.js"></script>
     </div>
   );
 }

@@ -21,6 +21,9 @@ export default defineAuth(({ defaults }) => ({
   ...defaults,
   // Passkey first: no passwords are ever stored.
   emailAndPassword: { enabled: false },
+  // Owners return a few times a year around birthdays and Christmas: stay signed
+  // in for 30 days, counted from the latest visit (refreshed at most once a day).
+  session: { ...defaults.session, expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
   plugins: [
     ...(defaults.plugins ?? []),
     passkey({

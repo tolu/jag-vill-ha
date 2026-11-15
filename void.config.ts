@@ -21,7 +21,8 @@ export default defineConfig({
     link: [
       { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' },
-      { rel: 'manifest', href: '/manifest.webmanifest' },
+      // Top-level files in public/ are shadowed by the /[username] page, so this lives under /icons.
+      { rel: 'manifest', href: '/icons/manifest.webmanifest' },
     ],
   },
 });
