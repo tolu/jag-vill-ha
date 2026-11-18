@@ -11,6 +11,8 @@
     --ink: light-dark(oklch(24% 0.02 60), oklch(93% 0.01 85));
     --ink-soft: light-dark(oklch(48% 0.02 60), oklch(72% 0.01 85));
     --line: light-dark(oklch(88% 0.015 85), oklch(34% 0.01 85));
+    /* The edge of something to press or type in: has to be seen, not just sensed */
+    --line-strong: light-dark(oklch(60% 0.02 60), oklch(60% 0.01 85));
     --accent: light-dark(oklch(42% 0.09 var(--hue)), oklch(78% 0.11 var(--hue)));
     --on-accent: light-dark(white, oklch(20% 0.02 var(--hue)));
     --accent-wash: color-mix(in oklch, var(--accent) 12%, var(--surface));
@@ -90,7 +92,9 @@
     & h1 { font: 500 2rem/1.15 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
     & h2 { font: 500 1.375rem/1.2 var(--font-display); }
     & .lede { color: var(--ink-soft); margin-block: 0.5rem 1.5rem; }
-    & > .hint { color: var(--ink-soft); font-size: 0.8125rem; margin-block-start: 1.25rem; }
+    & > .hint { color: var(--ink-soft); font-size: 0.9375rem; margin-block-start: 1.25rem; }
+    /* An answer above a form keeps its distance from the first field */
+    & > .notice { margin-block-end: 1.5rem; }
     & form { display: grid; gap: 1rem; }
     & .buttons { display: grid; gap: 0.5rem; }
     & + .step { border-block-start: 1px dashed var(--line); padding-block-start: 2rem; }
@@ -115,13 +119,12 @@
     border-radius: var(--radius);
     background: color-mix(in oklch, var(--danger) 12%, var(--surface));
     color: var(--danger);
-    font-size: 0.875rem;
   }
 
   .notice.calm { background: var(--accent-wash); color: var(--ink); }
 
   /* "Paxad av dig" with its undo link underneath */
-  .wish .mine { display: grid; justify-items: end; gap: 0.25rem; font-size: 0.875rem; }
+  .wish .mine { display: grid; justify-items: end; }
 
   /* The owner's own picture: small on the account page, larger on the list */
   .avatar {
@@ -171,7 +174,7 @@
       display: grid;
       gap: 0.75rem;
 
-      & p { color: var(--ink-soft); font-size: 0.875rem; margin-block-start: 0.125rem; }
+      & p { color: var(--ink-soft); margin-block-start: 0.125rem; }
     }
     & h2 { color: var(--danger); }
   }
@@ -247,13 +250,15 @@
     & label {
       --chip-bg: transparent;
       --chip-fg: var(--ink-soft);
-      --chip-line: var(--line);
+      --chip-line: var(--line-strong);
       background: var(--chip-bg);
       color: var(--chip-fg);
       border: 1px solid var(--chip-line);
       border-radius: var(--radius);
-      padding: 0.3rem 0.8rem;
-      font-size: 0.875rem;
+      padding-inline: 1rem;
+      min-block-size: 2.75rem;
+      display: inline-flex;
+      align-items: center;
       white-space: nowrap;
       cursor: pointer;
 
@@ -302,13 +307,16 @@
     & h2 { font: 600 1.0625rem/1.3 var(--font-body); text-wrap: balance; }
     /* A title with nothing under it centres against the thumb */
     & h2:not(:has(+ .meta, + .links)) { grid-row: span 2; }
-    & .meta { color: var(--ink-soft); font-size: 0.875rem; grid-column: 2; }
-    & .links { font-size: 0.875rem; grid-column: 2; display: flex; gap: 0.125rem 0.75rem; flex-wrap: wrap; }
-    & .links .link { font-size: inherit; }
+    & .meta { color: var(--ink-soft); grid-column: 2; }
+    /* Each link is a full tap target, so the rows need no gap of their own */
+    & .links { grid-column: 2; display: flex; gap: 0 1rem; flex-wrap: wrap; }
+    & :is(.links a, .link) { display: inline-flex; align-items: center; min-block-size: 2.75rem; }
     & .action { grid-column: 3; grid-row: 1 / span 2; }
 
+    /* Someone else's: stepped back, but still readable. Her own stay as they are: those are the ones to buy. */
     &[data-state="taken"] {
-      & h2, & .thumb { opacity: 0.55; }
+      & h2 { color: var(--ink-soft); }
+      & .thumb { opacity: 0.7; }
     }
   }
 
@@ -375,7 +383,7 @@
 
   .list-header.compact { padding-block-start: 0.75rem; }
 
-  body:has(#f-lediga:checked) .wish[data-state="taken"] { display: none; }
+  body:has(#f-lediga:checked) .wish:is([data-state="taken"], [data-state="mine"]) { display: none; }
 
   .ui-icon { inline-size: 1.25rem; block-size: 1.25rem; fill: currentColor; flex: none; }
 
@@ -401,7 +409,7 @@
     &.quiet {
       --btn-bg: transparent;
       --btn-fg: var(--accent);
-      --btn-line: var(--line);
+      --btn-line: var(--line-strong);
       &:hover { --btn-bg: var(--accent-wash); }
     }
     &.wide { inline-size: 100%; }
@@ -425,17 +433,20 @@
     background: var(--accent-wash);
     color: var(--accent);
     border-radius: var(--radius);
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     padding: 0.25rem 0.65rem;
-    white-space: nowrap;
+    /* A long name wraps instead of pushing the title off the row */
+    max-inline-size: 9rem;
+    text-align: center;
+    text-wrap: balance;
 
     &.other { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
   }
 
   .field {
-    & label { display: block; font-size: 0.875rem; font-weight: 600; margin-block-end: 0.35rem; }
-    & .hint { color: var(--ink-soft); font-size: 0.8125rem; margin-block-start: 0.35rem; }
+    & label { display: block; font-weight: 600; margin-block-end: 0.35rem; }
+    & .hint { color: var(--ink-soft); font-size: 0.9375rem; margin-block-start: 0.35rem; }
 
     & .hint.ok { color: var(--accent); font-weight: 600; }
     & .hint.error { color: var(--danger); font-weight: 600; }
@@ -451,7 +462,7 @@
       display: flex;
       align-items: center;
       background: var(--bg);
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       padding-inline-start: 0.9rem;
 
@@ -465,7 +476,7 @@
       font: inherit;
       color: inherit;
       background: var(--bg);
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       padding: 0.7rem 0.9rem;
     }
@@ -768,4 +779,5 @@
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none; }
   .wishes.editable[data-sorting] .wish { transition: none; }
+  dialog.sheet, dialog.sheet::backdrop { transition: none; }
 }

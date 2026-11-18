@@ -72,7 +72,7 @@ export type ClaimProblem = UsernameProblem | 'taken';
 
 const MESSAGES: Record<ClaimProblem, string> = {
   length: 'Adressen ska vara 3–30 tecken.',
-  characters: 'Bara bokstäver, siffror och bindestreck går bra. Inga punkter eller andra tecken.',
+  characters: 'Bara bokstäver, siffror och bindestreck går bra.',
   hyphen: 'Bindestreck får inte stå först, sist eller dubbelt.',
   reserved: 'Det namnet är upptaget.',
   taken: 'Det namnet är upptaget.',

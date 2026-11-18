@@ -4,7 +4,7 @@ import { Icon } from '../src/components/Icon';
 import { Topbar } from '../src/components/Topbar';
 import type { Props } from './konto.server';
 
-export default function AccountPage({ username, displayName, intro, avatarKey, email, saved }: Props) {
+export default function AccountPage({ username, displayName, intro, avatarKey, email, saved, recovered }: Props) {
   return (
     <div className="page narrow">
       <Topbar>
@@ -20,6 +20,27 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
         </form>
       </Topbar>
       <main className="steps">
+        {recovered && (
+          <section className="step" aria-labelledby="inne-rubrik">
+            <h2 id="inne-rubrik">Du är inne</h2>
+            <p className="lede">
+              Spara en ny nyckel på den här telefonen eller datorn nu, så loggar du in som vanligt nästa gång.
+            </p>
+            <div className="buttons">
+              <button
+                className="btn wide"
+                type="button"
+                data-passkey="add"
+                data-name={username}
+                data-status="inne-status"
+                data-done="Klart. Nästa gång loggar du in som vanligt."
+              >
+                Spara en ny nyckel
+              </button>
+            </div>
+            <p className="hint" id="inne-status" role="status"></p>
+          </section>
+        )}
         <section className="step account-head" aria-labelledby="rubrik">
           <div>
             <h1 id="rubrik">Ditt konto</h1>
@@ -92,6 +113,11 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
         <section className="step" aria-labelledby="lista-rubrik">
           <h2 id="lista-rubrik">Listan</h2>
           <p className="lede">Så här presenteras listan för dem som får länken.</p>
+          {saved === 'lista' && (
+            <p className="notice calm" role="status">
+              Sparat.
+            </p>
+          )}
           <form method="post" action="/konto">
             <div className="field">
               <label htmlFor="namn">Ditt namn</label>
@@ -103,44 +129,53 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
                 Hälsning <span className="optional">valfritt</span>
               </label>
               <input type="text" id="intro" name="intro" defaultValue={intro} maxLength={300} />
-              {saved === 'lista' && <p className="hint ok">Sparat.</p>}
             </div>
             <div className="buttons">
               <button className="btn wide" name="intent" value="list">
-                Spara
+                Spara namn och hälsning
               </button>
             </div>
           </form>
         </section>
 
         <section className="step" aria-labelledby="epost-rubrik">
-          <h2 id="epost-rubrik">Återställning</h2>
+          <h2 id="epost-rubrik">Om du inte kan logga in</h2>
           <p className="lede">
             {email
-              ? 'Tappar du din passkey mejlar vi en länk hit.'
-              : 'Utan e-post går listan inte att återställa om du tappar din passkey.'}
+              ? 'Då mejlar vi en länk hit.'
+              : 'Lägg till din e-post, så kan vi mejla dig en länk. Den används inte till något annat.'}
           </p>
+          {saved === 'epost' && (
+            <p className="notice calm" role="status">
+              {email ? `Sparat. Vi har mejlat ${email}, så att du ser att adressen stämmer.` : 'Sparat. Nu finns ingen e-post kvar här.'}
+            </p>
+          )}
+          {saved === 'upptagen' && (
+            <p className="notice" role="alert">
+              Den e-postadressen hör redan till en annan lista.
+            </p>
+          )}
+          {saved === 'ogiltig' && (
+            <p className="notice" role="alert">
+              Det där ser inte ut som en e-postadress.
+            </p>
+          )}
           <form method="post" action="/konto">
             <div className="field">
-              <label htmlFor="epost">
-                E-post <span className="optional">valfritt</span>
-              </label>
+              <label htmlFor="epost">E-post</label>
               <input type="email" id="epost" name="epost" autoComplete="email" defaultValue={email ?? ''} />
-              {saved === 'epost' && <p className="hint ok">Sparat.</p>}
-              {saved === 'upptagen' && <p className="hint error">Den adressen används redan av ett annat konto.</p>}
-              {saved === 'ogiltig' && <p className="hint error">Det där ser inte ut som en e-postadress.</p>}
             </div>
             <div className="buttons">
               <button className="btn wide" name="intent" value="email">
-                Spara
+                Spara e-post
               </button>
             </div>
           </form>
         </section>
 
         <section className="step" aria-labelledby="passkey-rubrik">
-          <h2 id="passkey-rubrik">Passkeys</h2>
-          <p className="lede">Bytt telefon eller dator? Skapa en passkey på den nya enheten också.</p>
+          <h2 id="passkey-rubrik">Inloggning</h2>
+          <p className="lede">Ny telefon eller dator? Spara en nyckel på den också, så kan du logga in därifrån.</p>
           <div className="buttons">
             <button
               className="btn quiet wide"
@@ -148,9 +183,9 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
               data-passkey="add"
               data-name={username}
               data-status="passkey-status"
-              data-done="Ny passkey sparad."
+              data-done="Ny nyckel sparad."
             >
-              Skapa en passkey till
+              Spara en nyckel här
             </button>
           </div>
           <p className="hint" id="passkey-status" role="status"></p>
@@ -174,7 +209,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
         </section>
       </main>
 
-      <dialog id="ta-bort-konto" className="sheet" {...{ closedby: 'any' }} aria-labelledby="ta-bort-rubrik">
+      <dialog id="ta-bort-konto" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ta-bort-rubrik">
         <h2 id="ta-bort-rubrik">Ta bort kontot?</h2>
         <p className="reassure">
           jagvillha.fyi/{username} slutar fungera direkt, och allt som hör till listan raderas. De som har paxat något får

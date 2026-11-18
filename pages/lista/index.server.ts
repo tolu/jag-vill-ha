@@ -1,10 +1,12 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
+import { getUser } from 'void/auth';
 import { asc, db, eq, max } from 'void/db';
 import { wishes } from '@schema';
 import { WISH_ICONS } from '../../src/icons';
 import { writeWithImage } from '../../src/image-lifecycle';
 import { deleteImage, saveImage } from '../../src/images';
 import { parseOrder } from '../../src/order';
+import { isPlaceholderEmail } from '../../src/recovery-email';
 import { findOwnWish, requireOwnerList } from '../../src/owner';
 import { shopLabel, thumbHue } from '../../src/wish';
 import { parseWishForm } from '../../src/wish-form';
@@ -23,9 +25,11 @@ export const loader = defineHandler(async (c) => {
   return {
     username: list.username,
     avatarKey: list.avatarKey,
+    // Without an e-mail there is no way back in after a lost phone.
+    needsEmail: isPlaceholderEmail(getUser()?.email ?? ''),
     failed: c.req.query('fel') === '1',
-    // A new wish starts with a random icon, so nobody has to pick one.
-    suggestedIcon: WISH_ICONS[Math.floor(Math.random() * WISH_ICONS.length)]![0],
+    // A new wish starts as a present, so nobody has to pick an icon and nobody gets an odd one.
+    suggestedIcon: WISH_ICONS[0][0],
     wishes: rows.map((wish) => ({
       id: wish.id,
       title: wish.title,
