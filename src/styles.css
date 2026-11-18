@@ -85,18 +85,21 @@
   .site-footer {
     position: sticky;
     inset-block-start: 100dvh;
-    color: var(--ink-soft);
-    font-size: 0.875rem;
 
-    /* The rule is as wide as the text, not as the gutter */
-    & > div {
-      margin-block-start: 4rem;
-      border-block-start: 1px solid var(--line);
-      padding-block: 1.25rem;
+    /* No rule above it: the space is the divider */
+    & > div { margin-block-start: 4rem; padding-block-end: 1.5rem; }
+
+    /* The first line speaks in the headings' voice */
+    & p:first-child { font: 500 1.1875rem/1.25 var(--font-display); }
+
+    /* The second is for whoever looks after the site: small and faded */
+    & .build {
+      margin-block-start: 0.375rem;
+      color: color-mix(in oklch, var(--ink-soft) 80%, var(--bg));
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
     }
-    & .build { font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
-    & a { color: inherit; }
-    & .commit { font-family: ui-monospace, monospace; }
+    & .commit { color: inherit; font-family: ui-monospace, monospace; }
   }
 
   /* Login flow */
