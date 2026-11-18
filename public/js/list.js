@@ -56,8 +56,6 @@ async function save(before) {
 
 for (const row of list?.children ?? []) {
   const grip = row.querySelector('.grip');
-  // Each row needs its own name to be animated on its own.
-  row.style.viewTransitionName = `wish-${row.dataset.id}`;
 
   grip.addEventListener('pointerdown', (event) => {
     if (event.button !== 0) return;

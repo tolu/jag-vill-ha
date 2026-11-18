@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import '../src/styles.css';
 import { Thumb } from '../src/components/Thumb';
+import { wishTransitionName } from '../src/wish';
 import type { Props } from './[username].server';
 
 // Invoker commands open dialogs without JS; React has no typed props for them yet.
@@ -56,7 +57,7 @@ export default function ListPage({ username, displayName, avatarKey, intro, wish
                 key={wish.id}
                 className="wish"
                 data-state={wish.state === 'taken' || wish.state === 'mine' ? 'taken' : undefined}
-                style={{ '--thumb-hue': wish.hue } as CSSProperties}
+                style={{ '--thumb-hue': wish.hue, viewTransitionName: wishTransitionName(wish.id) } as CSSProperties}
               >
                 <div className="thumb" aria-hidden="true">
                   <Thumb title={wish.title} icon={wish.icon} imageKey={wish.imageKey} />

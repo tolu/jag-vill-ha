@@ -762,8 +762,14 @@
   }
 }
 
-/* Reordering finishes with a view transition: quick, and off when motion is unwanted */
+/* Reordering finishes with a view transition, and so does going from one page
+   to the next: the page fades, and a wish row (named by the server) glides to
+   where it is on the new page. Quick, and off when motion is unwanted. */
 ::view-transition-group(*) { animation-duration: 220ms; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none; }
