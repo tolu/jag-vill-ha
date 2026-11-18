@@ -1,4 +1,5 @@
 import '../src/styles.css';
+import { Footer } from '../src/components/Footer';
 import { Topbar } from '../src/components/Topbar';
 import type { Props } from './aterstall.server';
 
@@ -43,6 +44,7 @@ export default function RecoverPage({ sent, expired }: Props) {
           )}
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

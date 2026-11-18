@@ -28,8 +28,6 @@
     background: var(--bg);
     color: var(--ink);
     font: 1rem/1.5 var(--font-body);
-    min-block-size: 100dvh;
-    padding-block-end: 4rem;
   }
 
   a { color: var(--accent); text-underline-offset: 0.15em; }
@@ -43,6 +41,8 @@
     max-inline-size: 65ch;
     margin-inline: auto;
     padding-inline: 1rem;
+    /* At least a screen tall, so the footer has a bottom to rest on */
+    min-block-size: 100dvh;
   }
 
   /* Form pages keep their fields short, centred inside the shared width */
@@ -77,11 +77,21 @@
     & p { color: var(--ink-soft); font-size: 0.9375rem; text-wrap: pretty; }
   }
 
+  /* On a short page the footer sits at the bottom of the screen, on a long one
+     after the content. Sticking it one screen down pushes it as far as the
+     page goes, without turning the page into a flex column. */
   .site-footer {
+    position: sticky;
+    inset-block-start: 100dvh;
+    margin-block-start: 4rem;
     border-block-start: 1px solid var(--line);
     padding-block: 1.25rem;
     color: var(--ink-soft);
     font-size: 0.875rem;
+
+    & .build { font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+    & a { color: inherit; }
+    & .commit { font-family: ui-monospace, monospace; }
   }
 
   /* Login flow */

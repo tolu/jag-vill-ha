@@ -1,4 +1,5 @@
 import '../src/styles.css';
+import { Footer } from '../src/components/Footer';
 import { Topbar } from '../src/components/Topbar';
 
 export default function LoginPage() {
@@ -28,6 +29,7 @@ export default function LoginPage() {
           </noscript>
         </section>
       </main>
+      <Footer />
       <script type="module" src="/js/passkey.js"></script>
     </div>
   );

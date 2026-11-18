@@ -1,4 +1,5 @@
 import '../../src/styles.css';
+import { Footer } from '../../src/components/Footer';
 import { Icon } from '../../src/components/Icon';
 import { Topbar } from '../../src/components/Topbar';
 import { WishFields } from '../../src/components/WishFields';
@@ -50,6 +51,7 @@ export default function EditWishPage({ id, values, icon, failed, wasReset }: Pro
           </div>
         </section>
       </main>
+      <Footer />
 
       {/* It undoes someone else's choice and tells nobody, so it asks first. */}
       <dialog id="nollstall" className="sheet" {...{ closedby: 'any' }} aria-labelledby="nollstall-fraga">

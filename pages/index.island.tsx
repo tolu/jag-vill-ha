@@ -1,4 +1,5 @@
 import '../src/styles.css';
+import { Footer } from '../src/components/Footer';
 import type { Props } from './index.server';
 
 export default function HomePage({ deleted }: Props) {
@@ -49,9 +50,7 @@ export default function HomePage({ deleted }: Props) {
         </ol>
       </main>
 
-      <footer className="site-footer">
-        <p>Gratis. Ingen reklam, inga affiliate-länkar. Du är inte produkten.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import '../src/styles.css';
+import { Footer } from '../src/components/Footer';
 import { Icon } from '../src/components/Icon';
 import { Topbar } from '../src/components/Topbar';
 import type { Props } from './konto.server';
@@ -208,6 +209,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
           )}
         </section>
       </main>
+      <Footer />
 
       <dialog id="ta-bort-konto" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ta-bort-rubrik">
         <h2 id="ta-bort-rubrik">Ta bort kontot?</h2>
