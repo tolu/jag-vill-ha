@@ -123,9 +123,9 @@ address on start.
 
 ## Deploy
 
-```sh
-npx void deploy
-```
+A merge to main deploys. The `deploy` job in `.github/workflows/ci.yml` runs
+`npx void deploy` once the checks have passed, with a Cloudflare token that
+only main can read.
 
 Void builds, applies migrations to D1 and publishes the worker. The Cloudflare
 resources it created are recorded in `void.lock.json`. That file holds the
