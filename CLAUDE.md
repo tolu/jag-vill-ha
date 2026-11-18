@@ -29,7 +29,10 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - Outbound links: `target="_blank" rel="noopener nofollow"
   referrerPolicy="no-referrer"`.
 - Copy: a headline may have attitude, the rest is short and concrete. No
-  selling points.
+  selling points. Say each thing once per screen: no line that repeats or
+  reassures about what the same view already shows.
+- The topbar must not move between pages. After touching it, measure its
+  height and item positions on every page, down to 320px.
 - Chrome and Safari only; modern HTML and CSS, no fallbacks.
 
 ## How it is built
@@ -44,6 +47,12 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   the owner, and never read that table from the owner's pages.
 - Anything that stores an object needs a clean-up path for when it is
   replaced or its owner row is deleted.
+- Username rules live twice: `src/username.ts` and `public/js/username.js`.
+  Change both; `src/username-client.test.js` fails if they disagree.
+- Only an error thrown with `refuse()` in `auth.ts` (code `JVH`) is shown to
+  the user word for word. Everything else becomes a generic Swedish message.
+- Mail copy and markup are in `src/mail-template.ts`: tables, inline styles,
+  hex colours, nothing fetched. `src/recovery-mail.ts` only sends.
 
 ## Void gotchas
 
@@ -72,6 +81,10 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
 - After a CSS edit, reload before measuring.
+- Sent mail is at `/__void/inbox?token=…` on the dev server. The server
+  prints the URL at start; the token is also in `.void/dev-trigger-token`.
+- The first login link used for an unproven e-mail logs out that account's
+  other sessions (passkeys stay). Log the owner in again before continuing.
 
 ## Pull requests
 
@@ -80,5 +93,10 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   `git commit-tree`, as a child of the branch's tip so earlier pictures stay
   reachable. The working tree is not touched. Link by commit SHA:
   `https://raw.githubusercontent.com/tolu/jag-vill-ha/<sha>/pr-<n>/<file>.png`
+  In zsh, push it as `"${SHA}:refs/heads/tolu/pr-assets"`: a bare `$SHA:r…`
+  is read as a modifier.
+- PRs are squash-merged, so merging main into a follow-up branch conflicts
+  with its own history. Check that main has nothing the branch lacks, then
+  take the branch's side.
 - Pin GitHub Actions to the commit SHA of the latest release, version as a
   trailing comment.
