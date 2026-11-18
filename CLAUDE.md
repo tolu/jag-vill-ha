@@ -27,6 +27,13 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - main takes pull requests only, with `check` green and the branch up to
   date. Renaming the `check` job means changing the ruleset too.
 - A failed deploy is re-run from its run in Actions, not with a new merge.
+  One that stops at "Verifying the uploaded Worker" has uploaded a version
+  without activating it, whatever its message says: production is unchanged
+  and a re-run has worked. The job prints Void's own log when it fails.
+- What is out: the footer on jagvillha.fyi has the commit, which should be
+  the merge commit. `npx void project status` lists the Worker's versions
+  and which is live; in a worktree it first needs `.void/project.json`
+  copied from the main checkout.
 - The token is account-owned and lives in the `production` environment,
   which only main can read. It has Workers Editor, D1 Write, R2 Read and
   Email Sending Write on the account, and Zone Read, Zone Settings Read,
@@ -115,6 +122,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 ## Pull requests
 
+- Descriptions: the features as bullets, then pictures, then a few lines on
+  what was tested and known limits. Under 200 words, no How section, and
+  nothing about changes to `CLAUDE.md`.
 - Screenshots: commit to the orphan branch `tolu/pr-assets` under
   `pr-<number>/` with `git hash-object -w`, `git mktree` and
   `git commit-tree`, as a child of the branch's tip so earlier pictures stay
@@ -122,8 +132,6 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   `https://raw.githubusercontent.com/tolu/jag-vill-ha/<sha>/pr-<n>/<file>.png`
   Push it as `"${sha}:refs/heads/tolu/pr-assets"`, with the braces: zsh
   reads `$sha:r` as a modifier.
-  In zsh, push it as `"${SHA}:refs/heads/tolu/pr-assets"`: a bare `$SHA:r…`
-  is read as a modifier.
 - PRs are squash-merged, so merging main into a follow-up branch conflicts
   with its own history. Check that main has nothing the branch lacks, then
   take the branch's side.
