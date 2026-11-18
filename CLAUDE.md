@@ -17,8 +17,21 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - `npx void db seed` and `db reset`: they wipe the local database, including
   accounts made by hand.
 - `npx void deploy`, or anything else that changes the Cloudflare account.
-  Deploy from main with VPN off: the readiness check must resolve
-  jagvillha.fyi from this machine.
+  That includes re-running a `deploy` job.
+
+## Deploy
+
+- A merge to main deploys: the `deploy` job in `ci.yml` runs after `check`.
+  Nothing is deployed by hand. A merge with a migration runs it on
+  production, unattended.
+- main takes pull requests only, with `check` green and the branch up to
+  date. Renaming the `check` job means changing the ruleset too.
+- A failed deploy is re-run from its run in Actions, not with a new merge.
+- The token is account-owned and lives in the `production` environment,
+  which only main can read. It has Workers Editor, D1 Write, R2 Read and
+  Email Sending Write on the account, and Zone Read, Zone Settings Read,
+  Workers Routes Write and Email Routing Rules Write on the zone. Something
+  new that Void provisions needs a new permission there first.
 
 ## Product
 
