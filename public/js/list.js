@@ -5,7 +5,7 @@
 // Phones get their own share sheet (which also offers "copy"); elsewhere the
 // link is copied straight to the clipboard.
 for (const button of document.querySelectorAll('[data-copy]')) {
-  const status = button.parentElement.querySelector('[role="status"]');
+  const status = button.closest('header').querySelector('[role="status"]');
   const url = new URL(button.dataset.copy, location.origin).href;
   const canShare = navigator.canShare?.({ url }) && matchMedia('(pointer: coarse)').matches;
   if (canShare) button.dataset.share = '';
@@ -16,13 +16,14 @@ for (const button of document.querySelectorAll('[data-copy]')) {
       await navigator.share({ url }).catch(() => {});
       return;
     }
-    await navigator.clipboard.writeText(url);
-    button.dataset.copied = '';
-    status.textContent = 'Kopierad';
-    setTimeout(() => {
-      delete button.dataset.copied;
-      status.textContent = '';
-    }, 2000);
+    // The message stays: it says what to do next, and she reads at her own pace.
+    try {
+      await navigator.clipboard.writeText(url);
+      button.dataset.copied = '';
+      status.textContent = 'Länken är kopierad. Klistra in den i ett sms eller mejl till släkten.';
+    } catch {
+      status.textContent = 'Det gick inte att kopiera. Skriv av adressen högst upp i stället.';
+    }
   });
 }
 

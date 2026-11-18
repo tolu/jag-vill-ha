@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { checkImage, MAX_IMAGE_BYTES, parseWishForm } from './wish-form';
+import { checkImage, MAX_IMAGE_BYTES, parseUrl, parseWishForm } from './wish-form';
 
 describe('parseWishForm', () => {
   it('needs nothing but a title', () => {
@@ -49,5 +49,26 @@ describe('checkImage', () => {
   it('refuses files over the size limit', () => {
     expect(checkImage({ size: MAX_IMAGE_BYTES + 1, type: 'image/png' })).toEqual({ kind: 'bad', problem: 'size' });
     expect(checkImage({ size: MAX_IMAGE_BYTES, type: 'image/png' })).toMatchObject({ kind: 'image' });
+  });
+});
+
+describe('parseUrl', () => {
+  // Regression: a link typed without "https://" was refused by the browser's
+  // own bubble, and by this function had it got that far.
+  it.each([
+    ['www.ikea.se/p/billy', 'https://www.ikea.se/p/billy'],
+    ['adlibris.com/se/bok/faglar', 'https://adlibris.com/se/bok/faglar'],
+    ['https://butik.se/skor', 'https://butik.se/skor'],
+    ['http://butik.se/skor', 'http://butik.se/skor'],
+  ])('reads %s as %s', (typed, url) => {
+    expect(parseUrl(typed)).toBe(url);
+  });
+
+  it('is null for an empty field', () => {
+    expect(parseUrl('')).toBeNull();
+  });
+
+  it.each(['inte en länk', 'kanske', 'javascript:alert(1)', 'mailto:a@b.se', 'ftp://butik.se/fil'])('refuses %s', (typed) => {
+    expect(parseUrl(typed)).toBeUndefined();
   });
 });

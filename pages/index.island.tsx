@@ -1,6 +1,5 @@
 import '../src/styles.css';
 import type { Props } from './index.server';
-import { Icon } from '../src/components/Icon';
 
 export default function HomePage({ deleted }: Props) {
   return (
@@ -27,13 +26,11 @@ export default function HomePage({ deleted }: Props) {
             <a className="btn" href="/ny">
               Skapa din lista
             </a>
-            {/* A link without JS; with JS the passkey prompt opens right here. */}
-            <a className="btn quiet" href="/login" data-passkey="login" data-status="login-fel" data-next="/lista">
-              <Icon name="key" />
+            {/* The login page says what will happen and has the way back in for whoever is stuck. */}
+            <a className="btn quiet" href="/login">
               Logga in
             </a>
           </div>
-          <p className="hint error" id="login-fel" role="alert"></p>
         </header>
 
         <ol className="points">
@@ -55,7 +52,6 @@ export default function HomePage({ deleted }: Props) {
       <footer className="site-footer">
         <p>Gratis. Ingen reklam, inga affiliate-länkar. Du är inte produkten.</p>
       </footer>
-      <script type="module" src="/js/passkey.js"></script>
     </div>
   );
 }

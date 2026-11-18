@@ -90,7 +90,18 @@ export function WishFields({ values, prefix, icon, autosave }: { values?: Values
         <label htmlFor={id('lank')}>
           Länk <span className="optional">valfritt</span>
         </label>
-        <input type="url" id={id('lank')} name="lank" defaultValue={values?.url ?? ''} placeholder="https://butik.se/produkt" />
+        {/* Plain text, not type="url": "www.butik.se/sak" is a fine thing to type, and the server adds the rest. */}
+        <input
+          type="text"
+          inputMode="url"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          id={id('lank')}
+          name="lank"
+          defaultValue={values?.url ?? ''}
+        />
+        <p className="hint">Kopiera adressen från butikens sida och klistra in den här.</p>
       </div>
       <div className="field">
         <label htmlFor={id('kommentar')}>

@@ -1,9 +1,31 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { checkClaim, checkUsername, confirmsDeletion, normalizeUsername } from './username';
+import { checkClaim, checkUsername, confirmsDeletion, defaultDisplayName, normalizeUsername } from './username';
 
 describe('normalizeUsername', () => {
   it('lowercases and trims', () => {
     expect(normalizeUsername('  Tobias ')).toBe('tobias');
+  });
+
+  it.each([
+    ['Görel', 'gorel'],
+    ['Åsa Öberg', 'asa-oberg'],
+    ['Mamma  Lundin ', 'mamma-lundin'],
+    ['André', 'andre'],
+    ['Søren Næss', 'soren-naess'],
+    ['anna - karin', 'anna-karin'],
+    ['-anna-', 'anna'],
+  ])('turns "%s" into the address %s', (typed, address) => {
+    expect(normalizeUsername(typed)).toBe(address);
+  });
+});
+
+describe('defaultDisplayName', () => {
+  it.each([
+    ['mamma', 'Mamma'],
+    ['gorel-lundin', 'Gorel Lundin'],
+    ['a1b2', 'A1b2'],
+  ])('%s becomes %s', (username, name) => {
+    expect(defaultDisplayName(username)).toBe(name);
   });
 });
 
@@ -55,7 +77,11 @@ describe('checkClaim', () => {
   });
 
   it('rejects an invalid name with a message', async () => {
-    expect(await checkClaim('a b', free)).toMatchObject({ ok: false, problem: 'characters', message: expect.any(String) });
+    expect(await checkClaim('a.b', free)).toMatchObject({ ok: false, problem: 'characters', message: expect.any(String) });
+  });
+
+  it('accepts a name typed the way people write names', async () => {
+    expect(await checkClaim('Görel Lundin', free)).toEqual({ ok: true, username: 'gorel-lundin' });
   });
 });
 

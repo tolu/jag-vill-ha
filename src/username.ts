@@ -35,9 +35,28 @@ export const USERNAME_PATTERN = /^[a-z0-9-]{3,30}$/;
 
 export type UsernameProblem = 'length' | 'characters' | 'hyphen' | 'reserved';
 
-/** Lowercases and trims, so "Tobias " and "tobias" address the same list. */
+/**
+ * Turns what a person types into an address: "Görel Lundin " and
+ * "gorel-lundin" are the same list. Accents are dropped and spaces become
+ * hyphens. public/js/username.js does the same in the browser while typing.
+ */
 export function normalizeUsername(input: string) {
-  return input.trim().toLowerCase();
+  return input
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .replaceAll('ø', 'o')
+    .replaceAll('æ', 'ae')
+    .replace(/[\s-]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/** The heading a new list starts with: "gorel-lundin" becomes "Gorel Lundin". */
+export function defaultDisplayName(username: string) {
+  return username
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
 /** Returns why a normalized username is unusable, or null when it is fine. */
@@ -52,8 +71,8 @@ export function checkUsername(username: string): UsernameProblem | null {
 export type ClaimProblem = UsernameProblem | 'taken';
 
 const MESSAGES: Record<ClaimProblem, string> = {
-  length: 'Användarnamnet ska vara 3–30 tecken.',
-  characters: 'Bara a–z, siffror och bindestreck går bra.',
+  length: 'Adressen ska vara 3–30 tecken.',
+  characters: 'Bara bokstäver, siffror och bindestreck går bra.',
   hyphen: 'Bindestreck får inte stå först, sist eller dubbelt.',
   reserved: 'Det namnet är upptaget.',
   taken: 'Det namnet är upptaget.',
