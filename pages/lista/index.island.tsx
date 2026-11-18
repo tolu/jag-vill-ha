@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
 import '../../src/styles.css';
-import { Footer } from '../../src/components/Footer';
 import { Icon } from '../../src/components/Icon';
 import { Thumb } from '../../src/components/Thumb';
 import { Topbar } from '../../src/components/Topbar';
@@ -123,7 +122,6 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
             </ul>
           )}
         </main>
-        <Footer />
       </div>
 
       {/* These two hold what she has typed, so a stray tap outside must not close them. */}

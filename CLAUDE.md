@@ -52,6 +52,8 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 - Pages are Void island pages (`*.island.tsx`) with no islands: no React
   reaches the browser. Forms are plain POST, answered with a 303 redirect.
+- `pages/layout.tsx` wraps every page, `_not-found` too. What all pages
+  share goes there, not into each page.
 - Rules are pure functions in `src/` with tests. Tests run in Node, so
   nothing that needs a binding is tested.
 - `public/js/` is hand-written and enhancement only: a page must do its main

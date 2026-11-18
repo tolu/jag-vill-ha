@@ -41,9 +41,11 @@
     max-inline-size: 65ch;
     margin-inline: auto;
     padding-inline: 1rem;
-    /* At least a screen tall, so the footer has a bottom to rest on */
-    min-block-size: 100dvh;
   }
+
+  /* pages/layout.tsx: the page, then the footer. At least a screen tall, so
+     the footer has a bottom to rest on. */
+  .shell { min-block-size: 100dvh; }
 
   /* Form pages keep their fields short, centred inside the shared width */
   .page.narrow main { max-inline-size: 26rem; margin-inline: auto; }
@@ -79,16 +81,19 @@
 
   /* On a short page the footer sits at the bottom of the screen, on a long one
      after the content. Sticking it one screen down pushes it as far as the
-     page goes, without turning the page into a flex column. */
+     shell goes, without turning the shell into a flex column. */
   .site-footer {
     position: sticky;
     inset-block-start: 100dvh;
-    margin-block-start: 4rem;
-    border-block-start: 1px solid var(--line);
-    padding-block: 1.25rem;
     color: var(--ink-soft);
     font-size: 0.875rem;
 
+    /* The rule is as wide as the text, not as the gutter */
+    & > div {
+      margin-block-start: 4rem;
+      border-block-start: 1px solid var(--line);
+      padding-block: 1.25rem;
+    }
     & .build { font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
     & a { color: inherit; }
     & .commit { font-family: ui-monospace, monospace; }

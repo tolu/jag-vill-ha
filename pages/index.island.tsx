@@ -1,5 +1,4 @@
 import '../src/styles.css';
-import { Footer } from '../src/components/Footer';
 import type { Props } from './index.server';
 
 export default function HomePage({ deleted }: Props) {
@@ -49,8 +48,6 @@ export default function HomePage({ deleted }: Props) {
           </li>
         </ol>
       </main>
-
-      <Footer />
     </div>
   );
 }
