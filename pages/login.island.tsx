@@ -15,6 +15,8 @@ export default function LoginPage() {
             </button>
           </div>
           <p className="hint error" id="login-fel" role="alert"></p>
+          {/* The browser's own dialog offers the phone, but nothing there says that is the way in. */}
+          <p className="hint">Ny dator? Välj telefonen i rutan som kommer upp och skanna koden med kameran.</p>
           <div className="buttons">
             <a className="btn quiet wide" href="/aterstall">
               Kommer du inte in?
