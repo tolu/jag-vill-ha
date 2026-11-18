@@ -56,7 +56,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   reassures about what the same view already shows.
 - The topbar must not move between pages. After touching it, measure its
   height and item positions on every page, down to 320px.
-- Chrome and Safari only; modern HTML and CSS, no fallbacks.
+- Chrome and Safari only; modern HTML and CSS, no fallbacks. One exception:
+  a page with a `commandfor` button loads `/js/command.js`, or its dialogs
+  stay shut in Safari before 26.2.
 
 ## How it is built
 
@@ -69,6 +71,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   build has no commit: `GITHUB_SHA=<40 hex> npm run build` shows it.
 - Rules are pure functions in `src/` with tests. Tests run in Node, so
   nothing that needs a binding is tested.
+- A script in `public/js/` that acts on load is tested by stubbing the
+  globals it touches and importing it after `vi.resetModules()`: see
+  `src/command-client.test.js`.
 - `public/js/` is hand-written and enhancement only: a page must do its main
   job without it (passkeys excepted).
 - The owner must never learn what is reserved: skip the reservation query for
@@ -81,6 +86,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   the user word for word. Everything else becomes a generic Swedish message.
 - Mail copy and markup are in `src/mail-template.ts`: tables, inline styles,
   hex colours, nothing fetched. `src/recovery-mail.ts` only sends.
+- iOS Safari never tells CSS about the keyboard: no viewport unit shrinks,
+  and `interactive-widget` is ignored. A sheet with an autofocused field
+  must not slide in from off screen, or Safari scrolls the field out of view.
 
 ## Void gotchas
 
@@ -110,6 +118,15 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 ## Verifying
 
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
+- Without passkeys (Safari, the iOS simulator): give a test account an
+  e-mail, post it to `/aterstall` and open the link from the inbox. The
+  link is in `/__void/inbox/<id>/raw?token=…`, quoted-printable.
+- iOS simulator: `xcrun simctl boot <device>`, then open
+  `http://localhost:5183/…`. Wait about 3 s after a tap that raises the
+  keyboard before the screenshot: Safari is still scrolling.
+- Only the iOS runtimes that are installed can be tested. Check with
+  `xcrun simctl list runtimes`; `xcodebuild -downloadPlatform iOS` gets
+  the current one (8 GB, the owner starts it).
 - After a CSS edit, reload before measuring.
 - Screenshots for a PR: Playwright's `page.screenshot({ path })`. The Browser
   pane cannot save a file.
