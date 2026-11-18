@@ -86,6 +86,14 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   the user word for word. Everything else becomes a generic Swedish message.
 - Mail copy and markup are in `src/mail-template.ts`: tables, inline styles,
   hex colours, nothing fetched. `src/recovery-mail.ts` only sends.
+- `/admin` is for one account: the user id in `ADMIN_USER_ID`, declared in
+  `env.ts`, a Worker secret in production and in `.env` locally. Everyone else
+  gets a 404. Its pages are in English.
+- The admin owns a list too. The admin pages read reservations only through
+  `reservationTimes` in `src/admin-data.ts`, which gives times and leaves the
+  admin's own list out.
+- Deleting from `/admin` needs a passkey prompt in the last five minutes:
+  the hook in `auth.ts` leaves the proof, `hasPasskeyProof` looks for it.
 - iOS Safari never tells CSS about the keyboard: no viewport unit shrinks,
   and `interactive-widget` is ignored. A sheet with an autofocused field
   must not slide in from off screen, or Safari scrolls the field out of view.
@@ -114,10 +122,22 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   branch is applied for all of them.
 - Anything automated uses the `app-test` server in `.claude/launch.json`. Its
   data is in this checkout's `.void/test-state` and may be thrown away.
+- `void db` commands ignore `LOCAL_STATE` and go to the shared data, `migrate`
+  too. Change the test database with `sqlite3` on its file under
+  `.void/test-state`, and add the migration's name to `_void_migrations`.
+- `app-test` takes its admin from `.void/test-state/admin-id`: a user id.
 
 ## Verifying
 
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
+- Log in to test accounts in Playwright, not in the Browser pane: the pane
+  shares cookies between all localhost ports, so a login on `app-test` logs
+  the owner out of `app`.
+- Never send the owner to `app-test` to log in with their own passkey. It does
+  not know the passkey, and `passkey.js` then tells the browser to drop it.
+- A new link, button or column is tested by finding and clicking it at the
+  owner's window width. Going straight to its address does not show that it
+  can be found.
 - Without passkeys (Safari, the iOS simulator): give a test account an
   e-mail, post it to `/aterstall` and open the link from the inbox. The
   link is in `/__void/inbox/<id>/raw?token=…`, quoted-printable.

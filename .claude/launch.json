@@ -15,7 +15,7 @@
       "runtimeExecutable": "/bin/zsh",
       "runtimeArgs": [
         "-c",
-        "source ~/.zshenv 2>/dev/null; LOCAL_STATE=.void/test-state npm run dev -- --port 5183"
+        "source ~/.zshenv 2>/dev/null; ADMIN_USER_ID=$(cat .void/test-state/admin-id 2>/dev/null) LOCAL_STATE=.void/test-state npm run dev -- --port 5183"
       ],
       "port": 5183
     }

@@ -1,8 +1,9 @@
 import { passkey } from '@better-auth/passkey';
-import { APIError } from 'better-auth/api';
+import { APIError, createAuthMiddleware } from 'better-auth/api';
 import { magicLink } from 'better-auth/plugins';
 import { defineAuth } from 'void/auth';
 import { isPlaceholderEmail, placeholderEmail } from './src/recovery-email';
+import { PROOF_MS, passkeyProofId } from './src/admin';
 import { parseSignup } from './src/signup';
 import { checkClaim, defaultDisplayName } from './src/username';
 
@@ -38,6 +39,23 @@ export default defineAuth(({ defaults }) => ({
   // Owners return a few times a year around birthdays and Christmas: stay signed
   // in for 30 days, counted from the latest visit (refreshed at most once a day).
   session: { ...defaults.session, expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
+  hooks: {
+    ...defaults.hooks,
+    // A session that began with a passkey prompt carries proof of it for a few
+    // minutes. The admin's delete asks for that proof, so a session from a
+    // mailed link is not enough: see hasPasskeyProof in src/admin-data.ts.
+    after: createAuthMiddleware(async (ctx) => {
+      await defaults.hooks?.after?.(ctx);
+      if (ctx.path !== '/passkey/verify-authentication') return;
+      const session = ctx.context.newSession?.session;
+      if (!session) return;
+      await ctx.context.internalAdapter.createVerificationValue({
+        identifier: passkeyProofId(session.id),
+        value: session.userId,
+        expiresAt: new Date(Date.now() + PROOF_MS),
+      });
+    }),
+  },
   plugins: [
     ...(defaults.plugins ?? []),
     passkey({

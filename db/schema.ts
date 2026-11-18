@@ -1,5 +1,5 @@
 import { sql } from 'void/db';
-import { integer, sqliteTable, text, uniqueIndex } from 'void/schema-d1';
+import { integer, primaryKey, sqliteTable, text, uniqueIndex } from 'void/schema-d1';
 
 // One list per account for now; the username is its public address.
 export const lists = sqliteTable('lists', {
@@ -42,4 +42,19 @@ export const reservations = sqliteTable(
   },
   // One reservation per wish: two givers pressing "Paxa" at once cannot both win.
   (table) => [uniqueIndex('reservations_wish_id_unique').on(table.wishId)],
+);
+
+// How many times a list was opened by someone other than its owner, per day.
+// A number and nothing else: no visitor, no address, no time of day.
+export const visits = sqliteTable(
+  'visits',
+  {
+    listId: integer('list_id')
+      .notNull()
+      .references(() => lists.id, { onDelete: 'cascade' }),
+    // A UTC day, "2026-11-18".
+    day: text('day').notNull(),
+    count: integer('count').notNull().default(0),
+  },
+  (table) => [primaryKey({ columns: [table.listId, table.day] })],
 );
