@@ -121,6 +121,7 @@
     & h2 { font: 500 1.375rem/1.2 var(--font-display); }
     & .lede { color: var(--ink-soft); margin-block: 0.5rem 1.5rem; }
     & > .hint { color: var(--ink-soft); font-size: 0.9375rem; margin-block-start: 1.25rem; }
+    & > .hint + .buttons { margin-block-start: 1.25rem; }
     /* An answer above a form keeps its distance from the first field */
     & > .notice { margin-block-end: 1.5rem; }
     & form { display: grid; gap: 1rem; }
@@ -249,8 +250,6 @@
     padding-block: clamp(2rem, 8vw, 4.5rem) 1.25rem;
 
     .topbar + & { padding-block-start: clamp(1rem, 4vw, 2.5rem); }
-
-    & .address { color: var(--ink-soft); font-size: 0.875rem; }
 
     & h1 {
       font: 500 clamp(2.25rem, 9vw, 3.75rem) / 1.05 var(--font-display);
@@ -710,10 +709,13 @@
     margin: auto auto 0;
     padding: 1.5rem 1.25rem 2rem;
     border-radius: 1.25rem 1.25rem 0 0;
-    transition: translate 0.25s ease-out, display 0.25s allow-discrete, overlay 0.25s allow-discrete;
+    transition: translate 0.25s ease-out, opacity 0.25s ease-out, display 0.25s allow-discrete, overlay 0.25s allow-discrete;
 
-    @starting-style { translate: 0 100%; }
-    &:not([open]) { translate: 0 100%; }
+    /* A short rise, not a slide from below the screen: iOS Safari scrolls a focused
+       field into view from where it is when the dialog opens, and a field that
+       starts a whole sheet further down ends up above the screen. */
+    @starting-style { translate: 0 1.5rem; opacity: 0; }
+    &:not([open]) { translate: 0 1.5rem; opacity: 0; }
 
     &::backdrop {
       background: oklch(20% 0.02 var(--hue) / 0.45);

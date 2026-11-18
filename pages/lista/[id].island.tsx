@@ -68,6 +68,7 @@ export default function EditWishPage({ id, values, icon, failed, wasReset }: Pro
           </div>
         </form>
       </dialog>
+      <script type="module" src="/js/command.js"></script>
       <script type="module" src="/js/forms.js"></script>
       <script type="module" src="/js/picker.js"></script>
     </div>

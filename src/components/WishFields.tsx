@@ -102,7 +102,7 @@ export function WishFields({ values, prefix, icon, autosave }: { values?: Values
           name="lank"
           defaultValue={values?.url ?? ''}
         />
-        <p className="hint">Kopiera adressen från butikens sida och klistra in den här.</p>
+        <p className="hint">Klistra in adressen från butikens sida.</p>
       </div>
       <div className="field">
         <label htmlFor={id('kommentar')}>

@@ -25,7 +25,6 @@ export default function ListPage({
     <main className="page">
       <header className="list-header">
         {avatarKey && <img className="avatar large" src={`/bild/${avatarKey}`} alt="" />}
-        <p className="address">jagvillha.fyi/{username}</p>
         <h1>{displayName} vill ha</h1>
         {intro && <p className="intro">{intro}</p>}
         {isOwner && (
@@ -170,6 +169,7 @@ export default function ListPage({
           </ul>
         </>
       )}
+      <script type="module" src="/js/command.js"></script>
     </main>
   );
 }

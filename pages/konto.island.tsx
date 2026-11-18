@@ -241,6 +241,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
           </div>
         </form>
       </dialog>
+      <script type="module" src="/js/command.js"></script>
       <script type="module" src="/js/forms.js"></script>
       <script type="module" src="/js/picker.js"></script>
       <script type="module" src="/js/passkey.js"></script>

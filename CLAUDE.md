@@ -27,6 +27,13 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - main takes pull requests only, with `check` green and the branch up to
   date. Renaming the `check` job means changing the ruleset too.
 - A failed deploy is re-run from its run in Actions, not with a new merge.
+  One that stops at "Verifying the uploaded Worker" has uploaded a version
+  without activating it, whatever its message says: production is unchanged
+  and a re-run has worked. The job prints Void's own log when it fails.
+- What is out: the footer on jagvillha.fyi has the commit, which should be
+  the merge commit. `npx void project status` lists the Worker's versions
+  and which is live; in a worktree it first needs `.void/project.json`
+  copied from the main checkout.
 - The token is account-owned and lives in the `production` environment,
   which only main can read. It has Workers Editor, D1 Write, R2 Read and
   Email Sending Write on the account, and Zone Read, Zone Settings Read,
@@ -49,7 +56,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   reassures about what the same view already shows.
 - The topbar must not move between pages. After touching it, measure its
   height and item positions on every page, down to 320px.
-- Chrome and Safari only; modern HTML and CSS, no fallbacks.
+- Chrome and Safari only; modern HTML and CSS, no fallbacks. One exception:
+  a page with a `commandfor` button loads `/js/command.js`, or its dialogs
+  stay shut in Safari before 26.2.
 
 ## How it is built
 
@@ -62,6 +71,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   build has no commit: `GITHUB_SHA=<40 hex> npm run build` shows it.
 - Rules are pure functions in `src/` with tests. Tests run in Node, so
   nothing that needs a binding is tested.
+- A script in `public/js/` that acts on load is tested by stubbing the
+  globals it touches and importing it after `vi.resetModules()`: see
+  `src/command-client.test.js`.
 - `public/js/` is hand-written and enhancement only: a page must do its main
   job without it (passkeys excepted).
 - The owner must never learn what is reserved: skip the reservation query for
@@ -74,6 +86,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   the user word for word. Everything else becomes a generic Swedish message.
 - Mail copy and markup are in `src/mail-template.ts`: tables, inline styles,
   hex colours, nothing fetched. `src/recovery-mail.ts` only sends.
+- iOS Safari never tells CSS about the keyboard: no viewport unit shrinks,
+  and `interactive-widget` is ignored. A sheet with an autofocused field
+  must not slide in from off screen, or Safari scrolls the field out of view.
 
 ## Void gotchas
 
@@ -103,6 +118,15 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 ## Verifying
 
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
+- Without passkeys (Safari, the iOS simulator): give a test account an
+  e-mail, post it to `/aterstall` and open the link from the inbox. The
+  link is in `/__void/inbox/<id>/raw?token=…`, quoted-printable.
+- iOS simulator: `xcrun simctl boot <device>`, then open
+  `http://localhost:5183/…`. Wait about 3 s after a tap that raises the
+  keyboard before the screenshot: Safari is still scrolling.
+- Only the iOS runtimes that are installed can be tested. Check with
+  `xcrun simctl list runtimes`; `xcodebuild -downloadPlatform iOS` gets
+  the current one (8 GB, the owner starts it).
 - After a CSS edit, reload before measuring.
 - Screenshots for a PR: Playwright's `page.screenshot({ path })`. The Browser
   pane cannot save a file.
@@ -115,6 +139,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 ## Pull requests
 
+- Descriptions: the features as bullets, then pictures, then a few lines on
+  what was tested and known limits. Under 200 words, no How section, and
+  nothing about changes to `CLAUDE.md`.
 - Screenshots: commit to the orphan branch `tolu/pr-assets` under
   `pr-<number>/` with `git hash-object -w`, `git mktree` and
   `git commit-tree`, as a child of the branch's tip so earlier pictures stay
@@ -122,8 +149,6 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   `https://raw.githubusercontent.com/tolu/jag-vill-ha/<sha>/pr-<n>/<file>.png`
   Push it as `"${sha}:refs/heads/tolu/pr-assets"`, with the braces: zsh
   reads `$sha:r` as a modifier.
-  In zsh, push it as `"${SHA}:refs/heads/tolu/pr-assets"`: a bare `$SHA:r…`
-  is read as a modifier.
 - PRs are squash-merged, so merging main into a follow-up branch conflicts
   with its own history. Check that main has nothing the branch lacks, then
   take the branch's side.
