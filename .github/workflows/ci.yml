@@ -5,10 +5,11 @@ on:
   push:
     branches: [main]
 
-# A newer push to the same branch makes the older run pointless.
+# A newer push to a pull request makes the older run pointless. Runs on main
+# are never cancelled: one of them may be halfway through a deploy.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -33,3 +34,36 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+
+  deploy:
+    # Only what has landed on main, and only after the checks above passed.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The Cloudflare token lives in this environment, which only main may use.
+    environment:
+      name: production
+      url: https://jagvillha.fyi
+    # One deploy at a time, in order: a deploy also applies migrations.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
+          cache: npm
+
+      - run: npm ci
+
+      # Builds, applies pending migrations and publishes. `.void/project.json`
+      # is not committed, so the platform is named here.
+      - run: npx void deploy --platform cloudflare --require-email
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # An account-owned token cannot look up which account it belongs to.
+          # Not a secret: the same id is in void.lock.json.
+          CLOUDFLARE_ACCOUNT_ID: 25b5c1e5fa76ec2926c5e103e9662f5d
