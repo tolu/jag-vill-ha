@@ -10,26 +10,21 @@ import type { Props } from './index.server';
 // Invoker commands open dialogs without JS; React has no typed props for them yet.
 const opens = (id: string) => ({ commandfor: id, command: 'show-modal' });
 
-export default function OwnerListPage({ username, wishes, failed, suggestedIcon }: Props) {
+export default function OwnerListPage({ username, avatarKey, needsEmail, wishes, failed, suggestedIcon }: Props) {
   return (
     <>
       <div className="page">
         <Topbar>
-          <a href="/konto">Konto</a>
+          {/* Her own picture says "this is me"; the word stays, since most owners have no picture. */}
+          <a className="account" href="/konto">
+            {avatarKey ? <img className="avatar" src={`/bild/${avatarKey}`} alt="" /> : <Icon name="user" />}
+            Konto
+          </a>
         </Topbar>
 
         <main>
           <header className="list-header compact">
-            <p className="address">
-              jagvillha.fyi/{username}
-              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
-              <button className="copy" type="button" data-copy={`/${username}`} aria-label="Dela listan">
-                <Icon name="copy" />
-                <Icon name="share" />
-                <Icon name="check" />
-              </button>
-              <span className="copied" role="status"></span>
-            </p>
+            <p className="address">jagvillha.fyi/{username}</p>
             <h1>Din lista</h1>
             <p className="intro">
               Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
@@ -44,10 +39,24 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
                 <Icon name="globe" />
                 Från länk
               </button>
+              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
+              <button className="btn quiet" type="button" hidden data-needs-js data-copy={`/${username}`}>
+                <Icon name="copy" />
+                <Icon name="share" />
+                <Icon name="check" />
+                Skicka listan
+              </button>
             </div>
+            <p className="hint ok copied" role="status"></p>
+            {needsEmail && (
+              <p className="notice calm">
+                Byter du telefon kan du bli utelåst från listan. <a href="/konto#epost-rubrik">Lägg till din e-post</a>, så kan vi mejla dig in
+                igen.
+              </p>
+            )}
             {failed && (
               <p className="notice" role="alert">
-                Det gick inte att spara. Kolla att titeln är ifylld, att länken börjar med https:// och att bilden är en vanlig bildfil under 5 MB.
+                Det gick inte att spara. Kolla att du har skrivit vad du vill ha, att länken är hela adressen från butikens sida och att bilden är ett vanligt foto.
               </p>
             )}
           </header>
@@ -121,7 +130,8 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
         </main>
       </div>
 
-      <dialog id="ny" className="sheet" {...{ closedby: 'any' }} aria-labelledby="ny-rubrik">
+      {/* These two hold what she has typed, so a stray tap outside must not close them. */}
+      <dialog id="ny" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ny-rubrik">
         <h2 id="ny-rubrik">Ny önskning</h2>
         <form method="post" action="/lista" encType="multipart/form-data">
           <WishFields prefix="ny" icon={suggestedIcon} />
@@ -135,13 +145,13 @@ export default function OwnerListPage({ username, wishes, failed, suggestedIcon 
           </div>
         </form>
       </dialog>
-      <dialog id="fran-lank" className="sheet" {...{ closedby: 'any' }} aria-labelledby="fran-lank-rubrik">
+      <dialog id="fran-lank" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="fran-lank-rubrik">
         <h2 id="fran-lank-rubrik">Lägg till från länk</h2>
         <p className="reassure">Klistra in länken till det du vill ha, så hämtar vi namn och bild.</p>
         <form data-from-link>
           <div className="field">
             <label htmlFor="hamta-lank">Länk</label>
-            <input type="url" id="hamta-lank" name="lank" placeholder="https://butik.se/produkt" required autoFocus />
+            <input type="text" inputMode="url" autoCapitalize="none" autoCorrect="off" spellCheck={false} id="hamta-lank" name="lank" required autoFocus />
             <p className="hint error" role="alert"></p>
           </div>
           <div className="buttons">

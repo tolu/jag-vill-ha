@@ -7,7 +7,19 @@ import type { Props } from './[username].server';
 // Invoker commands open dialogs without JS; React has no typed props for them yet.
 const opens = (id: string) => ({ commandfor: id, command: 'show-modal' });
 
-export default function ListPage({ username, displayName, avatarKey, intro, wishes, isOwner, notice, giverName }: Props) {
+export default function ListPage({
+  username,
+  displayName,
+  avatarKey,
+  intro,
+  wishes,
+  isOwner,
+  notice,
+  reservedTitle,
+  releasedTitle,
+  giverName,
+  formToken,
+}: Props) {
   const action = `/${username}`;
   return (
     <main className="page">
@@ -21,9 +33,28 @@ export default function ListPage({ username, displayName, avatarKey, intro, wish
             Det här är din egen lista, så paxningar visas inte för dig. <a href="/lista">Tillbaka till din lista</a>
           </p>
         )}
+        {/* "Paxa" is the whole point of the page, so it is explained before the first button, not only inside the dialog. */}
+        {!isOwner && wishes.length > 0 && (
+          <p className="intro">Paxa det du tänker köpa, så köper ingen annan samma sak.</p>
+        )}
+        {reservedTitle && (
+          <p className="notice calm" role="status">
+            Du har paxat <strong>{reservedTitle}</strong>. Nu är det bara att köpa den.
+          </p>
+        )}
+        {releasedTitle && (
+          <p className="notice calm" role="status">
+            <strong>{releasedTitle}</strong> är ledig igen.
+          </p>
+        )}
         {notice === 'taken' && (
           <p className="notice" role="alert">
             Någon hann före. Den är redan paxad.
+          </p>
+        )}
+        {notice === 'gone' && (
+          <p className="notice" role="alert">
+            Den önskningen finns inte kvar på listan.
           </p>
         )}
         {notice === 'name' && (
@@ -56,7 +87,7 @@ export default function ListPage({ username, displayName, avatarKey, intro, wish
               <li
                 key={wish.id}
                 className="wish"
-                data-state={wish.state === 'taken' || wish.state === 'mine' ? 'taken' : undefined}
+                data-state={wish.state === 'taken' || wish.state === 'mine' ? wish.state : undefined}
                 style={{ '--thumb-hue': wish.hue, viewTransitionName: wishTransitionName(wish.id) } as CSSProperties}
               >
                 <div className="thumb" aria-hidden="true">
@@ -92,11 +123,13 @@ export default function ListPage({ username, displayName, avatarKey, intro, wish
                     <button className="btn action" {...opens(`paxa-${wish.id}`)}>
                       Paxa
                     </button>
-                    <dialog id={`paxa-${wish.id}`} className="sheet" {...{ closedby: 'any' }} aria-labelledby={`paxa-rubrik-${wish.id}`}>
+                    {/* She types her name here, so a stray tap outside must not close it. */}
+                    <dialog id={`paxa-${wish.id}`} className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby={`paxa-rubrik-${wish.id}`}>
                       <h2 id={`paxa-rubrik-${wish.id}`}>Paxa {wish.title}</h2>
                       <p className="reassure">{displayName} ser inte vad som är paxat.</p>
                       <form method="post" action={action}>
                         <input type="hidden" name="id" value={wish.id} />
+                        {formToken && <input type="hidden" name="nyckel" value={formToken} />}
                         <div className="field">
                           <label htmlFor={`namn-${wish.id}`}>Ditt namn</label>
                           <input

@@ -1,5 +1,4 @@
 import '../src/styles.css';
-import { Icon } from '../src/components/Icon';
 import { Topbar } from '../src/components/Topbar';
 
 export default function NewListPage() {
@@ -10,11 +9,11 @@ export default function NewListPage() {
       </Topbar>
       <main className="steps">
         <section className="step" aria-labelledby="rubrik">
-          <h1 id="rubrik">Vad ska din lista heta?</h1>
-          <p className="lede">Det här blir länken du delar. Du loggar in med en passkey, så det behövs varken lösenord eller e-post.</p>
+          <h1 id="rubrik">Välj adress till din lista</h1>
+          <p className="lede">Det är den du skickar till släkten. Ditt förnamn brukar funka.</p>
           <form data-passkey="register" data-status="namn-fel" data-next="/lista">
             <div className="field">
-              <label htmlFor="namn">Användarnamn</label>
+              <label htmlFor="namn">Adress</label>
               <div className="prefixed">
                 <span>jagvillha.fyi/</span>
                 <input
@@ -24,26 +23,34 @@ export default function NewListPage() {
                   autoComplete="username"
                   autoCapitalize="none"
                   spellCheck={false}
-                  pattern="[a-z0-9\-]{3,30}"
-                  aria-describedby="namn-hjalp namn-fel"
+                  autoCorrect="off"
+                  maxLength={30}
+                  aria-describedby="namn-hjalp"
                   required
                 />
               </div>
               <p className="hint" id="namn-hjalp">
-                3–30 tecken: a–z, siffror och bindestreck.
+                Minst tre tecken. Mellanslag blir bindestreck, och å, ä och ö blir a och o.
               </p>
-              <p className="hint error" id="namn-fel" role="alert"></p>
             </div>
+            <div className="field">
+              <label htmlFor="epost">
+                E-post <span className="optional">valfritt</span>
+              </label>
+              <input type="email" id="epost" name="epost" autoComplete="email" />
+              <p className="hint">
+                Används till en enda sak: att mejla dig en länk om du inte kan logga in, till exempel med ny telefon.
+              </p>
+            </div>
+            <p className="lede">
+              Du behöver inget lösenord. Telefonen eller datorn frågar om den får spara en nyckel åt dig: svara ja och godkänn med ansiktet,
+              fingret eller din kod. Så loggar du in nästa gång också.
+            </p>
             <div className="buttons">
-              <button className="btn wide">
-                <Icon name="key" />
-                Skapa passkey
-              </button>
+              <button className="btn wide">Skapa min lista</button>
             </div>
+            <p className="hint error" id="namn-fel" role="alert"></p>
           </form>
-          <p className="hint">
-            Tappar du din passkey kommer du inte åt listan. Du kan lägga till en e-postadress för återställning när listan är skapad.
-          </p>
           <noscript>
             <p className="notice">Passkeys kräver JavaScript. Slå på det för att skapa en lista.</p>
           </noscript>
