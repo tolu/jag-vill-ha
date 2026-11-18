@@ -4,6 +4,7 @@ import { Icon } from '../../src/components/Icon';
 import { Thumb } from '../../src/components/Thumb';
 import { Topbar } from '../../src/components/Topbar';
 import { WishFields } from '../../src/components/WishFields';
+import { wishTransitionName } from '../../src/wish';
 import type { Props } from './index.server';
 
 // Invoker commands open dialogs without JS; React has no typed props for them yet.
@@ -65,7 +66,12 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
           ) : (
             <ul className="wishes editable">
               {wishes.map((wish) => (
-                <li key={wish.id} className="wish" data-id={wish.id} style={{ '--thumb-hue': wish.hue } as CSSProperties}>
+                <li
+                  key={wish.id}
+                  className="wish"
+                  data-id={wish.id}
+                  style={{ '--thumb-hue': wish.hue, viewTransitionName: wishTransitionName(wish.id) } as CSSProperties}
+                >
                   <button
                     className="grip"
                     type="button"

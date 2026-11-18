@@ -7,6 +7,14 @@ export function thumbHue(title: string) {
   return hash;
 }
 
+/**
+ * The same name on the owner's list and the public list, so a row glides
+ * between the two pages and when the list is reordered.
+ */
+export function wishTransitionName(id: number) {
+  return `wish-${id}`;
+}
+
 /** Swedish genitive: "Annas", but "Tobias" and "Max" take no extra s. */
 export function possessive(name: string) {
   return /[sxz]$/i.test(name) ? name : `${name}s`;
