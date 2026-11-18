@@ -41,7 +41,8 @@ export function WishFields({ values, prefix, icon, autosave }: { values?: Values
         </button>
         <div className="field">
           <label htmlFor={id('titel')}>Vad vill du ha?</label>
-          <input type="text" id={id('titel')} name="titel" defaultValue={values?.title} maxLength={120} required />
+          {/* A new wish starts in the title: the dialog would otherwise focus the picker, which comes first. */}
+          <input type="text" id={id('titel')} name="titel" defaultValue={values?.title} maxLength={120} required autoFocus={!values} />
         </div>
 
         <div id={menu} className="appearance-menu" popover="auto" style={{ positionAnchor: anchor } as CSSProperties}>
