@@ -24,7 +24,6 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
 
         <main>
           <header className="list-header compact">
-            <p className="address">jagvillha.fyi/{username}</p>
             <h1>Din lista</h1>
             <p className="intro">
               Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
@@ -165,6 +164,7 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
           </div>
         </form>
       </dialog>
+      <script type="module" src="/js/command.js"></script>
       <script type="module" src="/js/forms.js"></script>
       <script type="module" src="/js/picker.js"></script>
       <script type="module" src="/js/list.js"></script>
