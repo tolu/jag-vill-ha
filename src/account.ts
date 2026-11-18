@@ -1,11 +1,11 @@
 import { accountTable, passkeyTable, sessionTable, userTable } from '@auth-schema';
 import { db, eq, inArray } from 'void/db';
-import { lists, reservations, wishes } from '@schema';
+import { lists, reservations, visits, wishes } from '@schema';
 import { deleteImage } from './images';
 
 /**
  * Removes everything an owner has here: the list, its wishes and their
- * reservations, the stored pictures, the passkeys and sessions, and the user.
+ * reservations, the count of its visits, the stored pictures, the passkeys and sessions, and the user.
  * Rows go first and pictures last, so a failure half-way can leave a stray
  * picture but never a wish pointing at a picture that is gone.
  */
@@ -22,7 +22,10 @@ export async function deleteAccount(userId: string) {
     await db.delete(reservations).where(inArray(reservations.wishId, wishIds));
     await db.delete(wishes).where(inArray(wishes.id, wishIds));
   }
-  if (listIds.length) await db.delete(lists).where(inArray(lists.id, listIds));
+  if (listIds.length) {
+    await db.delete(visits).where(inArray(visits.listId, listIds));
+    await db.delete(lists).where(inArray(lists.id, listIds));
+  }
   await db.delete(passkeyTable).where(eq(passkeyTable.userId, userId));
   await db.delete(sessionTable).where(eq(sessionTable.userId, userId));
   await db.delete(accountTable).where(eq(accountTable.userId, userId));

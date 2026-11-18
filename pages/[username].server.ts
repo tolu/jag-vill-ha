@@ -6,6 +6,8 @@ import type { RouteUrl } from 'void/routes';
 import { lists, reservations, wishes } from '@schema';
 import { giverToken, hashToken, newToken, parseGiverName, publicWishes, reserveOutcome, reservationsForViewer } from '../src/reservation';
 import { checkUsername, normalizeUsername } from '../src/username';
+import { countsAsVisit } from '../src/visit';
+import { recordVisit } from '../src/visit-store';
 import { isNorwegianVisitor, possessive, priceSearchLinks, shopLabel, thumbHue } from '../src/wish';
 
 export type Props = InferProps<typeof loader>;
@@ -33,6 +35,14 @@ export const loader = defineHandler(async (c) => {
     .orderBy(asc(wishes.position), asc(wishes.id));
 
   const isOwner = getUser()?.id === list.ownerId;
+  const visit = {
+    isOwner,
+    path: `/${list.username}`,
+    userAgent: c.req.header('user-agent'),
+    purpose: c.req.header('sec-purpose'),
+    referer: c.req.header('referer'),
+  };
+  if (countsAsVisit(visit)) await recordVisit(list.id);
   const reservationRows = await reservationsForViewer(isOwner, async () =>
     wishRows.length
       ? db
