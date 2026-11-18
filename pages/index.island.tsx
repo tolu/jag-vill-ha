@@ -48,10 +48,6 @@ export default function HomePage({ deleted }: Props) {
           </li>
         </ol>
       </main>
-
-      <footer className="site-footer">
-        <p>Gratis. Ingen reklam, inga affiliate-länkar. Du är inte produkten.</p>
-      </footer>
     </div>
   );
 }

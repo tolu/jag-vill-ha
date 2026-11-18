@@ -28,8 +28,6 @@
     background: var(--bg);
     color: var(--ink);
     font: 1rem/1.5 var(--font-body);
-    min-block-size: 100dvh;
-    padding-block-end: 4rem;
   }
 
   a { color: var(--accent); text-underline-offset: 0.15em; }
@@ -44,6 +42,10 @@
     margin-inline: auto;
     padding-inline: 1rem;
   }
+
+  /* pages/layout.tsx: the page, then the footer. At least a screen tall, so
+     the footer has a bottom to rest on. */
+  .shell { min-block-size: 100dvh; }
 
   /* Form pages keep their fields short, centred inside the shared width */
   .page.narrow main { max-inline-size: 26rem; margin-inline: auto; }
@@ -77,11 +79,37 @@
     & p { color: var(--ink-soft); font-size: 0.9375rem; text-wrap: pretty; }
   }
 
+  /* On a short page the footer sits at the bottom of the screen, on a long one
+     after the content. Sticking it one screen down pushes it as far as the
+     shell goes, without turning the shell into a flex column. */
   .site-footer {
-    border-block-start: 1px solid var(--line);
-    padding-block: 1.25rem;
-    color: var(--ink-soft);
-    font-size: 0.875rem;
+    position: sticky;
+    inset-block-start: 100dvh;
+    text-align: center;
+
+    /* No rule across the page: a short green stroke and the space above it */
+    & > div { margin-block-start: 4rem; padding-block-end: 1.5rem; }
+    & > div::before {
+      content: "";
+      display: block;
+      inline-size: 1.75rem;
+      block-size: 2px;
+      border-radius: 1px;
+      background: var(--accent);
+      margin: 0 auto 0.875rem;
+    }
+
+    /* The first line speaks in the headings' voice */
+    & p:first-child { font: 500 1rem/1.3 var(--font-display); }
+
+    /* The second is for whoever looks after the site: small and faded */
+    & .build {
+      margin-block-start: 0.25rem;
+      color: color-mix(in oklch, var(--ink-soft) 80%, var(--bg));
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+    }
+    & .commit { color: inherit; font-family: ui-monospace, monospace; }
   }
 
   /* Login flow */

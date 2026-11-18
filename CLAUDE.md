@@ -17,8 +17,24 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - `npx void db seed` and `db reset`: they wipe the local database, including
   accounts made by hand.
 - `npx void deploy`, or anything else that changes the Cloudflare account.
-  Deploy from main with VPN off: the readiness check must resolve
-  jagvillha.fyi from this machine.
+  That includes re-running a `deploy` job.
+
+## Deploy
+
+- A merge to main deploys: the `deploy` job in `ci.yml` runs after `check`.
+  Nothing is deployed by hand. A merge with a migration runs it on
+  production, unattended.
+- main takes pull requests only, with `check` green and the branch up to
+  date. Renaming the `check` job means changing the ruleset too.
+- A failed deploy is re-run from its run in Actions, not with a new merge.
+- The token is account-owned and lives in the `production` environment,
+  which only main can read. It has Workers Editor, D1 Write, R2 Read and
+  Email Sending Write on the account, and Zone Read, Zone Settings Read,
+  Workers Routes Write and Email Routing Rules Write on the zone. Something
+  new that Void provisions needs a new permission there first.
+  Void's docs use legacy permission names and leave some out: go by what the
+  failed deploy log could not read, and Cloudflare's API reference for that
+  endpoint.
 
 ## Product
 
@@ -39,6 +55,11 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 - Pages are Void island pages (`*.island.tsx`) with no islands: no React
   reaches the browser. Forms are plain POST, answered with a 303 redirect.
+- `pages/layout.tsx` wraps every page, `_not-found` too. What all pages
+  share goes there, not into each page.
+- `__BUILD__` (build time and commit) is baked in by `define` in
+  `vite.config.ts`. Format such values there, not in the Worker. A local
+  build has no commit: `GITHUB_SHA=<40 hex> npm run build` shows it.
 - Rules are pure functions in `src/` with tests. Tests run in Node, so
   nothing that needs a binding is tested.
 - `public/js/` is hand-written and enhancement only: a page must do its main
@@ -66,7 +87,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - Changes to `void.config.ts` or `auth.ts` need a dev server restart.
 - A migration that drops anything needs `-- void:allow-destructive` on top.
 - CSS: `[hidden]` and other rules that must win go in `@layer overrides`.
-- Void's docs are in `node_modules/void/docs/`. Read them before guessing.
+- Void's docs are in `node_modules/void/docs/`. Read them before guessing,
+  and before building anything a framework usually has: layouts, middleware,
+  redirects, caching.
 
 ## Local data
 
@@ -81,6 +104,10 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
 - After a CSS edit, reload before measuring.
+- Screenshots for a PR: Playwright's `page.screenshot({ path })`. The Browser
+  pane cannot save a file.
+- `app-test` needs about ten seconds before it answers. Its browser session
+  outlives a restart: clear cookies to see a page logged out.
 - Sent mail is at `/__void/inbox?token=…` on the dev server. The server
   prints the URL at start; the token is also in `.void/dev-trigger-token`.
 - The first login link used for an unproven e-mail logs out that account's
@@ -93,6 +120,8 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   `git commit-tree`, as a child of the branch's tip so earlier pictures stay
   reachable. The working tree is not touched. Link by commit SHA:
   `https://raw.githubusercontent.com/tolu/jag-vill-ha/<sha>/pr-<n>/<file>.png`
+  Push it as `"${sha}:refs/heads/tolu/pr-assets"`, with the braces: zsh
+  reads `$sha:r` as a modifier.
   In zsh, push it as `"${SHA}:refs/heads/tolu/pr-assets"`: a bare `$SHA:r…`
   is read as a modifier.
 - PRs are squash-merged, so merging main into a follow-up branch conflicts

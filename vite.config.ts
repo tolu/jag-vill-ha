@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import { voidPlugin } from "void";
 import { voidReact } from "@void/react/plugin";
+import { buildInfo } from "./src/build-info";
 
 // Where the local database and pictures live. Every worktree of this clone
 // shares the main checkout's `.void`, so accounts made by hand are still there
@@ -20,6 +21,11 @@ function localState() {
 }
 
 export default defineConfig({
+  // What the footer shows. GitHub Actions sets GITHUB_SHA, and the deploy job
+  // builds and publishes in one go, so this is the version that is out.
+  define: {
+    __BUILD__: JSON.stringify(buildInfo(new Date(), process.env.GITHUB_SHA)),
+  },
   resolve: {
     alias: {
       // Void generates the auth tables; the tsconfig path alone is not enough at runtime.
