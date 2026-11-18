@@ -67,3 +67,9 @@ jobs:
           # An account-owned token cannot look up which account it belongs to.
           # Not a secret: the same id is in void.lock.json.
           CLOUDFLARE_ACCOUNT_ID: 25b5c1e5fa76ec2926c5e103e9662f5d
+
+      # Void's own log names the step and the Cloudflare call a deploy stopped
+      # at, which its message on screen does not. It is gone with the runner
+      # unless it is printed here. Steps and status codes only, no secrets.
+      - if: failure()
+        run: cat ~/.void/logs/*.jsonl 2>/dev/null || true
