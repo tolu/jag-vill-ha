@@ -401,8 +401,11 @@
   /* "Skicka listan": one icon at a time. Copy by default, share where the device can, check after copying */
   [data-copy] {
     & [data-icon="check"], & [data-icon="share"] { display: none; }
-    &[data-share] [data-icon="copy"] { display: none; }
-    &[data-share] [data-icon="share"] { display: block; }
+    /* Same test as list.js, so the right icon is there before the script runs */
+    @media (pointer: coarse) {
+      & [data-icon="copy"] { display: none; }
+      & [data-icon="share"] { display: block; }
+    }
     &[data-copied] :is([data-icon="copy"], [data-icon="share"]) { display: none; }
     &[data-copied] [data-icon="check"] { display: block; }
   }
@@ -773,6 +776,12 @@
 @layer overrides {
   /* The hidden attribute must win over component display rules. */
   [hidden] { display: none !important; }
+
+  /* Buttons that only work with script. Shown from the first paint, not when
+     the script has run, so they do not pop in a moment after the page. */
+  @media (scripting: none) {
+    [data-needs-js] { display: none !important; }
+  }
 
   /* A form that has been sent is not editable until the answer arrives. */
   form[inert] { opacity: 0.7; }

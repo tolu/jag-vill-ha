@@ -33,13 +33,13 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
                 <Icon name="plus" />
                 Lägg till önskning
               </button>
-              {/* Needs JS to fetch and fill in the form, so /js/list.js reveals it. */}
-              <button className="btn quiet" hidden data-needs-js {...opens('fran-lank')}>
+              {/* Needs JS to fetch and fill in the form: hidden by CSS when scripting is off. */}
+              <button className="btn quiet" data-needs-js {...opens('fran-lank')}>
                 <Icon name="globe" />
                 Från länk
               </button>
               {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
-              <button className="btn quiet" type="button" hidden data-needs-js data-copy={`/${username}`}>
+              <button className="btn quiet" type="button" data-needs-js data-copy={`/${username}`}>
                 <Icon name="copy" />
                 <Icon name="share" />
                 <Icon name="check" />
@@ -64,7 +64,7 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
             <p className="intro">Listan är tom. Lägg till det första du kommer att tänka på.</p>
           ) : (
             <ul className="wishes editable">
-              {wishes.map((wish) => (
+              {wishes.map((wish, index) => (
                 <li
                   key={wish.id}
                   className="wish"
@@ -80,7 +80,7 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
                     <Icon name="grip" />
                   </button>
                   <div className="thumb" aria-hidden="true">
-                    <Thumb title={wish.title} icon={wish.icon} imageKey={wish.imageKey} />
+                    <Thumb title={wish.title} icon={wish.icon} imageKey={wish.imageKey} index={index} />
                   </div>
                   <div className="wish-text">
                     <h2>{wish.title}</h2>

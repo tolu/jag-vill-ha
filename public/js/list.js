@@ -8,7 +8,6 @@ for (const button of document.querySelectorAll('[data-copy]')) {
   const status = button.closest('header').querySelector('[role="status"]');
   const url = new URL(button.dataset.copy, location.origin).href;
   const canShare = navigator.canShare?.({ url }) && matchMedia('(pointer: coarse)').matches;
-  if (canShare) button.dataset.share = '';
 
   button.addEventListener('click', async () => {
     if (canShare) {
@@ -158,8 +157,6 @@ const REASONS = {
 };
 
 if (linkForm && wishDialog) {
-  for (const button of document.querySelectorAll('[data-needs-js]')) button.hidden = false;
-
   const input = linkForm.elements.lank;
   const status = linkForm.querySelector('[role="alert"]');
   const fetchButton = linkForm.querySelector('button:not([type="button"]):not([formmethod])');
