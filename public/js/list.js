@@ -19,7 +19,7 @@ for (const button of document.querySelectorAll('[data-copy]')) {
     try {
       await navigator.clipboard.writeText(url);
       button.dataset.copied = '';
-      status.textContent = 'Länken är kopierad. Klistra in den i ett sms eller mejl till släkten.';
+      status.textContent = 'Länken är kopierad. Klistra in den där du brukar skriva till släkten.';
     } catch {
       status.textContent = 'Det gick inte att kopiera. Skriv av adressen högst upp i stället.';
     }
@@ -168,7 +168,8 @@ if (linkForm && wishDialog) {
     wishForm.elements.titel.value = title ?? '';
     wishForm.elements.lank.value = input.value;
     linkDialog.close();
-    wishDialog.showModal();
+    // Already open when she came here from it
+    if (!wishDialog.open) wishDialog.showModal();
     wishForm.elements.titel.focus();
     if (image) usePicture(image);
   }

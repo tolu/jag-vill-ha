@@ -10,6 +10,15 @@
 }
 
 @layer themes {
+  /* This theme's card in the picker: its banner in small, in fixed colours,
+     since the tokens on the page belong to whichever theme is worn now */
+  .theme-card[data-card="adventsstjarna"] {
+    background:
+      radial-gradient(circle at 78% 36%, rgb(255, 232, 160) 0 0.2rem, oklch(78% 0.14 75 / 0.5) 0.3rem, transparent 1.3rem),
+      linear-gradient(oklch(82% 0.11 85) 0 0) bottom / 100% 2px no-repeat,
+      oklch(25% 0.065 350);
+  }
+
   :root:has([data-theme="adventsstjarna"]) {
     --hue: 350;
     --bg: light-dark(oklch(97% 0.014 90), oklch(16.5% 0.018 350));
@@ -23,18 +32,18 @@
     --font-display: "Playfair Display", Didot, "Bodoni 72", ui-serif, Georgia, serif;
     --radius: 0.1875rem;
     /* Dark mode: the page is nearly black, so the window can keep its plum */
-    --band: light-dark(oklch(25% 0.065 350), oklch(24.5% 0.07 350));
-    --band-ink: oklch(93% 0.06 88);
-    --band-ink-soft: oklch(88% 0.03 80);
-    --band-head: 3rem;
-    --band-foot: 0.75rem;
+    --banner: light-dark(oklch(25% 0.065 350), oklch(24.5% 0.07 350));
+    --banner-ink: oklch(93% 0.06 88);
+    --banner-ink-soft: oklch(88% 0.03 80);
+    --banner-head: 3rem;
+    --banner-foot: 0.75rem;
     --gold: oklch(82% 0.11 85);
   }
 
   [data-theme="adventsstjarna"] {
     /* The room above the heading, as themes.css lays it out, and a star that
        fills it: it grows with the screen and never reaches the first line */
-    --strip: calc(clamp(2rem, 8vw, 4.5rem) + var(--band-head));
+    --strip: var(--banner-top);
     --star: calc(var(--strip) - 0.75rem);
     --star-end: 1rem;
     --glow: calc(var(--star) * 3.4);
@@ -73,7 +82,7 @@
         radial-gradient(circle at 36% 3.6rem, oklch(88% 0.09 85 / 0.4) 0 0.6px, transparent 1.4px),
         radial-gradient(circle at 47% 0.9rem, oklch(88% 0.09 85 / 0.55) 0 0.6px, transparent 1.4px),
         radial-gradient(circle at 58% 2.6rem, oklch(88% 0.09 85 / 0.65) 0 0.8px, transparent 1.7px),
-        var(--band);
+        var(--banner);
     }
 
     /* Two thin gold lines close the window */

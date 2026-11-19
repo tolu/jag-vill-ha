@@ -91,6 +91,8 @@ export default defineAuth(({ defaults }) => ({
       // Long enough to find the mail and get to the right phone or computer.
       expiresIn: 60 * 60,
       sendMagicLink: async ({ email, url }) => {
+        // On the dev server the test owner's link goes to /dev/login, not to a mailbox.
+        if (import.meta.env.DEV && (await import('./src/dev-login')).keepDevLink(email, url)) return;
         if (isPlaceholderEmail(email)) return;
         // Imported lazily: loading void/email while the config is read breaks `vp test`.
         const { sendRecoveryMail } = await import('./src/recovery-mail');

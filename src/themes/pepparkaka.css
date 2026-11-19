@@ -9,6 +9,15 @@
 }
 
 @layer themes {
+  /* This theme's card in the picker: its banner in small, in fixed colours,
+     since the tokens on the page belong to whichever theme is worn now */
+  .theme-card[data-card="pepparkaka"] {
+    background:
+      radial-gradient(circle at 50% 0, oklch(98.5% 0.012 85) 0 0.42rem, transparent 0.47rem) top / 0.95rem 0.7rem repeat-x,
+      linear-gradient(oklch(98.5% 0.012 85) 0 0) left bottom 0.5rem / 100% 2px no-repeat,
+      oklch(46% 0.095 52);
+  }
+
   :root:has([data-theme="pepparkaka"]) {
     --hue: 55;
     /* Dark is a chocolate page: warmer and a touch deeper than a dimmed light mode */
@@ -23,21 +32,21 @@
     --on-accent: light-dark(oklch(98.5% 0.012 85), oklch(20% 0.04 50));
     --font-display: "Grandstander", ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
     --radius: 0.75rem;
-    --band-color: light-dark(oklch(46% 0.095 52), oklch(37% 0.085 50));
+    --banner-color: light-dark(oklch(46% 0.095 52), oklch(37% 0.085 50));
     /* Baked, not painted: browner towards the edges, with a fine crumb */
-    --band:
+    --banner:
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.16  0 0 0 0 0.07  0 0 0 0 0.02  0 0 0 -1.6 0.95'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.5'/></svg>"),
       radial-gradient(140% 100% at 50% 40%, transparent 35%, var(--baked)),
-      var(--band-color);
-    --band-ink: var(--icing);
-    --band-ink-soft: oklch(94% 0.03 80);
-    --band-head: 1rem;
-    --band-foot: 1.75rem;
+      var(--banner-color);
+    --banner-ink: var(--icing);
+    --banner-ink-soft: oklch(94% 0.03 80);
+    --banner-head: 1rem;
+    --banner-foot: 1.75rem;
     /* One icing for everything piped: the same white, the same 2px line */
     --icing: oklch(98.5% 0.012 85);
     --piped: 2px;
-    /* Where the biscuit has browned: only ever darker than --band, so text contrast holds */
-    --baked: oklch(from var(--band-color) calc(l - 0.09) calc(c - 0.01) calc(h - 6));
+    /* Where the biscuit has browned: only ever darker than --banner, so text contrast holds */
+    --baked: oklch(from var(--banner-color) calc(l - 0.09) calc(c - 0.01) calc(h - 6));
   }
 
   [data-theme="pepparkaka"] {

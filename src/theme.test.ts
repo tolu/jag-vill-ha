@@ -14,7 +14,10 @@ test('every theme has its file in themes/, and themes/ has no others', () => {
   const files = readdirSync(dir).filter((file) => file.endsWith('.css'));
   expect(files.sort()).toEqual(THEMES.map(([id]) => `${id}.css`).sort());
   for (const [id] of THEMES) {
-    expect(readFileSync(new URL(`${id}.css`, dir), 'utf8')).toContain(`:root:has([data-theme="${id}"])`);
+    const css = readFileSync(new URL(`${id}.css`, dir), 'utf8');
+    expect(css).toContain(`:root:has([data-theme="${id}"])`);
+    // and draws its own card for the picker
+    expect(css).toContain(`.theme-card[data-card="${id}"]`);
   }
   const index = readFileSync(new URL('./themes.css', import.meta.url), 'utf8');
   for (const file of files) expect(index).toContain(`@import './themes/${file}';`);

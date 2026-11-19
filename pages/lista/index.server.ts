@@ -1,11 +1,12 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { getUser } from 'void/auth';
 import { asc, db, eq, max } from 'void/db';
-import { wishes } from '@schema';
+import { lists, wishes } from '@schema';
 import { WISH_ICONS } from '../../src/icons';
 import { writeWithImage } from '../../src/image-lifecycle';
 import { deleteImage, saveImage } from '../../src/images';
 import { parseOrder } from '../../src/order';
+import { parseTheme, THEMES } from '../../src/theme';
 import { isPlaceholderEmail } from '../../src/recovery-email';
 import { findOwnWish, requireOwnerList } from '../../src/owner';
 import { shopLabel, thumbHue } from '../../src/wish';
@@ -25,6 +26,9 @@ export const loader = defineHandler(async (c) => {
   return {
     username: list.username,
     avatarKey: list.avatarKey,
+    // On the dev server `?theme=` tries a theme on without saving it.
+    theme: (import.meta.env.DEV ? parseTheme(c.req.query('theme')) : null) ?? parseTheme(list.theme),
+    themes: THEMES.map(([id, label]) => ({ id, label })),
     // Without an e-mail there is no way back in after a lost phone.
     needsEmail: isPlaceholderEmail(getUser()?.email ?? ''),
     failed: c.req.query('fel') === '1',
@@ -74,6 +78,13 @@ export const action = defineHandler(async (c) => {
       if (current[index] !== id) await db.update(wishes).set({ position: index + 1 }).where(eq(wishes.id, id));
     }
     return c.json({ ok: true });
+  }
+
+  // Chosen in the picker. /js/theme.js saves in the background and wants no page back.
+  if (intent === 'theme') {
+    await db.update(lists).set({ theme: parseTheme(body['theme']) }).where(eq(lists.id, list.id));
+    if (c.req.header('accept')?.includes('application/json')) return c.json({ ok: true });
+    return c.redirect('/lista', 303);
   }
 
   const wish = await findOwnWish(list.id, Number(body['id']));

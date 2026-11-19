@@ -12,7 +12,7 @@
    --accent and --accent-wash from them: set further down they would not be
    derived again.
 
-   A theme may also dress the heading: a full-width band behind it (--band),
+   A theme may also dress the heading: a full-width banner behind it (--banner),
    and four pseudo-elements for decoration. Nothing else changes: no markup,
    no layout, and the list below the heading keeps the plain page colour. */
 
@@ -20,11 +20,15 @@
    rules then win over it whatever order the files are read in. */
 @layer themes {
   @layer shared {
-    /* The band and its decoration reach the edges of the screen */
+    /* The banner and its decoration reach the edges of the screen */
     :root:has([data-theme]) .shell { overflow-x: clip; }
 
     [data-theme] {
       position: relative;
+      /* From the top of the banner to the heading. A theme sizes what hangs there from this. */
+      --banner-top: calc(clamp(2rem, 8vw, 4.5rem) + var(--banner-head, 0rem));
+      /* Under a top bar, on the owner's list, the banner starts closer to its heading */
+      .topbar + & { --banner-top: calc(1rem + var(--banner-head, 0rem)); }
 
       &::before, &::after, & .list-header::before, & .list-header::after {
         position: absolute;
@@ -35,12 +39,14 @@
 
       & .list-header {
         position: relative;
-        /* --band-head and --band-foot: room for what hangs above and sits below the text */
-        padding-block: calc(clamp(2rem, 8vw, 4.5rem) + var(--band-head, 0rem)) calc(1.25rem + var(--band-foot, 0rem));
+        /* --banner-head and --banner-foot: room for what hangs above and sits below the text */
+        padding-block: var(--banner-top) calc(1.25rem + var(--banner-foot, 0rem));
 
-        &::before { content: ""; inset-block: 0; z-index: -2; background: var(--band, none); }
-        & h1 { color: var(--band-ink, inherit); }
-        & > .intro { color: var(--band-ink-soft, var(--ink-soft)); }
+        &::before { content: ""; inset-block: 0; z-index: -2; background: var(--banner, none); }
+        & h1 { color: var(--banner-ink, inherit); }
+        & > .intro { color: var(--banner-ink-soft, var(--ink-soft)); }
+        /* A link on the banner is told apart by its underline, not by the accent */
+        & > .intro a { color: inherit; }
       }
     }
   }
