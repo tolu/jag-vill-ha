@@ -90,8 +90,8 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - A theme is a name in `src/theme.ts` and a file in `src/themes/`. It sets
   tokens on `:root:has([data-theme="…"])`, never further down: `--accent`
   and `--accent-wash` are derived on `:root`. It may dress the heading with
-  a band and four pseudo-elements, and changes no markup or layout.
-  On the dev server `/<username>?tema=<name>` tries one on.
+  a banner and four pseudo-elements, and changes no markup or layout.
+  On the dev server `?theme=<name>` on a list's page tries one on.
 - Username rules live twice: `src/username.ts` and `public/js/username.js`.
   Change both; `src/username-client.test.js` fails if they disagree.
 - Only an error thrown with `refuse()` in `auth.ts` (code `JVH`) is shown to

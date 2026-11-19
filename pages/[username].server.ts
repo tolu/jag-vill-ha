@@ -70,8 +70,8 @@ export const loader = defineHandler(async (c) => {
     displayName: list.displayName,
     avatarKey: list.avatarKey,
     intro: list.intro,
-    // On the dev server `?tema=` tries a theme on without saving it.
-    theme: (import.meta.env.DEV ? parseTheme(c.req.query('tema')) : null) ?? parseTheme(list.theme),
+    // On the dev server `?theme=` tries a theme on without saving it.
+    theme: (import.meta.env.DEV ? parseTheme(c.req.query('theme')) : null) ?? parseTheme(list.theme),
     isOwner,
     notice: notice as 'taken' | 'name' | 'gone' | null,
     reservedTitle: reserved?.title ?? null,

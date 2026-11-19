@@ -9,7 +9,6 @@ import { resolveImageChange, writeWithImage } from '../src/image-lifecycle';
 import { deleteImage, saveImage } from '../src/images';
 import { isPlaceholderEmail, parseRecoveryEmail, placeholderEmail } from '../src/recovery-email';
 import { sendAddressConfirmation } from '../src/recovery-mail';
-import { parseTheme, THEMES } from '../src/theme';
 import { confirmsDeletion } from '../src/username';
 
 export type Props = InferProps<typeof loader>;
@@ -26,8 +25,6 @@ export const loader = defineHandler(async (c) => {
     displayName: list.displayName,
     avatarKey: list.avatarKey,
     intro: list.intro ?? '',
-    theme: parseTheme(list.theme),
-    themes: THEMES.map(([id, label, swatch]) => ({ id, label, swatch })),
     email: isPlaceholderEmail(user.email) ? null : user.email,
     saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' || saved === 'fel-namn' || saved === 'fel-bild' || saved === 'bild' ? saved : null,
     // She came in through the mailed link and has no key on this device yet.
@@ -82,7 +79,7 @@ export const action = defineHandler(async (c) => {
     if (displayName) {
       await db
         .update(lists)
-        .set({ displayName, intro: intro === '' ? null : intro, theme: parseTheme(body['tema']) })
+        .set({ displayName, intro: intro === '' ? null : intro })
         .where(eq(lists.ownerId, user.id));
     }
     return c.redirect(back('lista', 'lista-rubrik'), 303);

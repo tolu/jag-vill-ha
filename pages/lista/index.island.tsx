@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import '../../src/styles.css';
+import '../../src/themes.css';
 import { Icon } from '../../src/components/Icon';
 import { Thumb } from '../../src/components/Thumb';
 import { Topbar } from '../../src/components/Topbar';
@@ -10,7 +11,7 @@ import type { Props } from './index.server';
 // Invoker commands open dialogs without JS; React has no typed props for them yet.
 const opens = (id: string) => ({ commandfor: id, command: 'show-modal' });
 
-export default function OwnerListPage({ username, avatarKey, needsEmail, wishes, failed, suggestedIcon }: Props) {
+export default function OwnerListPage({ username, avatarKey, theme, themes, needsEmail, wishes, failed, suggestedIcon }: Props) {
   return (
     <>
       <div className="page">
@@ -22,12 +23,17 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
           </a>
         </Topbar>
 
-        <main>
-          <header className="list-header compact">
-            <h1>Din lista</h1>
-            <p className="intro">
-              Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
-            </p>
+        {/* The page wears the list's theme, so she sees what her visitors will. */}
+        <main data-theme={theme ?? undefined}>
+          <header>
+            {/* The theme's band goes behind the heading only: the buttons stay on the plain page. */}
+            <div className="list-header compact">
+              <h1>Din lista</h1>
+              <p className="intro">
+                Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
+              </p>
+            </div>
+            <div className="list-tools">
             <div className="header-actions">
               <button className="btn" {...opens('ny')}>
                 <Icon name="plus" />
@@ -47,6 +53,34 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
               </button>
             </div>
             <p className="hint ok copied" role="status"></p>
+            {/* The page itself is the preview: /js/theme.js dresses it as a card is chosen, and saves.
+                Without the script the button saves and the page comes back dressed. */}
+            <details className="theme-picker">
+              <summary>
+                Tema: <span data-theme-name>{themes.find(({ id }) => id === theme)?.label ?? 'inget'}</span> ·{' '}
+                <span className="verb" data-theme-verb>
+                  {theme ? 'Byt' : 'Välj'}
+                </span>
+              </summary>
+              <form method="post" action="/lista" data-theme-form>
+                <input type="hidden" name="intent" value="theme" />
+                <fieldset aria-label="Tema">
+                  <label>
+                    <input type="radio" name="theme" value="" data-label="inget" defaultChecked={!theme} />
+                    <span className="theme-card"></span>
+                    Utan tema
+                  </label>
+                  {themes.map(({ id, label }) => (
+                    <label key={id}>
+                      <input type="radio" name="theme" value={id} data-label={label} defaultChecked={id === theme} />
+                      <span className="theme-card" data-card={id}></span>
+                      {label}
+                    </label>
+                  ))}
+                </fieldset>
+                <button className="btn">Spara</button>
+              </form>
+            </details>
             {needsEmail && (
               <p className="notice calm">
                 Byter du telefon kan du bli utelåst från listan. <a href="/konto#epost-rubrik">Lägg till din e-post</a>, så kan vi mejla dig in
@@ -58,6 +92,7 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
                 Det gick inte att spara. Kolla att du har skrivit vad du vill ha, att länken är hela adressen från butikens sida och att bilden är ett vanligt foto.
               </p>
             )}
+            </div>
           </header>
 
           {wishes.length === 0 ? (
@@ -126,48 +161,50 @@ export default function OwnerListPage({ username, avatarKey, needsEmail, wishes,
               ))}
             </ul>
           )}
+
+
+          {/* Inside <main>, so they are dressed by the theme too. These two hold what she has typed, so a stray tap outside must not close them. */}
+          <dialog id="ny" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ny-rubrik">
+            <h2 id="ny-rubrik">Ny önskning</h2>
+            <form method="post" action="/lista" encType="multipart/form-data">
+              <WishFields prefix="ny" icon={suggestedIcon} />
+              <div className="buttons">
+                <button className="btn wide" name="intent" value="add">
+                  Lägg till
+                </button>
+                <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate>
+                  Avbryt
+                </button>
+              </div>
+            </form>
+          </dialog>
+          <dialog id="fran-lank" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="fran-lank-rubrik">
+            <h2 id="fran-lank-rubrik">Lägg till från länk</h2>
+            <p className="reassure">Klistra in länken till det du vill ha, så hämtar vi namn och bild.</p>
+            <form data-from-link>
+              <div className="field">
+                <label htmlFor="hamta-lank">Länk</label>
+                <input type="text" inputMode="url" autoCapitalize="none" autoCorrect="off" spellCheck={false} id="hamta-lank" name="lank" required autoFocus />
+                <p className="hint error" role="alert"></p>
+              </div>
+              <div className="buttons">
+                <button className="btn wide">Hämta</button>
+                <button className="btn quiet wide" type="button" hidden data-manual>
+                  Fyll i själv
+                </button>
+                <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate>
+                  Avbryt
+                </button>
+              </div>
+            </form>
+          </dialog>
         </main>
       </div>
-
-      {/* These two hold what she has typed, so a stray tap outside must not close them. */}
-      <dialog id="ny" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ny-rubrik">
-        <h2 id="ny-rubrik">Ny önskning</h2>
-        <form method="post" action="/lista" encType="multipart/form-data">
-          <WishFields prefix="ny" icon={suggestedIcon} />
-          <div className="buttons">
-            <button className="btn wide" name="intent" value="add">
-              Lägg till
-            </button>
-            <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate>
-              Avbryt
-            </button>
-          </div>
-        </form>
-      </dialog>
-      <dialog id="fran-lank" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="fran-lank-rubrik">
-        <h2 id="fran-lank-rubrik">Lägg till från länk</h2>
-        <p className="reassure">Klistra in länken till det du vill ha, så hämtar vi namn och bild.</p>
-        <form data-from-link>
-          <div className="field">
-            <label htmlFor="hamta-lank">Länk</label>
-            <input type="text" inputMode="url" autoCapitalize="none" autoCorrect="off" spellCheck={false} id="hamta-lank" name="lank" required autoFocus />
-            <p className="hint error" role="alert"></p>
-          </div>
-          <div className="buttons">
-            <button className="btn wide">Hämta</button>
-            <button className="btn quiet wide" type="button" hidden data-manual>
-              Fyll i själv
-            </button>
-            <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate>
-              Avbryt
-            </button>
-          </div>
-        </form>
-      </dialog>
       <script type="module" src="/js/command.js"></script>
       <script type="module" src="/js/forms.js"></script>
       <script type="module" src="/js/picker.js"></script>
       <script type="module" src="/js/list.js"></script>
+      <script type="module" src="/js/theme.js"></script>
     </>
   );
 }
