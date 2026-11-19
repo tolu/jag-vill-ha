@@ -42,6 +42,11 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   Void's docs use legacy permission names and leave some out: go by what the
   failed deploy log could not read, and Cloudflare's API reference for that
   endpoint.
+- Void's auth sets `no-store` on every response to a request with a cookie,
+  whatever the route sets, and looks up the session first. So a Request
+  Header Transform Rule in the dashboard (Rules, "Inga cookies till bilder")
+  removes `Cookie` on `/bild/*`. A new public route that must be cached
+  needs the same. Check with a cookie: `curl -sI -H "Cookie: x=1" <url>`.
 
 ## Product
 
