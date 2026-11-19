@@ -9,6 +9,8 @@ export const lists = sqliteTable('lists', {
   intro: text('intro'),
   // The owner's own picture, shown at the top of the public list.
   avatarKey: text('avatar_key'),
+  // How the public list is dressed: a name from src/theme.ts, or null for the plain look.
+  theme: text('theme'),
   // Set when login exists (step 3); references the auth user.
   ownerId: text('owner_id'),
   createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),

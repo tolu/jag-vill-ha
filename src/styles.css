@@ -1,4 +1,4 @@
-@layer base, components, overrides;
+@layer base, components, themes, overrides;
 
 @layer base {
   :root {
@@ -509,6 +509,56 @@
       border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       padding: 0.7rem 0.9rem;
+    }
+  }
+
+  /* One of a few, each with a dot of colour: the theme for a list. A select
+     styled from here, where the browser allows it. */
+  select.choice {
+    &, &::picker(select) { appearance: base-select; }
+
+    inline-size: 100%;
+    min-block-size: 2.75rem;
+    font: inherit;
+    color: inherit;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 0.7rem 0.9rem;
+    cursor: pointer;
+
+    &::picker-icon { color: var(--ink-soft); transition: rotate 0.2s; }
+    &:open::picker-icon { rotate: 180deg; }
+
+    &::picker(select) {
+      margin-block: 0.25rem;
+      padding: 0.25rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 0.5rem 1.5rem oklch(0% 0 0 / 0.16);
+    }
+
+    & selectedcontent, & option { display: flex; align-items: center; gap: 0.6rem; }
+    & option {
+      min-block-size: 2.75rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: calc(var(--radius) - 0.125rem);
+      cursor: pointer;
+
+      &:is(:hover, :focus-visible) { background: var(--accent-wash); }
+      &:checked { font-weight: 600; }
+      /* The tick goes last, after the name */
+      &::checkmark { order: 1; margin-inline-start: auto; color: var(--accent); }
+    }
+    & .swatch {
+      inline-size: 1.25rem;
+      block-size: 1.25rem;
+      border-radius: 50%;
+      border: 1px solid var(--line-strong);
+      background: var(--swatch, var(--bg));
+      flex: none;
     }
   }
 

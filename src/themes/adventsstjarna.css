@@ -1,0 +1,94 @@
+/* Adventsstjärna: a paper star in a dark window, gold on plum */
+
+/* Playfair Display (OFL): the same heading on Android as on Apple. One file;
+   the range keeps the 500 that styles.css asks for from being faked bolder. */
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/playfair-display-400.woff2") format("woff2");
+  font-weight: 400 500;
+  font-display: swap;
+}
+
+@layer themes {
+  :root:has([data-theme="adventsstjarna"]) {
+    --hue: 350;
+    --bg: light-dark(oklch(97% 0.014 90), oklch(16.5% 0.018 350));
+    --surface: light-dark(oklch(99.3% 0.006 90), oklch(22% 0.025 350));
+    --ink: light-dark(oklch(25% 0.03 350), oklch(93% 0.015 80));
+    --ink-soft: light-dark(oklch(46% 0.03 350), oklch(75% 0.02 60));
+    --line: light-dark(oklch(87% 0.02 85), oklch(31% 0.03 350));
+    --line-strong: light-dark(oklch(58% 0.03 350), oklch(60% 0.03 20));
+    --accent: light-dark(oklch(36% 0.1 355), oklch(84% 0.1 85));
+    --on-accent: light-dark(oklch(96% 0.04 90), oklch(22% 0.04 350));
+    --font-display: "Playfair Display", Didot, "Bodoni 72", ui-serif, Georgia, serif;
+    --radius: 0.1875rem;
+    /* Dark mode: the page is nearly black, so the window can keep its plum */
+    --band: light-dark(oklch(25% 0.065 350), oklch(24.5% 0.07 350));
+    --band-ink: oklch(93% 0.06 88);
+    --band-ink-soft: oklch(88% 0.03 80);
+    --band-head: 3rem;
+    --band-foot: 0.75rem;
+    --gold: oklch(82% 0.11 85);
+  }
+
+  [data-theme="adventsstjarna"] {
+    /* The room above the heading, as themes.css lays it out, and a star that
+       fills it: it grows with the screen and never reaches the first line */
+    --strip: calc(clamp(2rem, 8vw, 4.5rem) + var(--band-head));
+    --star: calc(var(--strip) - 0.75rem);
+    --star-end: 1rem;
+    --glow: calc(var(--star) * 3.4);
+
+    /* Folded paper lit from inside, the punched holes brightest, on a thread */
+    &::before {
+      content: "";
+      inset-inline: auto var(--star-end);
+      inset-block-start: 0;
+      inline-size: var(--star);
+      block-size: calc(var(--strip) - 0.25rem);
+      background:
+        url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 59'><defs><radialGradient id='g' cx='30' cy='30.6' r='30' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='rgb(255,246,200)'/><stop offset='.42' stop-color='rgb(250,205,112)'/><stop offset='1' stop-color='rgb(214,128,50)'/></radialGradient></defs><polygon points='30 0.6 35.5 19.2 53.5 11.9 42.3 27.8 59.2 37.3 39.9 38.5 43 57.6 30 43.2 17 57.6 20.1 38.5 0.8 37.3 17.7 27.8 6.5 11.9 24.5 19.2' fill='url(%23g)'/><path d='M30 30.6L30 0.6L35.5 19.2ZM30 30.6L53.5 11.9L42.3 27.8ZM30 30.6L59.2 37.3L39.9 38.5ZM30 30.6L43 57.6L30 43.2ZM30 30.6L17 57.6L20.1 38.5ZM30 30.6L0.8 37.3L17.7 27.8ZM30 30.6L6.5 11.9L24.5 19.2Z' fill='rgb(150,62,18)' opacity='.24'/><path d='M30 30.6L30 0.6L24.5 19.2ZM30 30.6L53.5 11.9L35.5 19.2ZM30 30.6L59.2 37.3L42.3 27.8ZM30 30.6L43 57.6L39.9 38.5ZM30 30.6L17 57.6L30 43.2ZM30 30.6L0.8 37.3L20.1 38.5ZM30 30.6L6.5 11.9L17.7 27.8Z' fill='rgb(255,250,220)' opacity='.14'/><path d='M30.9 28.8L35.5 19.2M31.9 30.2L42.3 27.8M31.6 31.8L39.9 38.5M30 32.6L30 43.2M28.4 31.8L20.1 38.5M28.1 30.2L17.7 27.8M29.1 28.8L24.5 19.2' stroke='rgb(150,70,24)' stroke-width='.5' opacity='.55'/><path d='M30 27.6L30 2.1M32.3 28.7L52.3 12.8M32.9 31.3L57.8 36.9M31.3 33.3L42.4 56.3M28.7 33.3L17.6 56.3M27.1 31.3L2.2 36.9M27.7 28.7L7.7 12.8' stroke='rgb(255,244,205)' stroke-width='.45' opacity='.7'/><g fill='rgb(255,254,240)' stroke='rgb(255,232,150)' stroke-opacity='.4' stroke-width='.6'><circle cx='27.4' cy='19' r='0.95'/><circle cx='32.6' cy='19' r='0.95'/><circle cx='28.3' cy='14' r='0.75'/><circle cx='31.8' cy='14' r='0.75'/><circle cx='29' cy='9.4' r='0.55'/><circle cx='31' cy='9.4' r='0.55'/><circle cx='32.9' cy='24.7' r='0.7'/><circle cx='37.4' cy='21.3' r='0.95'/><circle cx='40.7' cy='25.4' r='0.95'/><circle cx='41.9' cy='18.9' r='0.75'/><circle cx='44.1' cy='21.6' r='0.75'/><circle cx='46' cy='16.6' r='0.55'/><circle cx='47.2' cy='18.2' r='0.55'/><circle cx='36.4' cy='29.1' r='0.7'/><circle cx='41.9' cy='30.6' r='0.95'/><circle cx='40.7' cy='35.7' r='0.95'/><circle cx='46.6' cy='32.6' r='0.75'/><circle cx='45.8' cy='36' r='0.75'/><circle cx='50.9' cy='34.3' r='0.55'/><circle cx='50.4' cy='36.3' r='0.55'/><circle cx='35.2' cy='34.7' r='0.7'/><circle cx='37.4' cy='39.9' r='0.95'/><circle cx='32.7' cy='42.2' r='0.95'/><circle cx='38.8' cy='44.8' r='0.75'/><circle cx='35.6' cy='46.3' r='0.75'/><circle cx='40.1' cy='49.3' r='0.55'/><circle cx='38.3' cy='50.1' r='0.55'/><circle cx='30' cy='37.2' r='0.7'/><circle cx='27.3' cy='42.2' r='0.95'/><circle cx='22.6' cy='39.9' r='0.95'/><circle cx='24.4' cy='46.3' r='0.75'/><circle cx='21.2' cy='44.8' r='0.75'/><circle cx='21.7' cy='50.1' r='0.55'/><circle cx='19.9' cy='49.3' r='0.55'/><circle cx='24.8' cy='34.7' r='0.7'/><circle cx='19.3' cy='35.7' r='0.95'/><circle cx='18.1' cy='30.6' r='0.95'/><circle cx='14.2' cy='36' r='0.75'/><circle cx='13.4' cy='32.6' r='0.75'/><circle cx='9.6' cy='36.3' r='0.55'/><circle cx='9.1' cy='34.3' r='0.55'/><circle cx='23.6' cy='29.1' r='0.7'/><circle cx='19.3' cy='25.4' r='0.95'/><circle cx='22.6' cy='21.3' r='0.95'/><circle cx='15.9' cy='21.6' r='0.75'/><circle cx='18.1' cy='18.9' r='0.75'/><circle cx='12.8' cy='18.2' r='0.55'/><circle cx='14' cy='16.6' r='0.55'/><circle cx='27.1' cy='24.7' r='0.7'/></g></svg>") no-repeat bottom / 100% auto,
+        linear-gradient(oklch(80% 0.07 80 / 0.75) 0 0) no-repeat top / 1px calc(100% - var(--star) * 0.96);
+    }
+
+    /* The light it throws on the glass, centred on the star. It has thinned
+       to almost nothing where the heading starts. */
+    &::after {
+      content: "";
+      inset-inline: auto calc(var(--star-end) + var(--star) / 2 - var(--glow) / 2);
+      inset-block-start: calc(var(--strip) - 0.25rem - var(--star) * 0.47 - var(--glow) / 2);
+      inline-size: var(--glow);
+      block-size: var(--glow);
+      background: radial-gradient(closest-side, oklch(80% 0.13 78 / 0.6), oklch(74% 0.14 65 / 0.26) 32%, oklch(66% 0.13 50 / 0.08) 62%, transparent);
+    }
+
+    & .list-header h1 { font-weight: 400; letter-spacing: 0; }
+
+    /* Far-off lights in other windows: only in the empty strip above the
+       heading, never beside a letter */
+    & .list-header::before {
+      background:
+        radial-gradient(circle at 9% 3.1rem, oklch(88% 0.09 85 / 0.5) 0 0.6px, transparent 1.4px),
+        radial-gradient(circle at 21% 1.5rem, oklch(88% 0.09 85 / 0.75) 0 0.8px, transparent 1.7px),
+        radial-gradient(circle at 36% 3.6rem, oklch(88% 0.09 85 / 0.4) 0 0.6px, transparent 1.4px),
+        radial-gradient(circle at 47% 0.9rem, oklch(88% 0.09 85 / 0.55) 0 0.6px, transparent 1.4px),
+        radial-gradient(circle at 58% 2.6rem, oklch(88% 0.09 85 / 0.65) 0 0.8px, transparent 1.7px),
+        var(--band);
+    }
+
+    /* Two thin gold lines close the window */
+    & .list-header::after {
+      content: "";
+      inset-block-end: 0;
+      block-size: 0.3125rem;
+      border-block: 1px solid var(--gold);
+    }
+  }
+
+  /* Slow, and only for those who have not asked for stillness */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-theme="adventsstjarna"]::after { animation: theme-glow 6s ease-in-out infinite alternate; }
+  }
+}
+
+@keyframes theme-glow { from { opacity: 0.6; } to { opacity: 1; } }

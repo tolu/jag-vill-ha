@@ -49,6 +49,8 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   without help: design every screen for her.
 - KISS. Ask before adding fields or features.
 - No ads, tracking, affiliate links or third-party scripts and fonts.
+  A font is served from `public/fonts/`, as one woff2 with its licence beside
+  it, and only for a theme's heading: Android has none of Apple's fonts.
 - Outbound links: `target="_blank" rel="noopener nofollow"
   referrerPolicy="no-referrer"`.
 - Copy: a headline may have attitude, the rest is short and concrete. No
@@ -80,6 +82,11 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   the owner, and never read that table from the owner's pages.
 - Anything that stores an object needs a clean-up path for when it is
   replaced or its owner row is deleted.
+- A theme is a name in `src/theme.ts` and a file in `src/themes/`. It sets
+  tokens on `:root:has([data-theme="…"])`, never further down: `--accent`
+  and `--accent-wash` are derived on `:root`. It may dress the heading with
+  a band and four pseudo-elements, and changes no markup or layout.
+  On the dev server `/<username>?tema=<name>` tries one on.
 - Username rules live twice: `src/username.ts` and `public/js/username.js`.
   Change both; `src/username-client.test.js` fails if they disagree.
 - Only an error thrown with `refuse()` in `auth.ts` (code `JVH`) is shown to
@@ -120,6 +127,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   `.void`, shared by every worktree: these are the owner's own accounts.
   Run one server on it at a time, and mind that a migration applied from one
   branch is applied for all of them.
+- `npx void db migrate` goes to the shared data even with `LOCAL_STATE` set.
+  For `app-test`, run the migration's SQL on the sqlite file under
+  `.void/test-state/v3/d1/` and add its name to `_void_migrations`.
 - Anything automated uses the `app-test` server in `.claude/launch.json`. Its
   data is in this checkout's `.void/test-state` and may be thrown away.
 - `void db` commands ignore `LOCAL_STATE` and go to the shared data, `migrate`
