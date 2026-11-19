@@ -1,5 +1,6 @@
-import type { CSSProperties } from 'react';
 import { WISH_ICONS } from '../icons';
+import { Icon } from './Icon';
+import { opensPicture, PictureDialog } from './PictureDialog';
 
 type Values = {
   title: string;
@@ -11,60 +12,38 @@ type Values = {
 
 /**
  * The fields shared by "Ny önskning" and "Ändra önskning". Works as plain HTML:
- * the box shows whichever icon radio is checked (CSS :has), and /js/picker.js
- * adds image preview, drag-and-drop and downscaling on top.
+ * the box opens a dialog with the icons and a file input and shows whichever
+ * icon is checked (CSS :has); /js/picker.js adds image preview, framing,
+ * drag-and-drop and downscaling on top.
  *
  * `autosave` is for a wish that already exists: there the picture or icon is
  * saved when it is chosen, without waiting for "Spara".
  */
 export function WishFields({ values, prefix, icon, autosave }: { values?: Values; prefix: string; icon: string; autosave?: boolean }) {
   const id = (name: string) => `${prefix}-${name}`;
-  const menu = id('utseende');
-  const anchor = `--${menu}`;
+  const dialog = id('utseende');
   return (
     <>
       {/* With `autosave` the form is sent, with intent "utseende", as soon as a picture or icon is chosen. */}
       <div className="appearance" data-autosubmit={autosave ? 'utseende' : undefined}>
-        <button
-          type="button"
-          className="thumb picker"
-          popoverTarget={menu}
-          style={{ anchorName: anchor } as CSSProperties}
-          aria-label="Välj ikon eller bild"
-        >
-          <img src={values?.imageKey ? `/bild/${values.imageKey}` : undefined} alt="" hidden={!values?.imageKey} />
+        <button type="button" className="thumb picker" {...opensPicture(dialog)} aria-label="Välj ikon eller bild">
+          <img src={values?.imageKey ? `/bild/${values.imageKey}` : undefined} alt="" hidden={!values?.imageKey} draggable={false} />
           {WISH_ICONS.map(([name]) => (
             <svg key={name} data-icon={name} aria-hidden="true">
               <use href={`/icons/wish-icons.svg#${name}`} />
             </svg>
           ))}
+          {/* Shown over the box on hover: a click opens the choice of icon or picture. */}
+          <Icon name="edit" />
         </button>
         <div className="field">
           <label htmlFor={id('titel')}>Vad vill du ha?</label>
           {/* A new wish starts in the title: the dialog would otherwise focus the picker, which comes first. */}
           <input type="text" id={id('titel')} name="titel" defaultValue={values?.title} maxLength={120} required autoFocus={!values} />
         </div>
+        <p className="hint error picture-status" role="status"></p>
 
-        <div id={menu} className="appearance-menu" popover="auto" style={{ positionAnchor: anchor } as CSSProperties}>
-          {/* Shown by /js/picker.js once there is a picture to crop. */}
-          <div className="crop" hidden>
-            <div className="crop-view" tabIndex={0} role="group" aria-label="Utsnitt. Dra eller använd piltangenterna för att flytta bilden.">
-              <img alt="" draggable={false} />
-            </div>
-            <label className="crop-zoom">
-              <span className="sr-only">Zoom</span>
-              <input type="range" min="1" max="5" step="0.01" defaultValue="1" />
-            </label>
-            <button type="button" className="btn quiet wide" data-crop-whole>
-              Visa hela bilden
-            </button>
-            <button type="button" className="btn wide" data-crop-done>
-              Klar
-            </button>
-            <button type="button" className="btn quiet wide" data-crop-clear>
-              Byt till ikon
-            </button>
-          </div>
+        <PictureDialog id={dialog} title="Ikon eller bild" hasPicture={Boolean(values?.imageKey)}>
           <fieldset className="icons" aria-label="Ikon">
             {WISH_ICONS.map(([name, label]) => (
               <label key={name} title={label}>
@@ -75,17 +54,7 @@ export function WishFields({ values, prefix, icon, autosave }: { values?: Values
               </label>
             ))}
           </fieldset>
-          <label className="btn quiet wide file">
-            Välj en bild
-            <input type="file" name="bild" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" />
-          </label>
-          {values?.imageKey && (
-            <label className="remove-image">
-              <input type="checkbox" name="tabortbild" />
-              Ta bort bilden
-            </label>
-          )}
-        </div>
+        </PictureDialog>
       </div>
       <div className="field">
         <label htmlFor={id('lank')}>

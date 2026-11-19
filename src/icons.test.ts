@@ -24,9 +24,19 @@ describe('picker box with an image', () => {
     expect(css).toMatch(/@layer base, components, themes, overrides;/);
   });
 
-  it('hides the icons from the overrides layer', () => {
+  it('hides the icons from the overrides layer, but not the pencil shown on hover', () => {
     const overrides = css.slice(css.indexOf('@layer overrides {'));
     expect(css).toContain('@layer overrides {');
-    expect(overrides).toContain('.picker:has(img:not([hidden])) svg { display: none; }');
+    expect(overrides).toContain('.picker:has(img:not([hidden])) svg:not([data-icon="edit"]) { display: none; }');
+  });
+});
+
+// Regression: the icons jumped to full width as the picture dialog faded out.
+// [open] goes the moment it starts closing, so nothing may hang on it: the
+// open and close transitions of dialog.sheet handle the dialog itself.
+describe('picture dialog', () => {
+  it('keeps its contents styled while it fades out', () => {
+    expect(css).toContain('.picture-dialog {');
+    expect(css).not.toContain('.picture-dialog[open]');
   });
 });

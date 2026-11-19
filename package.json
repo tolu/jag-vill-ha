@@ -6,6 +6,7 @@
     "build": "vp build",
     "preview": "vp preview",
     "test": "vp test run",
+    "e2e": "playwright test",
     "typecheck": "tsc --noEmit",
     "format": "vp fmt",
     "format:check": "vp fmt --check",
@@ -15,6 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@void/react": "1.9.1",

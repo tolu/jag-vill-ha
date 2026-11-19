@@ -13,7 +13,10 @@ async function load(buttonPrototype) {
   return onClick;
 }
 
-const clickOn = (button) => ({ target: { closest: (selector) => (selector.includes('show-modal') ? button : null) } });
+// A click on a button with these attributes, or on nothing like it when null.
+const clickOn = (attributes) => ({
+  target: { closest: (selector) => (attributes && selector === 'button[commandfor][command]' ? { getAttribute: (name) => attributes[name] } : null) },
+});
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -23,7 +26,7 @@ describe('command fallback', () => {
     vi.stubGlobal('document', { getElementById: (id) => (id === 'paxa-1' ? dialog : null) });
     const onClick = await load({});
 
-    onClick(clickOn({ getAttribute: () => 'paxa-1' }));
+    onClick(clickOn({ commandfor: 'paxa-1', command: 'show-modal' }));
 
     expect(dialog.showModal).toHaveBeenCalledOnce();
   });
@@ -34,6 +37,28 @@ describe('command fallback', () => {
     const onClick = await load({});
 
     onClick(clickOn(null));
+
+    expect(dialog.showModal).not.toHaveBeenCalled();
+  });
+
+  // The picture dialog's "Klar" closes it with command="close".
+  it('closes the dialog a "close" button points at', async () => {
+    const dialog = { open: true, showModal: vi.fn(), close: vi.fn() };
+    vi.stubGlobal('document', { getElementById: (id) => (id === 'bild' ? dialog : null) });
+    const onClick = await load({});
+
+    onClick(clickOn({ commandfor: 'bild', command: 'close' }));
+
+    expect(dialog.close).toHaveBeenCalledOnce();
+    expect(dialog.showModal).not.toHaveBeenCalled();
+  });
+
+  it('does not open a dialog that is already open', async () => {
+    const dialog = { open: true, showModal: vi.fn() };
+    vi.stubGlobal('document', { getElementById: () => dialog });
+    const onClick = await load({});
+
+    onClick(clickOn({ commandfor: 'bild', command: 'show-modal' }));
 
     expect(dialog.showModal).not.toHaveBeenCalled();
   });
