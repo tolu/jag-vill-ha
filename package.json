@@ -7,7 +7,10 @@
     "preview": "vp preview",
     "test": "vp test run",
     "typecheck": "tsc --noEmit",
-    "postinstall": "void prepare"
+    "format": "vp fmt",
+    "format:check": "vp fmt --check",
+    "postinstall": "void prepare",
+    "prepare": "vp config --no-agent"
   },
   "license": "MIT",
   "devDependencies": {
