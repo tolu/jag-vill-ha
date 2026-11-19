@@ -40,10 +40,13 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   production, unattended.
 - main takes pull requests only, with `check` green and the branch up to
   date. Renaming the `check` job means changing the ruleset too.
-- A failed deploy is re-run from its run in Actions, not with a new merge.
-  One that stops at "Verifying the uploaded Worker" has uploaded a version
-  without activating it, whatever its message says: production is unchanged
-  and a re-run has worked. The job prints Void's own log when it fails.
+- Void reads Cloudflare's version and deployment lists once, right after
+  writing them, and stops when they lag ("superseded", "not the latest
+  upload"). Its log then says `"rollback":"not-needed"`: production is
+  unchanged, whatever the message says. The `Deploy` step tries those
+  again, three times in all, and prints Void's log after each attempt.
+- A deploy that still fails is re-run from its run in Actions, not with a
+  new merge.
 - What is out: the footer on jagvillha.fyi has the commit, which should be
   the merge commit. `npx void project status` lists the Worker's versions
   and which is live; in a worktree it first needs `.void/project.json`
