@@ -38,9 +38,10 @@ export default defineConfig({
       '.claude/settings.local.json',
     ],
   },
-  // The pre-commit hook in .vite-hooks formats what is staged.
+  // The pre-commit hook in .vite-hooks formats and then lints what is staged.
+  // One list, so the two run one after the other, never on a file at once.
   staged: {
-    '*': 'vp fmt --no-error-on-unmatched-pattern',
+    '*': ['vp fmt --no-error-on-unmatched-pattern', 'vp lint --deny-warnings --no-error-on-unmatched-pattern'],
   },
   // What the footer shows. GitHub Actions sets GITHUB_SHA, and the deploy job
   // builds and publishes in one go, so this is the version that is out.

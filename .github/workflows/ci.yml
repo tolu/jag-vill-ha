@@ -32,6 +32,8 @@ jobs:
       - run: npm ci
 
       - run: npm run format:check
+      # Oxlint reports its findings as warnings; the script makes them fail.
+      - run: npm run lint
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
