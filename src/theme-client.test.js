@@ -7,13 +7,17 @@ async function load({ value, label, saves = true }) {
   const main = { dataset: { theme: 'polkagris' } };
   const name = { textContent: 'Polkagris' };
   const verb = { textContent: 'Byt' };
+  let onClick;
   const button = { hidden: false };
+  const close = { textContent: 'Avbryt' };
+  const dialog = { close: vi.fn() };
   const form = {
     action: '/lista',
-    closest: () => main,
-    querySelector: (selector) => (selector === 'button' ? button : { value, dataset: { label } }),
+    closest: (selector) => (selector === 'dialog' ? dialog : main),
+    querySelector: (selector) => (selector === '[data-save]' ? button : selector === '[data-close]' ? close : { value, dataset: { label } }),
     addEventListener: (type, listener) => {
       if (type === 'change') onChange = listener;
+      if (type === 'click') onClick = listener;
     },
   };
   main.querySelector = (selector) => (selector.includes('name') ? name : verb);
@@ -27,15 +31,34 @@ async function load({ value, label, saves = true }) {
   vi.stubGlobal('location', location);
   vi.resetModules();
   await import('../public/js/theme.js');
-  return { main, name, verb, button, fetch, location, change: () => onChange() };
+  const click = (detail, onCard = true) => onClick({ detail, target: { closest: () => (onCard ? {} : null) } });
+  return { main, name, verb, button, close, dialog, fetch, location, change: () => onChange(), click };
 }
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('theme picker', () => {
   it('hides the save button: choosing saves', async () => {
-    const { button } = await load({ value: 'vinternatt', label: 'Vinternatt' });
+    const { button, close } = await load({ value: 'vinternatt', label: 'Vinternatt' });
     expect(button.hidden).toBe(true);
+    expect(close.textContent).toBe('Stäng');
+  });
+
+  it('closes the picker when a card is tapped', async () => {
+    const page = await load({ value: 'vinternatt', label: 'Vinternatt' });
+
+    page.click(1);
+
+    expect(page.dialog.close).toHaveBeenCalledOnce();
+  });
+
+  it('stays open while the arrow keys move between cards, and for a tap beside them', async () => {
+    const page = await load({ value: 'vinternatt', label: 'Vinternatt' });
+
+    page.click(0);
+    page.click(1, false);
+
+    expect(page.dialog.close).not.toHaveBeenCalled();
   });
 
   it('dresses the page in the chosen theme at once, and saves it', async () => {

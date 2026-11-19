@@ -144,6 +144,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 ## Verifying
 
+- Logged in, the quick way: `/dev/login` on the dev server logs in the test
+  owner `testare`, made with three wishes on the first visit. The landing
+  page links to it. It is behind `import.meta.env.DEV` and cut from a build.
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
 - Log in to test accounts in Playwright, not in the Browser pane: the pane
   shares cookies between all localhost ports, so a login on `app-test` logs

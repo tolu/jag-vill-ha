@@ -94,7 +94,7 @@ shipped is a handful of small hand-written files, about 600 lines together:
 | File | Does | Without it |
 |---|---|---|
 | `passkey.js` | Sign-up, login, adding a passkey | Nothing: WebAuthn needs script |
-| `list.js` | Drag to reorder, share or copy the link, "Från länk" | Add, edit and delete still work |
+| `list.js` | Drag to reorder, share or copy the link, adding from a link | Add, edit and delete still work |
 | `picker.js` | Picture preview, drop a picture, choosing the part to keep, for wishes and the profile picture | Picking an icon or a file still works; the whole picture is uploaded |
 | `forms.js` | Spinner and locked fields while a form is sent | The form is sent anyway |
 
@@ -136,7 +136,7 @@ The auth secret lives in Cloudflare, not in the repository.
 
 ```
 pages/        one file per page, with its loader and action in *.server.ts
-routes/       /bild (pictures) and two small JSON endpoints for "Från länk"
+routes/       /bild (pictures) and two small JSON endpoints for adding from a link
 crons/        the weekly clean-up
 src/          rules, with their tests, and a few shared components
 public/js/    the scripts

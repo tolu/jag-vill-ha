@@ -1,14 +1,24 @@
-// The theme picker on the owner's list. Choosing a card dresses the page at
-// once and saves in the background; the page is the confirmation. Without
-// this script the form's own button saves, and the page comes back dressed.
+// The theme picker on the owner's list. Choosing a card closes the picker,
+// dresses the page at once and saves in the background; the page is the
+// confirmation. Without this script the form's «Spara» saves, and the page
+// comes back dressed.
 
 const form = document.querySelector('form[data-theme-form]');
 
 if (form) {
+  const dialog = form.closest('dialog');
   const main = form.closest('main');
   const name = main.querySelector('[data-theme-name]');
   const verb = main.querySelector('[data-theme-verb]');
-  form.querySelector('button').hidden = true;
+  form.querySelector('[data-save]').hidden = true;
+  form.querySelector('[data-close]').textContent = 'Stäng';
+
+  // A tap on a card is the choice made, also on the card already chosen.
+  // Arrow keys move between cards with a click of their own (detail 0): those
+  // leave the picker open, and Escape or «Stäng» closes it.
+  form.addEventListener('click', (event) => {
+    if (event.detail > 0 && event.target.closest('label')) dialog.close();
+  });
 
   form.addEventListener('change', async () => {
     const chosen = form.querySelector('input[name="theme"]:checked');

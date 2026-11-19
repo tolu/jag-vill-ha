@@ -31,6 +31,12 @@ export default function HomePage({ deleted }: Props) {
               Logga in
             </a>
           </div>
+          {/* Dev server only, and cut from a build: the way in as a test owner. */}
+          {import.meta.env.DEV && (
+            <p className="hint">
+              Dev server: <a href="/dev/login">log in as the test owner</a>
+            </p>
+          )}
         </header>
 
         <ol className="points">

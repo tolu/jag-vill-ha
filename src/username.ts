@@ -9,6 +9,7 @@ const RESERVED = new Set([
   'assets',
   'auth',
   'bild',
+  'dev',
   'hjalp',
   'icons',
   'installningar',

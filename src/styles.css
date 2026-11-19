@@ -400,7 +400,7 @@
 
   body:has([data-sorting]) { cursor: grabbing; }
 
-  /* "Skicka listan": one icon at a time. Copy by default, share where the device can, check after copying */
+  /* "Dela": one icon at a time. Copy by default, share where the device can, check after copying */
   [data-copy] {
     & [data-icon="check"], & [data-icon="share"] { display: none; }
     /* Same test as list.js, so the right icon is there before the script runs */
@@ -416,7 +416,10 @@
   .list-header:has(+ .list-tools) { padding-block-end: 0; }
   .list-tools {
     padding-block: 1rem 1.25rem;
-    & .header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    /* One row on every phone. Each button is as wide as its words: one that
+       fills the row stops looking like a button. */
+    & .header-actions { display: flex; gap: 0.5rem; }
+    & .header-actions .btn { white-space: nowrap; }
     & .copied { font-size: 1rem; margin-block-start: 0.75rem; }
   }
 
@@ -521,24 +524,27 @@
     }
   }
 
-  /* Owner's list: the theme picker. A line that says which theme the list
-     wears, and under it one card per theme. The cards' pictures come from the
-     theme files. */
-  .theme-picker {
-    margin-block-start: 0.75rem;
+  /* Owner's list: the line that says which theme the list wears. All of it
+     opens the picker; the last word looks like the link it is. */
+  .theme-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-block-size: 2.75rem;
+    margin-block-start: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
 
-    & summary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35em;
-      min-block-size: 2.75rem;
-      cursor: pointer;
-      list-style: none;
-      &::-webkit-details-marker { display: none; }
-    }
     & .verb { color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; }
+  }
 
-    & form { display: grid; gap: 0.75rem; padding-block: 0.25rem 0.5rem; }
+  /* The picker: one card per theme. The cards' pictures come from the theme files. */
+  .theme-picker {
+    & form { margin-block-start: 1rem; }
     & fieldset {
       border: 0;
       padding: 0;
@@ -571,9 +577,9 @@
         border-radius: 50%;
         background: white;
         color: black;
+        font: 700 0.8125rem/1.25rem var(--font-body);
         /* Seen on a pale card as well as a dark one */
         box-shadow: 0 0 0 1px oklch(0% 0 0 / 0.45);
-        font: 700 0.8125rem/1.25rem var(--font-body);
       }
     }
   }
@@ -812,6 +818,8 @@
 
     & h2 { font: 500 1.5rem/1.2 var(--font-display); letter-spacing: -0.01em; }
     & .reassure { color: var(--ink-soft); margin-block: 0.25rem 1.25rem; }
+    /* A link inside that line is still something to hit with a thumb */
+    & .reassure .link { display: inline-flex; align-items: center; min-block-size: 2.75rem; }
     & form { display: grid; gap: 1rem; }
     & .buttons { display: grid; gap: 0.5rem; }
   }

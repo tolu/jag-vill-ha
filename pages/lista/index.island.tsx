@@ -21,6 +21,13 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
             {avatarKey ? <img className="avatar" src={`/bild/${avatarKey}`} alt="" /> : <Icon name="user" />}
             Konto
           </a>
+          {/* The same button as on the account page, so nobody goes there only to leave. */}
+          <form method="post" action="/konto">
+            <button className="link" name="intent" value="logout">
+              <Icon name="sign-out" />
+              Logga ut
+            </button>
+          </form>
         </Topbar>
 
         {/* The page wears the list's theme, so she sees what her visitors will. */}
@@ -39,48 +46,22 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
                 <Icon name="plus" />
                 Lägg till önskning
               </button>
-              {/* Needs JS to fetch and fill in the form: hidden by CSS when scripting is off. */}
-              <button className="btn quiet" data-needs-js {...opens('fran-lank')}>
-                <Icon name="globe" />
-                Från länk
-              </button>
               {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
               <button className="btn quiet" type="button" data-needs-js data-copy={`/${username}`}>
                 <Icon name="copy" />
                 <Icon name="share" />
                 <Icon name="check" />
-                Skicka listan
+                Dela
               </button>
             </div>
             <p className="hint ok copied" role="status"></p>
-            {/* The page itself is the preview: /js/theme.js dresses it as a card is chosen, and saves.
-                Without the script the button saves and the page comes back dressed. */}
-            <details className="theme-picker">
-              <summary>
-                Tema: <span data-theme-name>{themes.find(({ id }) => id === theme)?.label ?? 'inget'}</span> ·{' '}
-                <span className="verb" data-theme-verb>
-                  {theme ? 'Byt' : 'Välj'}
-                </span>
-              </summary>
-              <form method="post" action="/lista" data-theme-form>
-                <input type="hidden" name="intent" value="theme" />
-                <fieldset aria-label="Tema">
-                  <label>
-                    <input type="radio" name="theme" value="" data-label="inget" defaultChecked={!theme} />
-                    <span className="theme-card"></span>
-                    Utan tema
-                  </label>
-                  {themes.map(({ id, label }) => (
-                    <label key={id}>
-                      <input type="radio" name="theme" value={id} data-label={label} defaultChecked={id === theme} />
-                      <span className="theme-card" data-card={id}></span>
-                      {label}
-                    </label>
-                  ))}
-                </fieldset>
-                <button className="btn">Spara</button>
-              </form>
-            </details>
+            {/* Which theme the list wears. The whole line opens the picker. */}
+            <button className="theme-line" type="button" {...opens('tema')}>
+              Tema: <span data-theme-name>{themes.find(({ id }) => id === theme)?.label ?? 'inget'}</span> ·{' '}
+              <span className="verb" data-theme-verb>
+                {theme ? 'Byt' : 'Välj'}
+              </span>
+            </button>
             {needsEmail && (
               <p className="notice calm">
                 Byter du telefon kan du bli utelåst från listan. <a href="/konto#epost-rubrik">Lägg till din e-post</a>, så kan vi mejla dig in
@@ -166,6 +147,13 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
           {/* Inside <main>, so they are dressed by the theme too. These two hold what she has typed, so a stray tap outside must not close them. */}
           <dialog id="ny" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ny-rubrik">
             <h2 id="ny-rubrik">Ny önskning</h2>
+            {/* The other way to add a wish. It needs JS to fetch and fill in this form: hidden by CSS when scripting is off. */}
+            <p className="reassure" data-needs-js>
+              Har du en länk från en butik?{' '}
+              <button className="link" type="button" {...opens('fran-lank')}>
+                Klistra in den
+              </button>
+            </p>
             <form method="post" action="/lista" encType="multipart/form-data">
               <WishFields prefix="ny" icon={suggestedIcon} />
               <div className="buttons">
@@ -173,6 +161,36 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
                   Lägg till
                 </button>
                 <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate>
+                  Avbryt
+                </button>
+              </div>
+            </form>
+          </dialog>
+          {/* Choosing a card is the whole errand: /js/theme.js closes this, dresses the page and saves.
+              Without the script «Spara» does it, and the page comes back dressed. */}
+          <dialog id="tema" className="sheet theme-picker" {...{ closedby: 'any' }} aria-labelledby="tema-rubrik">
+            <h2 id="tema-rubrik">Välj tema</h2>
+            <form method="post" action="/lista" data-theme-form>
+              <input type="hidden" name="intent" value="theme" />
+              <fieldset aria-label="Tema">
+                <label>
+                  <input type="radio" name="theme" value="" data-label="inget" defaultChecked={!theme} />
+                  <span className="theme-card"></span>
+                  Utan tema
+                </label>
+                {themes.map(({ id, label }) => (
+                  <label key={id}>
+                    <input type="radio" name="theme" value={id} data-label={label} defaultChecked={id === theme} />
+                    <span className="theme-card" data-card={id}></span>
+                    {label}
+                  </label>
+                ))}
+              </fieldset>
+              <div className="buttons">
+                <button className="btn wide" data-save>
+                  Spara
+                </button>
+                <button className="btn quiet wide" type="submit" formMethod="dialog" formNoValidate data-close>
                   Avbryt
                 </button>
               </div>
