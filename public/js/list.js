@@ -1,5 +1,6 @@
 // Owner's list: copy the list link, and reorder wishes by dragging the grip
 // or with the arrow keys while a grip has focus.
+import { fetchPicture } from './dropped.js';
 
 // --- Share or copy the list link -----------------------------------------------
 // Phones get their own share sheet (which also offers "copy"); elsewhere the
@@ -178,13 +179,8 @@ if (linkForm && wishDialog) {
   // browser to read it), and then takes the same path as a chosen file:
   // downscaled here, shown in the box, uploaded with the form.
   async function usePicture(url) {
-    const body = new FormData();
-    body.set('bild', url);
-    const response = await fetch('/api/bild', { method: 'POST', body }).catch(() => null);
-    if (!response?.ok) return;
-    const blob = await response.blob();
-    const picture = new File([blob], 'bild', { type: blob.type });
-    wishForm.querySelector('.appearance').dispatchEvent(new CustomEvent('picker:image', { detail: picture }));
+    const picture = await fetchPicture(url);
+    if (picture) wishForm.querySelector('.appearance').dispatchEvent(new CustomEvent('picker:image', { detail: picture }));
   }
 
   linkForm.addEventListener('submit', async (event) => {

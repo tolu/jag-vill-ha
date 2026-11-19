@@ -8,6 +8,7 @@ UI in Swedish, code and docs in English.
 npm run typecheck && npm test && npm run build
 npm run format       # oxfmt via Vite+; `check` in CI fails on unformatted code
 npm run lint         # oxlint via Vite+; `check` in CI fails on any finding
+npm run e2e          # Playwright: Chrome, Safari (WebKit) and a phone, on app-test data
 npx void db generate # after changing db/schema.ts or auth.ts
 npx void db migrate  # apply locally, keeps data
 ```
@@ -126,6 +127,17 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - iOS Safari never tells CSS about the keyboard: no viewport unit shrinks,
   and `interactive-widget` is ignored. A sheet with an autofocused field
   must not slide in from off screen, or Safari scrolls the field out of view.
+- A `data-*` attribute always gets a value: React renders a bare one as
+  "true", and `picker.js` sends `data-autosubmit` along as the form's `intent`.
+- A dialog uses `dialog.sheet` as it is: its open and close transitions need
+  the dialog's own `display`. Lay out the contents in an inner element and
+  hang no style on `[open]`, or the contents jump while it fades out.
+- Safari 18 fires no `toggle` or `beforetoggle` on `<dialog>`, and reports
+  a mouse click on a `<label>` with `event.detail` 0. Prepare a dialog in the
+  opener's `click` listener, which runs before its command.
+- Chrome gives no file for a picture dragged from another page, only
+  `text/html` and `text/uri-list`: `public/js/dropped.js` fetches it
+  through `/api/bild`.
 
 ## Void gotchas
 
@@ -161,6 +173,13 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 ## Verifying
 
+- What a page does in the browser is tested in `e2e/*.e2e.ts` with
+  Playwright, not checked by hand: a fix or feature in `public/js/` or in
+  what a form sends gets an e2e test, and the test must fail without it.
+  Each test adds its own wish (`addWish` in `e2e/helpers.ts`) and deletes
+  it. `/api/bild` is answered by the test, never fetched from a shop.
+  WebKit stands in for Safari: it caught a mouse click Safari reports as
+  `detail` 0. The tests reuse a running `app-test` server, or start one.
 - Logged in, the quick way: `/dev/login` on the dev server logs in the test
   owner `testare`, made with three wishes on the first visit. The landing
   page links to it. It is behind `import.meta.env.DEV` and cut from a build.
@@ -173,22 +192,29 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 - A new link, button or column is tested by finding and clicking it at the
   owner's window width. Going straight to its address does not show that it
   can be found.
-- Without passkeys (Safari, the iOS simulator): give a test account an
-  e-mail, post it to `/aterstall` and open the link from the inbox. The
-  link is in `/__void/inbox/<id>/raw?token=…`, quoted-printable.
+- Without passkeys (Safari, the iOS simulator): `/dev/login` works there
+  too. `testare`'s recovery link is never mailed (`keepDevLink`). For other
+  accounts, post the e-mail to `/aterstall` and open the link from the inbox:
+  `/__void/inbox/<id>/raw?token=…`, quoted-printable.
 - iOS simulator: `xcrun simctl boot <device>`, then open
   `http://localhost:5183/…`. Wait about 3 s after a tap that raises the
   keyboard before the screenshot: Safari is still scrolling.
+- `simctl openurl` can time out right after a boot: open Safari once
+  first. The first tap after a page loads is often lost; screenshot and tap
+  again. iOS 18.2 has Safari without `commandfor`, the `command.js` path.
 - Only the iOS runtimes that are installed can be tested. Check with
   `xcrun simctl list runtimes`; `xcodebuild -downloadPlatform iOS` gets
   the current one (8 GB, the owner starts it).
 - After a CSS edit, reload before measuring.
 - Screenshots for a PR: Playwright's `page.screenshot({ path })`. The Browser
   pane cannot save a file.
+- Design proposals: start from the existing dialogs, cards and buttons, and
+  mock them on a page that links the built CSS (`dist/client/assets/styles-*.css`)
+  and `public/icons/`, screenshot at 1280 and 390 with Playwright.
 - `app-test` needs about ten seconds before it answers. Its browser session
   outlives a restart: clear cookies to see a page logged out.
-- Sent mail is at `/__void/inbox?token=…` on the dev server. The server
-  prints the URL at start; the token is also in `.void/dev-trigger-token`.
+- Sent mail is at `/__void/inbox?token=…` on the dev server. Each server
+  prints its own URL at start; `.void/dev-trigger-token` is not `app-test`'s.
 - The first login link used for an unproven e-mail logs out that account's
   other sessions (passkeys stay). Log the owner in again before continuing.
 

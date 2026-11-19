@@ -172,7 +172,7 @@
   /* Account page heading with the round profile picture to its right */
   .account-head { display: flex; gap: 1rem; align-items: start; justify-content: space-between; }
 
-  /* The profile picture reuses the icon picker's box and popover, as a circle */
+  /* The profile picture reuses the icon picker's box and dialog, as a circle */
   .appearance.round {
     display: block;
 
@@ -192,7 +192,6 @@
       &:has(img:not([hidden])) { border-style: solid; }
     }
 
-    & + .appearance-menu, & .appearance-menu { position-area: bottom span-left; }
   }
 
   /* Destructive account actions, set apart at the bottom of the account page */
@@ -639,7 +638,7 @@
     }
   }
 
-  /* Icon or image for a wish: a box that opens a popover (no JS needed for icons) */
+  /* Icon or image for a wish: a box that opens a dialog (no JS needed for icons) */
   .appearance {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -660,13 +659,13 @@
       overflow: clip;
       cursor: pointer;
 
-      &:hover, &[data-drop] { border-color: var(--accent); }
+      &:hover { border-color: var(--accent); }
       & svg { display: none; inline-size: 55%; block-size: 55%; fill: currentColor; }
       & img { inline-size: 100%; block-size: 100%; object-fit: cover; }
     }
   }
 
-  /* The box shows whichever icon is checked in its popover */
+  /* The box shows whichever icon is checked in its dialog */
   .appearance:has(input[value="gift"]:checked) .picker [data-icon="gift"],
   .appearance:has(input[value="book-open"]:checked) .picker [data-icon="book-open"],
   .appearance:has(input[value="t-shirt"]:checked) .picker [data-icon="t-shirt"],
@@ -692,31 +691,26 @@
   .appearance:has(input[value="puzzle-piece"]:checked) .picker [data-icon="puzzle-piece"],
   .appearance:has(input[value="heart"]:checked) .picker [data-icon="heart"] { display: block; }
 
-  .appearance-menu {
-    position-area: bottom span-right;
-    position-try-fallbacks: flip-block;
-    margin: 0.25rem 0;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface);
-    color: var(--ink);
-    padding: 0.5rem;
-    inline-size: min(19rem, 100vw - 2rem);
+  /* Choosing the icon or picture: a modal dialog like the others (a sheet on
+     a phone). With a picture it shows the frame; without one, the choices. */
+  .picture-dialog {
+    /* The grid is inside, so the dialog's own display is left to the open and
+       close transitions of dialog.sheet. */
+    & .picture-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
 
-    &:popover-open { display: grid; gap: 0.5rem; }
-
+    /* The icons are cards, like the themes */
     & .icons {
       border: 0;
       padding: 0;
       margin: 0;
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 0.25rem;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.5rem;
     }
 
     & .icons label {
-      --cell-bg: transparent;
-      --cell-line: transparent;
+      --cell-bg: var(--surface);
+      --cell-line: var(--line);
       --cell-fg: var(--ink-soft);
       aspect-ratio: 1;
       display: grid;
@@ -727,29 +721,77 @@
       border-radius: var(--radius);
       cursor: pointer;
 
-      &:hover { --cell-line: var(--line); }
-      &:has(:checked) { --cell-bg: var(--accent-wash); --cell-line: var(--accent); --cell-fg: var(--accent); }
+      &:hover { --cell-line: var(--line-strong); }
+      &:has(:checked) { --cell-bg: var(--accent-wash); --cell-line: var(--accent); --cell-fg: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
       &:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 
       & input { position: absolute; opacity: 0; pointer-events: none; }
-      & svg { inline-size: 1.5rem; block-size: 1.5rem; fill: currentColor; }
+      & svg { inline-size: 55%; block-size: 55%; fill: currentColor; }
     }
 
-    /* The label is the button; the native file input stays for keyboard and no-JS use */
-    & .file {
+    /* "Välj en bild": a card to press or drop a picture on. The native file
+       input stays inside it, for the keyboard and for pages without script. */
+    & .drop {
       position: relative;
-      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0 0.5rem;
+      min-block-size: 3.5rem;
+      padding: 0.5rem 1rem;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+
+      & small { color: var(--ink-soft); font-weight: 400; font-size: 0.875rem; }
       & input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+      &:hover { border-color: var(--accent); background: var(--accent-wash); }
+      &:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
     }
 
-    & .remove-image { display: flex; gap: 0.5rem; align-items: center; font-size: 0.875rem; accent-color: var(--accent); }
+    & .picture-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+    /* "Ta bort" ticks it; it is for ticking by hand only without script */
+    & .remove-image { display: flex; gap: 0.5rem; align-items: center; accent-color: var(--accent); }
+    @media (scripting: enabled) { & .remove-image { display: none; } }
+
+    & .hint { color: var(--ink-soft); font-size: 0.9375rem; }
+    & .hint.error { color: var(--danger); }
+
+    /* Icons stay at least a thumb wide on the narrowest phones */
+    @media (width < 22.5rem) { & .icons { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+    /* There is nothing to drag on a phone */
+    @media (hover: none) { & .drop small { display: none; } }
   }
+
+  /* A failed drop is explained under the box, across the whole row */
+  .appearance .picture-status { grid-column: 1 / -1; }
+
+  /* While dragging a picture over the form, the places it can land light up */
+  .appearance[data-drop] :is(.picker, .drop) { border-color: var(--accent); }
+  .appearance[data-drop] .drop { background: var(--accent-wash); }
+
+  /* With a picture to frame, the choices step aside; without one, so do the
+     picture's own buttons. */
+  .picture-dialog:has(.crop:not([hidden])) :is(.icons, .drop) { display: none; }
+  .picture-dialog:has(.crop[hidden]) .picture-actions { display: none; }
 
   /* Choosing which part of a picture to keep: drag the picture inside the frame */
   .crop {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 0.5rem;
+    gap: 0.75rem;
+
+    /* Square, but never so tall that "Klar" leaves a small screen */
+    & .crop-frame {
+      position: relative;
+      inline-size: min(100%, 20rem, max(8rem, 100dvh - 17rem));
+      justify-self: center;
+    }
 
     & .crop-view {
       /* The picture is taken out of the flow: it is far larger than the frame
@@ -757,6 +799,7 @@
       position: relative;
       aspect-ratio: 1;
       overflow: clip;
+      border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--bg);
       cursor: grab;
@@ -768,12 +811,57 @@
       & img { position: absolute; inset: 0 auto auto 0; max-inline-size: none; pointer-events: none; background: white; }
     }
 
-    & .crop-zoom input { inline-size: 100%; accent-color: var(--accent); }
+    /* "Visa hela bilden" sits on the picture, beside the frame rather than in
+       it, so a press on it is not taken for dragging the picture. */
+    & .crop-whole {
+      --btn-bg: var(--surface);
+      position: absolute;
+      inset-block-start: 0.5rem;
+      inset-inline-end: 0.5rem;
+    }
+
+    & .crop-hint { color: var(--ink-soft); font-size: 0.9375rem; text-align: center; }
+
+    & .crop-zoom {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      & label { flex: 1; display: flex; min-inline-size: 0; }
+      & input { inline-size: 100%; accent-color: var(--accent); }
+    }
   }
 
-  /* While a picture is being cropped the icons step aside, so the popover stays short */
-  .appearance-menu:has(.crop:not([hidden])) .icons { display: none; }
-  .appearance-menu { max-block-size: calc(100dvh - 1rem); overflow-y: auto; }
+  /* The wish's box: a pencil over it on hover says that a click changes it */
+  .appearance:not(.round) .picker {
+    position: relative;
+    & [data-icon="edit"] {
+      position: absolute;
+      inset: 0;
+      inline-size: 100%;
+      block-size: 100%;
+      padding: 28%;
+      background: oklch(0% 0 0 / 0.45);
+      color: white;
+    }
+  }
+  @media (hover: hover) {
+    .appearance:not(.round) .picker:hover [data-icon="edit"] { display: block; }
+  }
+  .appearance:not(.round) .picker:focus-visible [data-icon="edit"] { display: block; }
+  /* A touch screen has no hover: there the pencil is a badge in the corner, always */
+  @media (hover: none) {
+    .appearance:not(.round) .picker [data-icon="edit"] {
+      display: block;
+      inset: auto 0.125rem 0.125rem auto;
+      inline-size: 1.25rem;
+      block-size: 1.25rem;
+      padding: 0.2rem;
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px var(--line);
+    }
+  }
 
   /* The profile picture is shown round, so it is cropped round too */
   .appearance.round .crop-view { border-radius: 50%; }
@@ -879,6 +967,20 @@
   /* The hidden attribute must win over component display rules. */
   [hidden] { display: none !important; }
 
+  /* A dropped picture on its way from another site: a spinner instead of the icon. */
+  .picker[aria-busy="true"] {
+    & > * { display: none !important; }
+    &::before {
+      content: '';
+      inline-size: 40%;
+      block-size: 40%;
+      border: 2px solid currentColor;
+      border-inline-end-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+  }
+
   /* Buttons that only work with script. Shown from the first paint, not when
      the script has run, so they do not pop in a moment after the page. */
   @media (scripting: none) {
@@ -895,7 +997,7 @@
 
   /* A chosen image replaces the icon in the picker box. The per-icon rules that
      show the checked icon are more specific, so this sits in a later layer. */
-  .picker:has(img:not([hidden])) svg { display: none; }
+  .picker:has(img:not([hidden])) svg:not([data-icon="edit"]) { display: none; }
 
   /* On the round profile picture the pencil is always a badge in the corner,
      with or without a picture. */

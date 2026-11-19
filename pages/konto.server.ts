@@ -5,6 +5,7 @@ import type { RouteUrl } from 'void/routes';
 import { userTable } from '@auth-schema';
 import { lists } from '@schema';
 import { deleteAccount } from '../src/account';
+import { AVATAR_INTENT } from '../src/avatar-intent';
 import { resolveImageChange, writeWithImage } from '../src/image-lifecycle';
 import { deleteImage, saveImage } from '../src/images';
 import { isPlaceholderEmail, parseRecoveryEmail, placeholderEmail } from '../src/recovery-email';
@@ -65,7 +66,7 @@ export const action = defineHandler(async (c) => {
   }
 
   // The profile picture saves on its own, as soon as one is chosen or removed.
-  if (body['intent'] === 'avatar') {
+  if (body['intent'] === AVATAR_INTENT) {
     const [list] = await db.select().from(lists).where(eq(lists.ownerId, user.id));
     if (!list) return c.redirect('/konto', 303);
 
@@ -97,6 +98,10 @@ export const action = defineHandler(async (c) => {
     }
     return c.redirect(back('lista', 'lista-rubrik'), 303);
   }
+
+  // Only the e-mail form gets this far: an empty field removes the address, so
+  // a form that sent something unexpected must not land here.
+  if (body['intent'] !== 'email') return c.redirect('/konto', 303);
 
   const input = String(body['epost'] ?? '').trim();
   // An empty field removes the address again.
