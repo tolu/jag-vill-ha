@@ -1,0 +1,47 @@
+@import './themes/polkagris.css';
+@import './themes/vinternatt.css';
+@import './themes/pepparkaka.css';
+@import './themes/adventsstjarna.css';
+@import './themes/ljusslinga.css';
+
+/* Themes for a list (issue #9). Each theme is a file in themes/, named in
+   src/theme.ts.
+
+   A theme is one block of tokens on :root, switched by `data-theme` on the
+   page's <main>. The tokens have to sit on :root, where styles.css derives
+   --accent and --accent-wash from them: set further down they would not be
+   derived again.
+
+   A theme may also dress the heading: a full-width band behind it (--band),
+   and four pseudo-elements for decoration. Nothing else changes: no markup,
+   no layout, and the list below the heading keeps the plain page colour. */
+
+/* The shared part sits in a layer of its own inside `themes`: a theme's own
+   rules then win over it whatever order the files are read in. */
+@layer themes {
+  @layer shared {
+    /* The band and its decoration reach the edges of the screen */
+    :root:has([data-theme]) .shell { overflow-x: clip; }
+
+    [data-theme] {
+      position: relative;
+
+      &::before, &::after, & .list-header::before, & .list-header::after {
+        position: absolute;
+        inset-inline: calc(50% - 50vw);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      & .list-header {
+        position: relative;
+        /* --band-head and --band-foot: room for what hangs above and sits below the text */
+        padding-block: calc(clamp(2rem, 8vw, 4.5rem) + var(--band-head, 0rem)) calc(1.25rem + var(--band-foot, 0rem));
+
+        &::before { content: ""; inset-block: 0; z-index: -2; background: var(--band, none); }
+        & h1 { color: var(--band-ink, inherit); }
+        & > .intro { color: var(--band-ink-soft, var(--ink-soft)); }
+      }
+    }
+  }
+}

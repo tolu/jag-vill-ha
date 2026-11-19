@@ -1,0 +1,76 @@
+/* Vinternatt: snow falling over spruces, the page is the snow */
+
+/* The heading's own face, the same on every phone: Android has no serif italic
+   worth the name. Only the italic is loaded, so the dialog heading and the
+   footer line are italic too. */
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader-500-italic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@layer themes {
+  :root:has([data-theme="vinternatt"]) {
+    --hue: 255;
+    --bg: light-dark(oklch(97.5% 0.012 240), oklch(19% 0.03 260));
+    --surface: light-dark(oklch(99.5% 0.005 240), oklch(24% 0.035 260));
+    --ink: light-dark(oklch(24% 0.035 255), oklch(93% 0.015 240));
+    --ink-soft: light-dark(oklch(46% 0.035 255), oklch(75% 0.025 240));
+    --line: light-dark(oklch(88% 0.02 240), oklch(33% 0.035 260));
+    --line-strong: light-dark(oklch(58% 0.03 250), oklch(60% 0.03 250));
+    --accent: light-dark(oklch(42% 0.13 258), oklch(81% 0.085 235));
+    --on-accent: light-dark(white, oklch(20% 0.04 260));
+    --font-display: "Newsreader", ui-serif, "New York", "Iowan Old Style", Georgia, serif;
+    --band-ink: oklch(98% 0.01 240);
+    --band-ink-soft: oklch(90% 0.03 240);
+    --band-head: 0.5rem;
+    --band-foot: 3rem;
+    --sky-top: light-dark(oklch(27% 0.09 275), oklch(12% 0.04 275));
+    --sky-low: light-dark(oklch(46% 0.115 255), oklch(27% 0.08 262));
+  }
+
+  [data-theme="vinternatt"] {
+    & .list-header h1 { font-style: italic; }
+
+    /* The sky, with the moon in it */
+    & .list-header { anchor-name: --band; }
+    & .list-header::before {
+      background:
+        url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><path d='M19 2a12 12 0 1 0 7 17A10 10 0 0 1 19 2z' fill='rgb(255,244,214)'/></svg>") no-repeat right 1.25rem top 1rem / 1.75rem 1.75rem,
+        linear-gradient(var(--sky-top), var(--sky-low));
+    }
+
+    /* Snow, near and far, over the whole band but thinned out behind the text:
+       a flake next to a letter reads as a dot on an a or an o. */
+    &::before {
+      content: "";
+      position-anchor: --band;
+      inset-block: anchor(top) anchor(bottom);
+      --snow: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160' fill='white'><circle cx='14' cy='22' r='2' opacity='.9'/><circle cx='68' cy='8' r='1.2' opacity='.6'/><circle cx='120' cy='40' r='1.7' opacity='.8'/><circle cx='44' cy='74' r='1.3' opacity='.55'/><circle cx='98' cy='98' r='2.1' opacity='.85'/><circle cx='150' cy='118' r='1.2' opacity='.6'/><circle cx='22' cy='132' r='1.6' opacity='.75'/><circle cx='78' cy='148' r='1.1' opacity='.5'/></svg>");
+      background: var(--snow) 3rem 2rem / 16rem 16rem, var(--snow) 0 0 / 10rem 10rem;
+      mask: linear-gradient(black 2rem, oklch(0% 0 0 / 0.18) 3.75rem, oklch(0% 0 0 / 0.18) calc(100% - 5.5rem), black calc(100% - 3.25rem));
+    }
+
+    /* Hills and spruces cut out of the page colour, so the band ends in snow */
+    & .list-header::after {
+      content: "";
+      inset-block-end: -1px;
+      block-size: 3.5rem;
+      background: var(--bg);
+      mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 56'><path d='M0 56V44Q50 34 100 42T200 40T300 46T400 44V56Z'/><path d='M38 16L45 28H42L48 38H44L51 46H25L32 38H28L34 28H31ZM64 26L68.2 33.2H66.4L70 39.2H67.6L71.8 44H56.2L60.4 39.2H58L61.6 33.2H59.8ZM150 7.5L158.1 21.3H154.6L161.5 32.8H156.9L164.9 42H135.1L143.1 32.8H138.5L145.4 21.3H141.9ZM236 25L240.9 33.4H238.8L243 40.4H240.2L245.1 46H226.9L231.8 40.4H229L233.2 33.4H231.1ZM262 18L269 30H266L272 40H268L275 48H249L256 40H252L258 30H255ZM338 22L343.6 31.6H341.2L346 39.6H342.8L348.4 46H327.6L333.2 39.6H330L334.8 31.6H332.4Z'/></svg>") repeat-x bottom / auto 100%;
+    }
+  }
+
+  /* Slow, and only for those who have not asked for stillness */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-theme="vinternatt"]::before { animation: theme-snowfall 28s linear infinite; }
+  }
+}
+
+/* Each snow layer falls exactly its own height, so the loop has no seam */
+@keyframes theme-snowfall {
+  from { background-position: 3rem 2rem, 0 0; }
+  to { background-position: 3rem 18rem, 0 10rem; }
+}

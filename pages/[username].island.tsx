@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import '../src/styles.css';
+import '../src/themes.css';
 import { Thumb } from '../src/components/Thumb';
 import { wishTransitionName } from '../src/wish';
 import type { Props } from './[username].server';
@@ -12,6 +13,7 @@ export default function ListPage({
   displayName,
   avatarKey,
   intro,
+  theme,
   wishes,
   isOwner,
   notice,
@@ -22,7 +24,7 @@ export default function ListPage({
 }: Props) {
   const action = `/${username}`;
   return (
-    <main className="page">
+    <main className="page" data-theme={theme ?? undefined}>
       <header className="list-header">
         {avatarKey && <img className="avatar large" src={`/bild/${avatarKey}`} alt="" />}
         <h1>{displayName} vill ha</h1>

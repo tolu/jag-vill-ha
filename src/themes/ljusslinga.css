@@ -1,0 +1,80 @@
+/* Ljusslinga: a string of lights over spruce green, lingon red buttons */
+
+/* Jost 600, latin subset (SIL OFL, public/fonts/JOST-LICENSE). The one file
+   answers for every weight asked of it, so nothing is faked bolder. */
+@font-face {
+  font-family: "Jost";
+  src: url("/fonts/jost-600.woff2") format("woff2");
+  font-weight: 500 700;
+  font-display: swap;
+}
+
+@layer themes {
+  :root:has([data-theme="ljusslinga"]) {
+    --hue: 160;
+    --bg: light-dark(oklch(97% 0.012 95), oklch(16.5% 0.016 165));
+    --surface: light-dark(oklch(99.3% 0.006 95), oklch(22% 0.022 165));
+    --ink: light-dark(oklch(24% 0.03 160), oklch(93% 0.015 100));
+    --ink-soft: light-dark(oklch(45% 0.03 160), oklch(75% 0.02 140));
+    --line: light-dark(oklch(87% 0.02 120), oklch(31% 0.03 165));
+    --line-strong: light-dark(oklch(58% 0.03 160), oklch(60% 0.03 160));
+    /* Lingon: a berry red, leaning away from the orange-red of an error */
+    --accent: light-dark(oklch(45% 0.16 18), oklch(78% 0.115 14));
+    --on-accent: light-dark(white, oklch(20% 0.04 18));
+    --danger: light-dark(oklch(50% 0.16 42), oklch(79% 0.13 55));
+    --font-display: "Jost", Futura, "Century Gothic", "Trebuchet MS", system-ui, sans-serif;
+    /* Dark: the band is lifted well above the page, or it stops being a band */
+    --band-color: light-dark(oklch(31% 0.06 162), oklch(29% 0.062 160));
+    /* Dark: night gathers behind the bulbs, so their glow has something to light */
+    --band-night: light-dark(transparent, oklch(17% 0.035 165 / 0.75));
+    /* The wire, the sockets and the bulbs as unlit glass. `round` fits a whole
+       number of swags to the screen, so the edge never cuts through a bulb. */
+    --band:
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 54'><defs><path id='p' d='M-3 4.5C-3 8-6 10-6 15.5a6 6 0 0 0 12 0C6 10 3 8 3 4.5Z'/><g id='s'><rect x='-3.4' y='-1.6' width='6.8' height='6.6' rx='1.4' fill='rgb(14,26,20)'/><path d='M-3.4 1h6.8M-3.4 3h6.8' stroke='rgb(70,92,80)' stroke-width='.7'/></g></defs><path d='M0 5Q80 25 160 5' fill='none' stroke='rgb(10,22,16)' stroke-width='1.6'/><path d='M0 4.4Q80 24.4 160 4.4' fill='none' stroke='rgb(150,180,160)' stroke-opacity='.6' stroke-width='.7'/><use href='%23p' x='20' y='9.4' fill='rgb(122,44,40)'/><use href='%23p' x='60' y='14.4' fill='rgb(128,100,40)'/><use href='%23p' x='100' y='14.4' fill='rgb(46,92,128)'/><use href='%23p' x='140' y='9.4' fill='rgb(140,132,108)'/><use href='%23s' x='20' y='9.4'/><use href='%23s' x='60' y='14.4'/><use href='%23s' x='100' y='14.4'/><use href='%23s' x='140' y='9.4'/></svg>") round no-repeat left top / 10rem auto,
+      linear-gradient(var(--band-night), transparent 5.5rem),
+      var(--band-color);
+    --band-ink: oklch(96% 0.02 95);
+    --band-ink-soft: oklch(89% 0.03 120);
+    --band-head: 2rem;
+    --band-foot: 1.25rem;
+  }
+
+  [data-theme="ljusslinga"] {
+    /* The light itself: every other bulb in each layer, so the two can take
+       turns glowing. Same tile as the wire, so they stay on their sockets. */
+    &::before, &::after {
+      content: "";
+      inset-block-start: 0;
+      block-size: 6rem;
+      background: round no-repeat left top / 10rem auto;
+    }
+    &::before {
+      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 54'><defs><radialGradient id='a'><stop stop-color='rgb(255,84,66)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(255,84,66)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(255,84,66)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(255,84,66)' stop-opacity='0'/></radialGradient><radialGradient id='b'><stop stop-color='rgb(96,190,255)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(96,190,255)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(96,190,255)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(96,190,255)' stop-opacity='0'/></radialGradient><radialGradient id='h' cy='.64' r='.42'><stop stop-color='white' stop-opacity='.85'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><path id='p' d='M-3 4.5C-3 8-6 10-6 15.5a6 6 0 0 0 12 0C6 10 3 8 3 4.5Z'/></defs><circle cx='20' cy='24' r='22' fill='url(%23a)'/><circle cx='100' cy='29' r='22' fill='url(%23b)'/><use href='%23p' x='20' y='9.4' fill='rgb(255,84,66)'/><use href='%23p' x='100' y='14.4' fill='rgb(96,190,255)'/><use href='%23p' x='20' y='9.4' fill='url(%23h)'/><use href='%23p' x='100' y='14.4' fill='url(%23h)'/></svg>");
+    }
+    &::after {
+      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 54'><defs><radialGradient id='a'><stop stop-color='rgb(255,196,58)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(255,196,58)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(255,196,58)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(255,196,58)' stop-opacity='0'/></radialGradient><radialGradient id='b'><stop stop-color='rgb(255,232,180)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(255,232,180)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(255,232,180)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(255,232,180)' stop-opacity='0'/></radialGradient><radialGradient id='h' cy='.64' r='.42'><stop stop-color='white' stop-opacity='.85'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><path id='p' d='M-3 4.5C-3 8-6 10-6 15.5a6 6 0 0 0 12 0C6 10 3 8 3 4.5Z'/></defs><circle cx='60' cy='29' r='22' fill='url(%23a)'/><circle cx='140' cy='24' r='22' fill='url(%23b)'/><use href='%23p' x='60' y='14.4' fill='rgb(255,196,58)'/><use href='%23p' x='140' y='9.4' fill='rgb(255,236,196)'/><use href='%23p' x='60' y='14.4' fill='url(%23h)'/><use href='%23p' x='140' y='9.4' fill='url(%23h)'/></svg>");
+    }
+
+    & .list-header h1 { font-weight: 600; letter-spacing: -0.015em; }
+
+    /* The band ends in drooping spruce boughs: needles fanning out from each
+       twig, cut from the page colour so the green hangs into the list.
+       Whole pixels per tile: a scaled tile leaves hairlines between boughs. */
+    & .list-header::after {
+      content: "";
+      inset-block-end: -1px;
+      block-size: 1rem;
+      background: var(--bg);
+      mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 16'><path d='M0 16V1L2.5 5 6.5 2.5 8.5 8.5 13 4 15.5 12 20.5 5.5 24 15.5 27.5 5.5 32.5 12 35 4 39.5 8.5 41.5 2.5 45.5 5 48 1V16Z'/></svg>") repeat-x center bottom / 3rem 1rem;
+    }
+  }
+
+  /* Slow, and only for those who have not asked for stillness: a bulb dims to
+     a faint glow over its unlit glass and comes back, never off and on */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-theme="ljusslinga"]::before { animation: ljusslinga-glow 4.5s ease-in-out infinite alternate; }
+    [data-theme="ljusslinga"]::after { animation: ljusslinga-glow 4.5s ease-in-out -4.5s infinite alternate; }
+  }
+}
+
+@keyframes ljusslinga-glow { from { opacity: 1; } to { opacity: 0.3; } }
