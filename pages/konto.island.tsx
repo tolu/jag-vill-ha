@@ -1,10 +1,10 @@
-import type { CSSProperties } from 'react';
+import { createElement, type CSSProperties } from 'react';
 import '../src/styles.css';
 import { Icon } from '../src/components/Icon';
 import { Topbar } from '../src/components/Topbar';
 import type { Props } from './konto.server';
 
-export default function AccountPage({ username, displayName, intro, avatarKey, email, saved, recovered }: Props) {
+export default function AccountPage({ username, displayName, intro, theme, themes, avatarKey, email, saved, recovered }: Props) {
   return (
     <div className="page narrow">
       <Topbar>
@@ -130,9 +130,30 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
               </label>
               <input type="text" id="intro" name="intro" defaultValue={intro} maxLength={300} />
             </div>
+            <div className="field">
+              <label htmlFor="tema">Tema</label>
+              {/* A select the page may style: each option carries its dot of colour, and so does the closed box.
+                  A browser that cannot style it shows its own select with the same names. */}
+              <select className="choice" id="tema" name="tema" defaultValue={theme ?? ''}>
+                <button>
+                  {/* Too new for React's types */}
+                  {createElement('selectedcontent')}
+                </button>
+                <option value="">
+                  <span className="swatch"></span>
+                  Utan tema
+                </option>
+                {themes.map(({ id, label, swatch }) => (
+                  <option key={id} value={id}>
+                    <span className="swatch" style={{ '--swatch': swatch } as CSSProperties}></span>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="buttons">
               <button className="btn wide" name="intent" value="list">
-                Spara namn och hälsning
+                Spara
               </button>
             </div>
           </form>

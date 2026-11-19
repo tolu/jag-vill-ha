@@ -1,0 +1,122 @@
+/* Polkagris: white and candy red, after the striped rock from Gränna.
+   A stick across the top, another under the heading with a round sweet
+   beside it. The page itself stays white: the airy one of the set. */
+
+/* Fredoka SemiBold, OFL: see /fonts/FREDOKA-LICENSE. One file serves every
+   weight the headings ask for (500 to 700), so nothing is faked bold. */
+@font-face {
+  font-family: "Fredoka";
+  src: url("/fonts/fredoka-600.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@layer themes {
+  :root:has([data-theme="polkagris"]) {
+    --hue: 20;
+    --bg: light-dark(oklch(98.8% 0.006 20), oklch(18% 0.03 15));
+    --surface: light-dark(oklch(99.8% 0.002 20), oklch(23.5% 0.035 15));
+    --ink: light-dark(oklch(25% 0.03 20), oklch(94% 0.012 30));
+    --ink-soft: light-dark(oklch(46% 0.03 20), oklch(76% 0.025 20));
+    --line: light-dark(oklch(89% 0.03 15), oklch(32% 0.04 15));
+    --line-strong: light-dark(oklch(60% 0.04 20), oklch(60% 0.04 15));
+    --accent: light-dark(oklch(50% 0.2 25), oklch(79% 0.12 15));
+    --on-accent: light-dark(white, oklch(20% 0.04 20));
+    /* Accent is red here, so an error leaves red for burnt orange and amber */
+    --danger: light-dark(oklch(46% 0.13 55), oklch(82% 0.13 75));
+    --font-display: "Fredoka", ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+    --radius: 1rem;
+    --band-ink: light-dark(var(--accent), oklch(86% 0.085 15));
+    --band-head: 0.75rem;
+    /* Room for the sweet, which is taller than the stick it lies beside */
+    --band-foot: 2rem;
+
+    --stripe: light-dark(oklch(57% 0.21 25), oklch(58% 0.2 25));
+    --stripe-gap: light-dark(oklch(99.5% 0.004 60), oklch(95% 0.018 60));
+    --candy-edge: light-dark(oklch(57% 0.21 25 / 0.45), oklch(40% 0.14 25 / 0.6));
+    /* In the dark a pink button reads as faded: there it is the red of the stick */
+    --candy-btn: light-dark(var(--accent), oklch(53% 0.2 25));
+    --candy-btn-ink: white;
+    --blush: light-dark(oklch(96% 0.03 15), oklch(25% 0.075 20));
+    /* Shine first, which makes the stripes a round stick. The stripes are a
+       real polkagris: a wide red, then a thin one in the white. */
+    --candy:
+      linear-gradient(oklch(100% 0 0 / 0.1), oklch(100% 0 0 / 0.6) 24%, oklch(100% 0 0 / 0) 50%, oklch(20% 0.1 20 / 0.2)),
+      repeating-linear-gradient(-55deg,
+        var(--stripe) 0 0.45rem, var(--stripe-gap) 0.45rem 0.85rem,
+        var(--stripe) 0.85rem 0.97rem, var(--stripe-gap) 0.97rem 1.4rem);
+
+    /* The footer's short stroke is a sweet too: finer stripes for its size */
+    & .site-footer > div::before {
+      inline-size: 2.5rem;
+      block-size: 0.4375rem;
+      border-radius: 1rem;
+      background:
+        linear-gradient(oklch(100% 0 0 / 0.5), oklch(100% 0 0 / 0) 50%, oklch(20% 0.1 20 / 0.2)),
+        repeating-linear-gradient(-55deg, var(--stripe) 0 0.2rem, var(--stripe-gap) 0.2rem 0.45rem);
+      box-shadow: inset 0 0 0 1px var(--candy-edge);
+    }
+  }
+
+  [data-theme="polkagris"] {
+    /* The stick across the top of the page */
+    &::before {
+      content: "";
+      inset-block-start: 0;
+      block-size: 0.875rem;
+      background: var(--candy);
+      box-shadow: 0 1px 0 var(--candy-edge), 0 2px 6px oklch(from var(--stripe) l c h / 0.18);
+    }
+
+    /* A blush under it, so the white page is not flat. Short enough to end
+       above the sticky filter row, which has the plain page colour. */
+    &::after {
+      content: "";
+      inset-block-start: 0;
+      block-size: 8rem;
+      z-index: -3;
+      background: linear-gradient(var(--blush), var(--bg));
+    }
+
+    & .list-header h1 { font-weight: 600; letter-spacing: 0; }
+
+    /* The stick under the heading: a whole one, with both ends showing */
+    & .list-header::after {
+      content: "";
+      inset-inline: 0 3.25rem;
+      inset-block-end: 1.0625rem;
+      block-size: 0.875rem;
+      border-radius: 1rem;
+      background: var(--candy);
+      box-shadow: inset 0 0 0 1px var(--candy-edge), 0 2px 4px oklch(from var(--stripe) l c h / 0.2);
+    }
+
+    /* And a round one beside it. Not the band: this theme has none. */
+    & .list-header::before {
+      inset-inline: auto 0;
+      inset-block: auto 0.25rem;
+      inline-size: 2.5rem;
+      block-size: 2.5rem;
+      z-index: -1;
+      border-radius: 50%;
+      rotate: -12deg;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cdefs%3E%3CclipPath id='c'%3E%3Ccircle r='9.5'/%3E%3C/clipPath%3E%3CradialGradient id='g' cx='.32' cy='.26' r='.8'%3E%3Cstop offset='0' stop-color='rgb(255,255,255)' stop-opacity='.75'/%3E%3Cstop offset='.35' stop-color='rgb(255,255,255)' stop-opacity='0'/%3E%3Cstop offset='.7' stop-color='rgb(60,0,10)' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='rgb(60,0,10)' stop-opacity='.3'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cg clip-path='url(%23c)'%3E%3Ccircle r='10' fill='rgb(255,250,246)'/%3E%3Cpath fill='rgb(212,38,56)' d='M0 0Q5.4 -4.5 15.0 0.0L13.0 7.5Q6.9 -1.2 0 0ZM0 0Q6.6 2.4 7.5 13.0L0.0 15.0Q4.5 5.4 0 0ZM0 0Q1.2 6.9 -7.5 13.0L-13.0 7.5Q-2.4 6.6 0 0ZM0 0Q-5.4 4.5 -15.0 0.0L-13.0 -7.5Q-6.9 1.2 0 0ZM0 0Q-6.6 -2.4 -7.5 -13.0L-0.0 -15.0Q-4.5 -5.4 0 0ZM0 0Q-1.2 -6.9 7.5 -13.0L13.0 -7.5Q2.4 -6.6 0 0Z'/%3E%3Ccircle r='10' fill='url(%23g)'/%3E%3C/g%3E%3Ccircle r='9.5' fill='none' stroke='rgb(170,25,45)' stroke-opacity='.55' stroke-width='.5'/%3E%3C/svg%3E") center / contain no-repeat;
+      box-shadow: 0 2px 5px oklch(from var(--stripe) l c h / 0.25);
+    }
+
+    /* Boiled sweets: round, with a little shine on the ones to press */
+    & :is(.btn, .badge, .filters label) { border-radius: 2rem; }
+    & .wish .thumb { border-radius: 0.875rem; }
+    & .btn:not(.quiet) {
+      --btn-bg: var(--candy-btn);
+      --btn-fg: var(--candy-btn-ink);
+      --btn-line: var(--candy-btn);
+      background-image: linear-gradient(oklch(100% 0 0 / 0.16), oklch(100% 0 0 / 0) 55%);
+      box-shadow: inset 0 -2px 0 oklch(20% 0.1 20 / 0.18);
+      &:hover { --btn-bg: color-mix(in oklch, var(--candy-btn) 88%, black); }
+    }
+
+    /* An edge too: the fill alone is close to the pink of a taken wish */
+    & .notice { border: 1px solid color-mix(in oklch, var(--danger) 55%, var(--surface)); font-weight: 600; }
+  }
+}

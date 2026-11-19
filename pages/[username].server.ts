@@ -5,6 +5,7 @@ import { and, asc, db, eq, inArray } from 'void/db';
 import type { RouteUrl } from 'void/routes';
 import { lists, reservations, wishes } from '@schema';
 import { giverToken, hashToken, newToken, parseGiverName, publicWishes, reserveOutcome, reservationsForViewer } from '../src/reservation';
+import { parseTheme } from '../src/theme';
 import { checkUsername, normalizeUsername } from '../src/username';
 import { isNorwegianVisitor, possessive, priceSearchLinks, shopLabel, thumbHue } from '../src/wish';
 
@@ -59,6 +60,8 @@ export const loader = defineHandler(async (c) => {
     displayName: list.displayName,
     avatarKey: list.avatarKey,
     intro: list.intro,
+    // On the dev server `?tema=` tries a theme on without saving it.
+    theme: (import.meta.env.DEV ? parseTheme(c.req.query('tema')) : null) ?? parseTheme(list.theme),
     isOwner,
     notice: notice as 'taken' | 'name' | 'gone' | null,
     reservedTitle: reserved?.title ?? null,

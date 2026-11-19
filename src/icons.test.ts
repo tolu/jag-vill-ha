@@ -21,7 +21,7 @@ describe.each(WISH_ICONS.map(([name]) => name))('icon %s', (name) => {
 // The hide rule therefore lives in a later cascade layer, which always wins.
 describe('picker box with an image', () => {
   it('declares the overrides layer last', () => {
-    expect(css).toMatch(/@layer base, components, overrides;/);
+    expect(css).toMatch(/@layer base, components, themes, overrides;/);
   });
 
   it('hides the icons from the overrides layer', () => {
