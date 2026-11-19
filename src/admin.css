@@ -1,0 +1,165 @@
+/* Only the admin pages load this, so nobody else pays for it. */
+@layer components {
+  .admin {
+    padding-block-end: 3rem;
+    font-variant-numeric: tabular-nums;
+
+    & h2 { font: 600 1rem/1.3 var(--font-body); margin-block: 2.5rem 0.75rem; }
+    & .soft { color: var(--ink-soft); }
+  }
+
+  .admin-tabs {
+    display: flex;
+    gap: 1.5rem;
+    border-block-end: 1px solid var(--line);
+    margin-block-end: 1.5rem;
+
+    & a {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 2.75rem;
+      color: var(--ink-soft);
+      text-decoration: none;
+      border-block-end: 2px solid transparent;
+      margin-block-end: -1px;
+    }
+    & a[aria-current] { color: var(--ink); font-weight: 600; border-color: var(--ink); }
+  }
+
+  /* The headline number, with the range to its right */
+  .admin-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+
+    & .figure { font: 500 3.5rem/1 var(--font-display); }
+    & p { color: var(--ink-soft); margin-block-start: 0.25rem; }
+  }
+
+  .ranges {
+    display: flex;
+    gap: 0.25rem;
+
+    & a {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 2.75rem;
+      padding-inline: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      text-decoration: none;
+    }
+    & a[aria-current] { border-color: var(--line-strong); color: var(--ink); font-weight: 600; }
+  }
+
+  .chart {
+    position: relative;
+    margin-block: 1.25rem 1rem;
+
+    & svg { display: block; inline-size: 100%; block-size: 10rem; }
+    & .grid { stroke: var(--line); }
+    & .base { stroke: var(--line-strong); }
+    & :is(.grid, .base, .line) { vector-effect: non-scaling-stroke; }
+    & .area { fill: var(--accent); opacity: 0.1; }
+    & .hit { fill: transparent; }
+    & .hit:hover { fill: var(--accent); opacity: 0.12; }
+    & .chart-top { position: absolute; inset: 0.375rem auto auto 0; }
+    & :is(.chart-top, figcaption) { color: var(--ink-soft); font-size: 0.75rem; line-height: 1; }
+    & figcaption { display: flex; justify-content: space-between; margin-block-start: 0.5rem; }
+  }
+
+  .chart .line,
+  .spark .line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .spark { inline-size: 5rem; block-size: 1.5rem; flex: none; }
+  .admin-table .spark { inline-size: 3.5rem; }
+
+  /* The three measures: pressing one puts it in the chart and the calendar */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+
+    & a {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      text-decoration: none;
+    }
+    & a[aria-current] { border-color: var(--accent); outline: 1px solid var(--accent); }
+    & small { display: block; color: var(--ink-soft); font-size: 0.8125rem; }
+    & strong { font-size: 1.375rem; font-weight: 600; }
+  }
+
+  .calendar {
+    overflow-x: auto;
+
+    & svg { display: block; inline-size: 100%; min-inline-size: 36rem; }
+    & text { fill: var(--ink-soft); font-size: 10px; }
+    & .l0 { fill: var(--line); }
+    & .l1 { fill: color-mix(in oklch, var(--accent) 30%, var(--surface)); }
+    & .l2 { fill: color-mix(in oklch, var(--accent) 55%, var(--surface)); }
+    & .l3 { fill: color-mix(in oklch, var(--accent) 80%, var(--surface)); }
+    & .l4 { fill: var(--accent); }
+  }
+
+  .admin-table {
+    overflow-x: auto;
+
+    & table { inline-size: 100%; border-collapse: collapse; font-size: 0.9375rem; white-space: nowrap; }
+    & :is(th, td) { padding: 0.625rem 0.75rem 0.625rem 0; text-align: start; border-block-end: 1px solid var(--line); }
+    /* The last column holds Delete: it must not end up outside the table's edge */
+    & :is(th, td):last-child { padding-inline-end: 0; text-align: end; }
+    & th { color: var(--ink-soft); font-size: 0.8125rem; font-weight: 400; }
+    & .num { text-align: end; }
+    & .date { font-size: 0.8125rem; }
+    /* E-mail as an envelope: plain when confirmed, faded when there is none */
+    & .mail { display: inline-flex; align-items: center; gap: 0.125rem; color: var(--ink-soft); font-size: 0.8125rem; }
+    & .mail.confirmed { color: var(--ink); }
+    & .mail.none { opacity: 0.3; }
+    /* Delete: an icon alone, red, and big enough to press */
+    & .delete {
+      display: inline-grid;
+      place-items: center;
+      inline-size: 2.75rem;
+      block-size: 2.75rem;
+      margin-block: -0.625rem;
+      border-radius: var(--radius);
+      color: var(--danger);
+    }
+    & .delete:hover { background: color-mix(in oklch, var(--danger) 12%, var(--surface)); }
+    & .delete .ui-icon { inline-size: 1.25rem; block-size: 1.25rem; }
+  }
+
+  /* System: a name and its value per row */
+  .facts {
+    display: grid;
+    grid-template-columns: 1fr auto;
+
+    & :is(dt, dd) { padding-block: 0.625rem; border-block-end: 1px solid var(--line); }
+    & dt { color: var(--ink-soft); }
+    & dd { text-align: end; }
+    & .commit { font-family: ui-monospace, monospace; }
+  }
+}
+
+@layer components {
+  /* The delete page is a form like the account page's: keep it as narrow */
+  .admin-delete { max-inline-size: 26rem; }
+}
