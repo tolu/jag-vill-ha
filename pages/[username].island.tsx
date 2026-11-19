@@ -84,7 +84,7 @@ export default function ListPage({
           )}
 
           <ul className="wishes">
-            {wishes.map((wish) => (
+            {wishes.map((wish, index) => (
               <li
                 key={wish.id}
                 className="wish"
@@ -92,7 +92,7 @@ export default function ListPage({
                 style={{ '--thumb-hue': wish.hue, viewTransitionName: wishTransitionName(wish.id) } as CSSProperties}
               >
                 <div className="thumb" aria-hidden="true">
-                  <Thumb title={wish.title} icon={wish.icon} imageKey={wish.imageKey} />
+                  <Thumb title={wish.title} icon={wish.icon} imageKey={wish.imageKey} index={index} />
                 </div>
                 <h2>{wish.title}</h2>
                 {wish.note && <p className="meta">{wish.note}</p>}

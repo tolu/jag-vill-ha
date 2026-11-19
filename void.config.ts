@@ -3,6 +3,12 @@ import { defineConfig } from 'void/config';
 export default defineConfig({
   routing: {
     typedRoutes: true,
+    headers: {
+      // Built CSS has a content hash in its name, so it never changes under a
+      // URL. Void only does this for JS by itself: without it every page waits
+      // for the stylesheets to be revalidated before it can paint.
+      '/assets/*': ['Cache-Control: public, max-age=31536000, immutable'],
+    },
   },
   worker: {
     compatibility_date: '2026-02-24',
