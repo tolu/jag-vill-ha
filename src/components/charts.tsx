@@ -23,7 +23,11 @@ function path(values: number[], top: number, height: number) {
  */
 export function LineChart({ points, unit }: { points: Point[]; unit: string }) {
   const top = ceiling(points.map((point) => point.count));
-  const line = path(points.map((point) => point.count), top, HEIGHT);
+  const line = path(
+    points.map((point) => point.count),
+    top,
+    HEIGHT,
+  );
   const slot = WIDTH / points.length;
   return (
     <figure className="chart">

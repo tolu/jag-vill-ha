@@ -14,12 +14,12 @@ export default function RecoverPage({ sent, expired }: Props) {
           {sent ? (
             <>
               <p className="lede">
-                Om adressen hör till en lista har vi mejlat en länk nu. Den gäller i en timme och bara en gång. Öppna den på telefonen
-                eller datorn du vill använda.
+                Om adressen hör till en lista har vi mejlat en länk nu. Den gäller i en timme och bara en gång. Öppna den på telefonen eller datorn du
+                vill använda.
               </p>
               <p className="lede">
-                Kommer inget mejl? Titta i skräpposten, eller <a href="/aterstall">be om en ny länk</a>. Lade du aldrig till någon e-post
-                finns tyvärr ingen väg in.
+                Kommer inget mejl? Titta i skräpposten, eller <a href="/aterstall">be om en ny länk</a>. Lade du aldrig till någon e-post finns tyvärr
+                ingen väg in.
               </p>
             </>
           ) : (

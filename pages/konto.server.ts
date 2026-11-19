@@ -26,7 +26,16 @@ export const loader = defineHandler(async (c) => {
     avatarKey: list.avatarKey,
     intro: list.intro ?? '',
     email: isPlaceholderEmail(user.email) ? null : user.email,
-    saved: saved === 'epost' || saved === 'upptagen' || saved === 'ogiltig' || saved === 'lista' || saved === 'fel-namn' || saved === 'fel-bild' || saved === 'bild' ? saved : null,
+    saved:
+      saved === 'epost' ||
+      saved === 'upptagen' ||
+      saved === 'ogiltig' ||
+      saved === 'lista' ||
+      saved === 'fel-namn' ||
+      saved === 'fel-bild' ||
+      saved === 'bild'
+        ? saved
+        : null,
     // She came in through the mailed link and has no key on this device yet.
     recovered: c.req.query('aterstalld') === '1',
   };
@@ -74,8 +83,12 @@ export const action = defineHandler(async (c) => {
   }
 
   if (body['intent'] === 'list') {
-    const displayName = String(body['namn'] ?? '').trim().slice(0, 40);
-    const intro = String(body['intro'] ?? '').trim().slice(0, 300);
+    const displayName = String(body['namn'] ?? '')
+      .trim()
+      .slice(0, 40);
+    const intro = String(body['intro'] ?? '')
+      .trim()
+      .slice(0, 300);
     if (displayName) {
       await db
         .update(lists)

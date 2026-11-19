@@ -7,36 +7,15 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": [
-      "void/env"
-    ],
+    "types": ["void/env"],
     "jsx": "react-jsx",
     "paths": {
-      "void/db": [
-        "./.void/db.d.ts"
-      ],
-      "@schema": [
-        "./db/schema.ts"
-      ],
-      "@schema/*": [
-        "./db/schema/*"
-      ],
-      "void/routes": [
-        "./.void/routes.d.ts"
-      ],
-      "@auth-schema": [
-        "./.void/better-auth-schema.ts"
-      ]
+      "void/db": ["./.void/db.d.ts"],
+      "@schema": ["./db/schema.ts"],
+      "@schema/*": ["./db/schema/*"],
+      "void/routes": ["./.void/routes.d.ts"],
+      "@auth-schema": ["./.void/better-auth-schema.ts"]
     }
   },
-  "include": [
-    "auth.ts",
-    "crons",
-    "db",
-    "middleware",
-    "pages",
-    "queues",
-    "routes",
-    "src"
-  ]
+  "include": ["auth.ts", "crons", "db", "middleware", "pages", "queues", "routes", "src"]
 }

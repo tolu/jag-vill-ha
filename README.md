@@ -35,12 +35,12 @@ affiliate links, no tracking, nothing sold. The interface is in Swedish.
 
 ## How it works
 
-| | |
-|---|---|
-| **Önskelista** | One list per account, at `jagvillha.fyi/<name>`. A wish is a title, plus an optional link, comment and an icon or a picture. A picture can be moved and zoomed to choose which part is shown. |
-| **Paxa** | A giver types their name and the wish is theirs. Other givers see "Paxad av Anna". A cookie on that device lets them undo it. |
-| **Ägaren** | Signs in with a passkey. No password, and no email unless they add one for recovery. Can add a picture of themselves, and can delete the account with everything in it. |
-| **Hitta billigast** | Each wish links to a search on Prisjakt and Google Shopping. Plain links, nothing fetched or tracked. |
+|                     |                                                                                                                                                                                               |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Önskelista**      | One list per account, at `jagvillha.fyi/<name>`. A wish is a title, plus an optional link, comment and an icon or a picture. A picture can be moved and zoomed to choose which part is shown. |
+| **Paxa**            | A giver types their name and the wish is theirs. Other givers see "Paxad av Anna". A cookie on that device lets them undo it.                                                                 |
+| **Ägaren**          | Signs in with a passkey. No password, and no email unless they add one for recovery. Can add a picture of themselves, and can delete the account with everything in it.                       |
+| **Hitta billigast** | Each wish links to a search on Prisjakt and Google Shopping. Plain links, nothing fetched or tracked.                                                                                         |
 
 The owner is kept out on the server, not in the interface. When the person
 looking at a list is its owner, the reservation query is never run, and the
@@ -91,12 +91,12 @@ used directly, without fallbacks.
 The public list and the landing page work with JavaScript turned off. What is
 shipped is a handful of small hand-written files, about 600 lines together:
 
-| File | Does | Without it |
-|---|---|---|
-| `passkey.js` | Sign-up, login, adding a passkey | Nothing: WebAuthn needs script |
-| `list.js` | Drag to reorder, share or copy the link, adding from a link | Add, edit and delete still work |
-| `picker.js` | Picture preview, drop a picture, choosing the part to keep, for wishes and the profile picture | Picking an icon or a file still works; the whole picture is uploaded |
-| `forms.js` | Spinner and locked fields while a form is sent | The form is sent anyway |
+| File         | Does                                                                                           | Without it                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `passkey.js` | Sign-up, login, adding a passkey                                                               | Nothing: WebAuthn needs script                                       |
+| `list.js`    | Drag to reorder, share or copy the link, adding from a link                                    | Add, edit and delete still work                                      |
+| `picker.js`  | Picture preview, drop a picture, choosing the part to keep, for wishes and the profile picture | Picking an icon or a file still works; the whole picture is uploaded |
+| `forms.js`   | Spinner and locked fields while a form is sent                                                 | The form is sent anyway                                              |
 
 ## Run it locally
 

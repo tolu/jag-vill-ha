@@ -38,13 +38,11 @@ export default function NewListPage() {
                 E-post <span className="optional">valfritt</span>
               </label>
               <input type="email" id="epost" name="epost" autoComplete="email" />
-              <p className="hint">
-                Används till en enda sak: att mejla dig en länk om du inte kan logga in, till exempel med ny telefon.
-              </p>
+              <p className="hint">Används till en enda sak: att mejla dig en länk om du inte kan logga in, till exempel med ny telefon.</p>
             </div>
             <p className="lede">
-              Du behöver inget lösenord. Telefonen eller datorn frågar om den får spara en nyckel åt dig: svara ja och godkänn med ansiktet,
-              fingret eller din kod. Så loggar du in nästa gång också.
+              Du behöver inget lösenord. Telefonen eller datorn frågar om den får spara en nyckel åt dig: svara ja och godkänn med ansiktet, fingret
+              eller din kod. Så loggar du in nästa gång också.
             </p>
             <div className="buttons">
               <button className="btn wide">Skapa min lista</button>

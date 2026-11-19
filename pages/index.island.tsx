@@ -19,9 +19,7 @@ export default function HomePage({ deleted }: Props) {
             </p>
           )}
           <h1>Tre brödrostar är två för många</h1>
-          <p className="intro">
-            Skriv upp vad du vill ha och skicka länken till släkten. De paxar utan konto.
-          </p>
+          <p className="intro">Skriv upp vad du vill ha och skicka länken till släkten. De paxar utan konto.</p>
           <div className="header-actions">
             <a className="btn" href="/ny">
               Skapa din lista

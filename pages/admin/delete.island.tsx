@@ -9,8 +9,8 @@ export default function DeletePage({ username, wishes, proven, wrongName }: Prop
       <section className="step admin-delete">
         <h1>Delete {username}?</h1>
         <p className="lede">
-          jagvillha.fyi/{username} stops working at once. The account, its list, {wishes} {wishes === 1 ? 'wish' : 'wishes'}, the
-          pictures, the reservations and the visit count are removed. This cannot be undone, and nobody is told.
+          jagvillha.fyi/{username} stops working at once. The account, its list, {wishes} {wishes === 1 ? 'wish' : 'wishes'}, the pictures, the
+          reservations and the visit count are removed. This cannot be undone, and nobody is told.
         </p>
 
         {proven ? (
@@ -20,7 +20,16 @@ export default function DeletePage({ username, wishes, proven, wrongName }: Prop
               <label htmlFor="confirm">
                 Type <strong>{username}</strong> to confirm
               </label>
-              <input type="text" id="confirm" name="confirm" autoComplete="off" autoCapitalize="none" spellCheck={false} pattern={username} required />
+              <input
+                type="text"
+                id="confirm"
+                name="confirm"
+                autoComplete="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                pattern={username}
+                required
+              />
             </div>
             {wrongName && (
               <p className="hint error" role="alert">
@@ -37,13 +46,7 @@ export default function DeletePage({ username, wishes, proven, wrongName }: Prop
         ) : (
           <>
             <div className="buttons">
-              <button
-                className="btn wide"
-                type="button"
-                data-passkey="login"
-                data-status="proof-status"
-                data-next={`/admin/delete?list=${username}`}
-              >
+              <button className="btn wide" type="button" data-passkey="login" data-status="proof-status" data-next={`/admin/delete?list=${username}`}>
                 Confirm with your passkey
               </button>
               <a className="btn quiet wide" href="/admin/accounts">

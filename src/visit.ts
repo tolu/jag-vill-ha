@@ -2,7 +2,8 @@
 // visitor is kept: the answer is yes or no, and a yes adds one to that day.
 
 // Link previews, crawlers and scripts: they fetch the page, nobody reads it.
-const NOT_A_PERSON = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|slack|discord|embed|curl|wget|python|node|headless|lighthouse|monitor/i;
+const NOT_A_PERSON =
+  /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|slack|discord|embed|curl|wget|python|node|headless|lighthouse|monitor/i;
 
 type Request = {
   isOwner: boolean;

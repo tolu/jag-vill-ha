@@ -1,7 +1,20 @@
 import { defineHandler, defineHead, type InferProps } from 'void';
 import { db, gte } from 'void/db';
 import { lists, visits, wishes } from '@schema';
-import { bucket, calendar, compare, dailySeries, dailyTotals, daysBefore, RANGES, shortDate, sqlStamp, total, type DayCount, type Range } from '../../src/activity';
+import {
+  bucket,
+  calendar,
+  compare,
+  dailySeries,
+  dailyTotals,
+  daysBefore,
+  RANGES,
+  shortDate,
+  sqlStamp,
+  total,
+  type DayCount,
+  type Range,
+} from '../../src/activity';
 import { currentAdmin, reservationTimes } from '../../src/admin-data';
 
 export type Props = InferProps<typeof loader>;

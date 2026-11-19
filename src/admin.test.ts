@@ -30,12 +30,12 @@ describe('lockoutRisk', () => {
 });
 
 describe('deletable', () => {
-  it('is any account but the admin\'s own', () => {
+  it("is any account but the admin's own", () => {
     expect(deletable('xyz', 'abc')).toBe(true);
   });
 
   it.each([
-    ['the admin\'s own account', 'abc'],
+    ["the admin's own account", 'abc'],
     ['a list without an owner', null],
     ['an empty owner', ''],
   ])('refuses %s', (_label, ownerId) => {

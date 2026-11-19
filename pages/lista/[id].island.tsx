@@ -18,7 +18,8 @@ export default function EditWishPage({ id, values, icon, failed, wasReset }: Pro
           <h1 id="rubrik">Ändra önskning</h1>
           {failed && (
             <p className="notice" role="alert">
-              Det gick inte att spara. Kolla att du har skrivit vad du vill ha, att länken är hela adressen från butikens sida och att bilden är ett vanligt foto.
+              Det gick inte att spara. Kolla att du har skrivit vad du vill ha, att länken är hela adressen från butikens sida och att bilden är ett
+              vanligt foto.
             </p>
           )}
           <form method="post" action={`/lista/${id}`} encType="multipart/form-data">
@@ -35,8 +36,8 @@ export default function EditWishPage({ id, values, icon, failed, wasReset }: Pro
         <section className="step" aria-labelledby="nollstall-rubrik">
           <h2 id="nollstall-rubrik">Gör önskningen ledig igen</h2>
           <p className="lede">
-            Har du bytt till något helt annat, så att en gammal paxning inte längre stämmer? Då kan du ta bort den. Du får inte veta om
-            önskningen var paxad.
+            Har du bytt till något helt annat, så att en gammal paxning inte längre stämmer? Då kan du ta bort den. Du får inte veta om önskningen var
+            paxad.
           </p>
           {wasReset && (
             <p className="notice calm" role="status">
@@ -54,9 +55,7 @@ export default function EditWishPage({ id, values, icon, failed, wasReset }: Pro
       {/* It undoes someone else's choice and tells nobody, so it asks first. */}
       <dialog id="nollstall" className="sheet" {...{ closedby: 'any' }} aria-labelledby="nollstall-fraga">
         <h2 id="nollstall-fraga">Ta bort paxningen?</h2>
-        <p className="reassure">
-          Har någon paxat den här önskningen får de inget veta, och de kan redan ha köpt den. Det går inte att ångra.
-        </p>
+        <p className="reassure">Har någon paxat den här önskningen får de inget veta, och de kan redan ha köpt den. Det går inte att ångra.</p>
         <form method="post" action={`/lista/${id}`}>
           <div className="buttons">
             <button className="btn wide danger" name="intent" value="reset">

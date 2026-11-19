@@ -16,8 +16,7 @@ export type Props = InferProps<typeof loader>;
 
 export const prerender = false;
 
-const ordered = (listId: number) =>
-  db.select().from(wishes).where(eq(wishes.listId, listId)).orderBy(asc(wishes.position), asc(wishes.id));
+const ordered = (listId: number) => db.select().from(wishes).where(eq(wishes.listId, listId)).orderBy(asc(wishes.position), asc(wishes.id));
 
 // Reservations are deliberately never read here: the owner must not learn what is taken.
 export const loader = defineHandler(async (c) => {
@@ -61,7 +60,10 @@ export const action = defineHandler(async (c) => {
     await writeWithImage(
       imageKey,
       async () => {
-        const [last] = await db.select({ position: max(wishes.position) }).from(wishes).where(eq(wishes.listId, list.id));
+        const [last] = await db
+          .select({ position: max(wishes.position) })
+          .from(wishes)
+          .where(eq(wishes.listId, list.id));
         await db.insert(wishes).values({ ...form.values, imageKey, listId: list.id, position: (last?.position ?? 0) + 1 });
       },
       deleteImage,
@@ -75,14 +77,21 @@ export const action = defineHandler(async (c) => {
     const next = parseOrder(String(body['ids'] ?? ''), current);
     if (!next) return c.json({ ok: false }, 400);
     for (const [index, id] of next.entries()) {
-      if (current[index] !== id) await db.update(wishes).set({ position: index + 1 }).where(eq(wishes.id, id));
+      if (current[index] !== id)
+        await db
+          .update(wishes)
+          .set({ position: index + 1 })
+          .where(eq(wishes.id, id));
     }
     return c.json({ ok: true });
   }
 
   // Chosen in the picker. /js/theme.js saves in the background and wants no page back.
   if (intent === 'theme') {
-    await db.update(lists).set({ theme: parseTheme(body['theme']) }).where(eq(lists.id, list.id));
+    await db
+      .update(lists)
+      .set({ theme: parseTheme(body['theme']) })
+      .where(eq(lists.id, list.id));
     if (c.req.header('accept')?.includes('application/json')) return c.json({ ok: true });
     return c.redirect('/lista', 303);
   }

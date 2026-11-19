@@ -10,8 +10,7 @@ const MAX_IMAGE_BYTES = 5_000_000; // downscaled in the browser before it is sto
 // including an honest "link preview" one, and answers this one normally.
 // One request per link an owner pastes; no crawling.
 const HEADERS = {
-  'user-agent':
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
   accept: 'text/html,application/xhtml+xml,image/*;q=0.9,*/*;q=0.5',
   'accept-language': 'sv,nb;q=0.9,en;q=0.8',
   'sec-fetch-dest': 'document',

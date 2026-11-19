@@ -51,7 +51,11 @@ export const action = defineHandler(async (c) => {
   // a new one is removed again if the wish could not be saved.
   await writeWithImage(
     uploaded,
-    () => db.update(wishes).set({ ...form.values, imageKey }).where(eq(wishes.id, wish.id)),
+    () =>
+      db
+        .update(wishes)
+        .set({ ...form.values, imageKey })
+        .where(eq(wishes.id, wish.id)),
     deleteImage,
   );
   await deleteImage(discard);

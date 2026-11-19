@@ -29,11 +29,7 @@ export const loader = defineHandler(async (c) => {
   const list = await findList(c.req.param('username'));
   if (!list) return c.notFound();
 
-  const wishRows = await db
-    .select()
-    .from(wishes)
-    .where(eq(wishes.listId, list.id))
-    .orderBy(asc(wishes.position), asc(wishes.id));
+  const wishRows = await db.select().from(wishes).where(eq(wishes.listId, list.id)).orderBy(asc(wishes.position), asc(wishes.id));
 
   const isOwner = getUser()?.id === list.ownerId;
   const visit = {
@@ -49,7 +45,12 @@ export const loader = defineHandler(async (c) => {
       ? db
           .select()
           .from(reservations)
-          .where(inArray(reservations.wishId, wishRows.map((wish) => wish.id)))
+          .where(
+            inArray(
+              reservations.wishId,
+              wishRows.map((wish) => wish.id),
+            ),
+          )
       : [],
   );
 
@@ -111,9 +112,7 @@ export const action = defineHandler(async (c) => {
   const token = giverToken(getCookie(c, TOKEN_COOKIE), body['nyckel']);
 
   if (body['intent'] === 'angra') {
-    await db
-      .delete(reservations)
-      .where(and(eq(reservations.wishId, wish.id), eq(reservations.tokenHash, await hashToken(token))));
+    await db.delete(reservations).where(and(eq(reservations.wishId, wish.id), eq(reservations.tokenHash, await hashToken(token))));
     return c.redirect(back(`?angrad=${wish.id}`), 303);
   }
 
@@ -129,7 +128,8 @@ export const action = defineHandler(async (c) => {
     .returning({ id: reservations.id });
   // Not inserted means someone holds it already. That someone can be her:
   // a second press on the button, a moment after the first.
-  const [holder] = inserted.length > 0 ? [] : await db.select({ tokenHash: reservations.tokenHash }).from(reservations).where(eq(reservations.wishId, wish.id));
+  const [holder] =
+    inserted.length > 0 ? [] : await db.select({ tokenHash: reservations.tokenHash }).from(reservations).where(eq(reservations.wishId, wish.id));
   const outcome = reserveOutcome(inserted.length > 0, holder?.tokenHash, tokenHash);
 
   setCookie(c, TOKEN_COOKIE, token, cookie);

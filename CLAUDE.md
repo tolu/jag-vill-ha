@@ -6,11 +6,25 @@ UI in Swedish, code and docs in English.
 
 ```sh
 npm run typecheck && npm test && npm run build
+npm run format       # oxfmt via Vite+; `check` in CI fails on unformatted code
+npm run lint         # oxlint via Vite+; `check` in CI fails on any finding
 npx void db generate # after changing db/schema.ts or auth.ts
 npx void db migrate  # apply locally, keeps data
 ```
 
 Use npm. `vp` follows `packageManager`; never let pnpm in.
+
+- A new worktree has no `node_modules`: run `npm install` before anything
+  else. Until then no command works and there is no pre-commit hook, so a
+  commit goes through unformatted. `npm install` installs the hook.
+- The hook (`.vite-hooks/pre-commit`, `vp staged`) formats and lints what is
+  staged, and stops the commit on a lint finding. `VP_GIT_HOOKS=0` skips it.
+- Oxlint reports findings as warnings and exits 0: run it with
+  `--deny-warnings`, as `npm run lint` does.
+- Never prettier: its defaults are wrong here. The settings are the `fmt`
+  block in `vite.config.ts`. CSS is not formatted: keep its one-line rules by
+  hand.
+- Vite+'s docs (fmt, lint, staged, hooks) are in `node_modules/vite-plus/docs/`.
 
 ## Never without asking
 
