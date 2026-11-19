@@ -19,11 +19,7 @@ export default defineConfig({
   },
   head: {
     htmlAttrs: { lang: 'sv' },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: '#F8F5EE' },
-    ],
+    meta: [{ charset: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }, { name: 'theme-color', content: '#F8F5EE' }],
     link: [
       { rel: 'icon', href: '/icons/favicon.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' },

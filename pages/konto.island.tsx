@@ -23,9 +23,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
         {recovered && (
           <section className="step" aria-labelledby="inne-rubrik">
             <h2 id="inne-rubrik">Du är inne</h2>
-            <p className="lede">
-              Spara en ny nyckel på den här telefonen eller datorn nu, så loggar du in som vanligt nästa gång.
-            </p>
+            <p className="lede">Spara en ny nyckel på den här telefonen eller datorn nu, så loggar du in som vanligt nästa gång.</p>
             <div className="buttons">
               <button
                 className="btn wide"
@@ -55,14 +53,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
           </div>
 
           {/* Same box-and-popover as the icon picker; /js/picker.js saves as soon as a picture is chosen. */}
-          <form
-            className="appearance round"
-            method="post"
-            action="/konto"
-            encType="multipart/form-data"
-            data-max-side="400"
-            data-autosubmit
-          >
+          <form className="appearance round" method="post" action="/konto" encType="multipart/form-data" data-max-side="400" data-autosubmit>
             <input type="hidden" name="intent" value="avatar" />
             <button
               type="button"
@@ -141,9 +132,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
         <section className="step" aria-labelledby="epost-rubrik">
           <h2 id="epost-rubrik">Om du inte kan logga in</h2>
           <p className="lede">
-            {email
-              ? 'Då mejlar vi en länk hit.'
-              : 'Lägg till din e-post, så kan vi mejla dig en länk. Den används inte till något annat.'}
+            {email ? 'Då mejlar vi en länk hit.' : 'Lägg till din e-post, så kan vi mejla dig en länk. Den används inte till något annat.'}
           </p>
           {saved === 'epost' && (
             <p className="notice calm" role="status">
@@ -212,8 +201,7 @@ export default function AccountPage({ username, displayName, intro, avatarKey, e
       <dialog id="ta-bort-konto" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ta-bort-rubrik">
         <h2 id="ta-bort-rubrik">Ta bort kontot?</h2>
         <p className="reassure">
-          jagvillha.fyi/{username} slutar fungera direkt, och allt som hör till listan raderas. De som har paxat något får
-          inget veta.
+          jagvillha.fyi/{username} slutar fungera direkt, och allt som hör till listan raderas. De som har paxat något får inget veta.
         </p>
         <form method="post" action="/konto">
           <div className="field">

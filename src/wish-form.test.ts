@@ -10,9 +10,7 @@ describe('parseWishForm', () => {
   });
 
   it('reads every field', () => {
-    expect(
-      parseWishForm({ titel: 'Skor', lank: 'https://butik.se/skor', kommentar: 'Storlek 44', ikon: 'sneaker' }),
-    ).toEqual({
+    expect(parseWishForm({ titel: 'Skor', lank: 'https://butik.se/skor', kommentar: 'Storlek 44', ikon: 'sneaker' })).toEqual({
       ok: true,
       values: { title: 'Skor', url: 'https://butik.se/skor', note: 'Storlek 44', icon: 'sneaker' },
     });

@@ -13,7 +13,9 @@ export const lists = sqliteTable('lists', {
   theme: text('theme'),
   // Set when login exists (step 3); references the auth user.
   ownerId: text('owner_id'),
-  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(datetime('now'))`),
 });
 
 export const wishes = sqliteTable('wishes', {
@@ -27,7 +29,9 @@ export const wishes = sqliteTable('wishes', {
   icon: text('icon'),
   note: text('note'),
   position: integer('position').notNull().default(0),
-  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(datetime('now'))`),
 });
 
 // Never read for the list owner. The token lets the giver undo on the same device.
@@ -40,7 +44,9 @@ export const reservations = sqliteTable(
       .references(() => wishes.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     tokenHash: text('token_hash').notNull(),
-    createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(datetime('now'))`),
   },
   // One reservation per wish: two givers pressing "Paxa" at once cannot both win.
   (table) => [uniqueIndex('reservations_wish_id_unique').on(table.wishId)],

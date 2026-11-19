@@ -26,9 +26,7 @@ async function claim(context: string | null | undefined) {
   // An address that already belongs to a list is left out without a word:
   // saying so here, to someone who is not logged in, would tell anyone which
   // addresses have a list. Her own list page asks for an e-mail again.
-  const known = signup.email
-    ? await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, signup.email))
-    : [];
+  const known = signup.email ? await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, signup.email)) : [];
   return { username: result.username, email: known.length > 0 ? null : signup.email, db, lists };
 }
 

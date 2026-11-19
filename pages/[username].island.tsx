@@ -35,9 +35,7 @@ export default function ListPage({
           </p>
         )}
         {/* "Paxa" is the whole point of the page, so it is explained before the first button, not only inside the dialog. */}
-        {!isOwner && wishes.length > 0 && (
-          <p className="intro">Paxa det du tänker köpa, så köper ingen annan samma sak.</p>
-        )}
+        {!isOwner && wishes.length > 0 && <p className="intro">Paxa det du tänker köpa, så köper ingen annan samma sak.</p>}
         {reservedTitle && (
           <p className="notice calm" role="status">
             Du har paxat <strong>{reservedTitle}</strong>. Nu är det bara att köpa den.

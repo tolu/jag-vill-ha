@@ -108,7 +108,14 @@ export function WishFields({ values, prefix, icon, autosave }: { values?: Values
         <label htmlFor={id('kommentar')}>
           Kommentar <span className="optional">valfritt</span>
         </label>
-        <input type="text" id={id('kommentar')} name="kommentar" defaultValue={values?.note ?? ''} maxLength={200} placeholder="Storlek 44, gärna blå" />
+        <input
+          type="text"
+          id={id('kommentar')}
+          name="kommentar"
+          defaultValue={values?.note ?? ''}
+          maxLength={200}
+          placeholder="Storlek 44, gärna blå"
+        />
       </div>
     </>
   );

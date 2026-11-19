@@ -39,7 +39,7 @@ describe('what a giver sees', () => {
     expect(view[0]!.takenBy).toBe('Erik');
   });
 
-  it('treats everything as someone else\'s without a token', () => {
+  it("treats everything as someone else's without a token", () => {
     expect(publicWishes(wishes, reservations, null).map((row) => row.state)).toEqual(['taken', 'taken', 'free']);
   });
 });

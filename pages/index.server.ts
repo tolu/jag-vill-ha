@@ -17,8 +17,7 @@ export const head = defineHead(() => ({
   meta: [
     {
       name: 'description',
-      content:
-        'Skriv upp vad du vill ha och skicka länken till släkten. De paxar utan konto.',
+      content: 'Skriv upp vad du vill ha och skicka länken till släkten. De paxar utan konto.',
     },
   ],
 }));

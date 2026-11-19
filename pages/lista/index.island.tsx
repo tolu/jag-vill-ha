@@ -50,31 +50,32 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
               </p>
             </div>
             <div className="list-tools">
-            <div className="header-actions">
-              <button className="btn" {...opens('ny')}>
-                <Icon name="plus" />
-                Lägg till önskning
-              </button>
-              {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
-              <button className="btn quiet" type="button" data-needs-js data-copy={`/${username}`}>
-                <Icon name="copy" />
-                <Icon name="share" />
-                <Icon name="check" />
-                Dela
-              </button>
-            </div>
-            <p className="hint ok copied" role="status"></p>
-            {needsEmail && (
-              <p className="notice calm">
-                Byter du telefon kan du bli utelåst från listan. <a href="/konto#epost-rubrik">Lägg till din e-post</a>, så kan vi mejla dig in
-                igen.
-              </p>
-            )}
-            {failed && (
-              <p className="notice" role="alert">
-                Det gick inte att spara. Kolla att du har skrivit vad du vill ha, att länken är hela adressen från butikens sida och att bilden är ett vanligt foto.
-              </p>
-            )}
+              <div className="header-actions">
+                <button className="btn" {...opens('ny')}>
+                  <Icon name="plus" />
+                  Lägg till önskning
+                </button>
+                {/* Shares through the phone's share sheet when there is one, otherwise copies the link. */}
+                <button className="btn quiet" type="button" data-needs-js data-copy={`/${username}`}>
+                  <Icon name="copy" />
+                  <Icon name="share" />
+                  <Icon name="check" />
+                  Dela
+                </button>
+              </div>
+              <p className="hint ok copied" role="status"></p>
+              {needsEmail && (
+                <p className="notice calm">
+                  Byter du telefon kan du bli utelåst från listan. <a href="/konto#epost-rubrik">Lägg till din e-post</a>, så kan vi mejla dig in
+                  igen.
+                </p>
+              )}
+              {failed && (
+                <p className="notice" role="alert">
+                  Det gick inte att spara. Kolla att du har skrivit vad du vill ha, att länken är hela adressen från butikens sida och att bilden är
+                  ett vanligt foto.
+                </p>
+              )}
             </div>
           </header>
 
@@ -89,12 +90,7 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
                   data-id={wish.id}
                   style={{ '--thumb-hue': wish.hue, viewTransitionName: wishTransitionName(wish.id) } as CSSProperties}
                 >
-                  <button
-                    className="grip"
-                    type="button"
-                    aria-label={`Flytta ${wish.title}`}
-                    title="Dra för att flytta, eller använd piltangenterna"
-                  >
+                  <button className="grip" type="button" aria-label={`Flytta ${wish.title}`} title="Dra för att flytta, eller använd piltangenterna">
                     <Icon name="grip" />
                   </button>
                   <div className="thumb" aria-hidden="true">
@@ -144,7 +140,6 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
               ))}
             </ul>
           )}
-
 
           {/* Inside <main>, so they are dressed by the theme too. These two hold what she has typed, so a stray tap outside must not close them. */}
           <dialog id="ny" className="sheet" {...{ closedby: 'closerequest' }} aria-labelledby="ny-rubrik">
@@ -205,7 +200,17 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
             <form data-from-link>
               <div className="field">
                 <label htmlFor="hamta-lank">Länk</label>
-                <input type="text" inputMode="url" autoCapitalize="none" autoCorrect="off" spellCheck={false} id="hamta-lank" name="lank" required autoFocus />
+                <input
+                  type="text"
+                  inputMode="url"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  id="hamta-lank"
+                  name="lank"
+                  required
+                  autoFocus
+                />
                 <p className="hint error" role="alert"></p>
               </div>
               <div className="buttons">

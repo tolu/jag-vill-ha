@@ -54,7 +54,12 @@ export default function AccountsPage({ accounts, deleted }: Props) {
                 </td>
                 <td>
                   {account.deletable && (
-                    <a className="delete" href={`/admin/delete?list=${account.username}`} aria-label={`Delete ${account.username}`} title={`Delete ${account.username}`}>
+                    <a
+                      className="delete"
+                      href={`/admin/delete?list=${account.username}`}
+                      aria-label={`Delete ${account.username}`}
+                      title={`Delete ${account.username}`}
+                    >
                       <Icon name="trash" />
                     </a>
                   )}

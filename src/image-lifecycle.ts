@@ -16,11 +16,7 @@ export function resolveImageChange(change: { uploaded: string | null; removeRequ
  * fails the picture would be left with no wish pointing at it, so it is
  * removed again before the error is passed on.
  */
-export async function writeWithImage<T>(
-  storedKey: string | null,
-  write: () => Promise<T>,
-  remove: (key: string) => Promise<void>,
-) {
+export async function writeWithImage<T>(storedKey: string | null, write: () => Promise<T>, remove: (key: string) => Promise<void>) {
   try {
     return await write();
   } catch (error) {

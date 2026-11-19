@@ -38,12 +38,9 @@ describe('checkUsername', () => {
     expect(checkUsername(name)).toBe('length');
   });
 
-  it.each(['tobias.lundin', 'Tobias', 'åsa-b', 'a b c', 'a_b_c', 'a/b/c'])(
-    'rejects other characters: %s',
-    (name) => {
-      expect(checkUsername(name)).toBe('characters');
-    },
-  );
+  it.each(['tobias.lundin', 'Tobias', 'åsa-b', 'a b c', 'a_b_c', 'a/b/c'])('rejects other characters: %s', (name) => {
+    expect(checkUsername(name)).toBe('characters');
+  });
 
   it.each(['-abc', 'abc-', 'a--b'])('rejects misplaced hyphens: %s', (name) => {
     expect(checkUsername(name)).toBe('hyphen');

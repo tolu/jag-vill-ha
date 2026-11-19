@@ -33,7 +33,11 @@ export const loader = defineHandler(async (c) => {
     // Said back after a delete. Only shown when that list really is gone.
     deleted: listRows.some((list) => list.username === c.req.query('deleted')) ? null : (c.req.query('deleted') ?? null),
     accounts: listRows.map((list) => {
-      const visited = dailyTotals(visitRows.filter((visit) => visit.listId === list.id), now, WEEKS * 7);
+      const visited = dailyTotals(
+        visitRows.filter((visit) => visit.listId === list.id),
+        now,
+        WEEKS * 7,
+      );
       const user = users.find((row) => row.id === list.ownerId);
       const hasEmail = Boolean(user) && !isPlaceholderEmail(user!.email);
       const seen = sessions.filter((session) => session.userId === list.ownerId).map((session) => session.at.getTime());

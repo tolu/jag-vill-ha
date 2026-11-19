@@ -2,12 +2,9 @@ import { describe, expect, it } from 'vite-plus/test';
 import { isFetchableUrl, parseLinkMeta } from './link-meta';
 
 describe('isFetchableUrl', () => {
-  it.each(['https://butik.se/produkt/1', 'http://www.exempel-butik.com/a?b=c', 'https://sub.domän.se/'])(
-    'allows %s',
-    (url) => {
-      expect(isFetchableUrl(url)).toBe(true);
-    },
-  );
+  it.each(['https://butik.se/produkt/1', 'http://www.exempel-butik.com/a?b=c', 'https://sub.domän.se/'])('allows %s', (url) => {
+    expect(isFetchableUrl(url)).toBe(true);
+  });
 
   it.each([
     'ftp://butik.se/fil',

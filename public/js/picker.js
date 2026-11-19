@@ -121,7 +121,9 @@ for (const root of document.querySelectorAll('.appearance')) {
     if (event.newState === 'open') {
       // A picture saved earlier can be framed again: fetch it back as the source.
       if (!source && !preview.hidden && preview.src) {
-        const stored = await fetch(preview.src).then((response) => response.blob()).catch(() => null);
+        const stored = await fetch(preview.src)
+          .then((response) => response.blob())
+          .catch(() => null);
         if (stored) await load(stored);
       }
       if (source) paint();

@@ -36,9 +36,7 @@ export const loader = defineHandler(async (c) => {
 
   const users = await db.select({ id: userTable.id, email: userTable.email }).from(userTable);
   const keys = await db.select({ userId: passkeyTable.userId }).from(passkeyTable);
-  const atRisk = users.filter((user) =>
-    lockoutRisk(keys.filter((key) => key.userId === user.id).length, !isPlaceholderEmail(user.email)),
-  ).length;
+  const atRisk = users.filter((user) => lockoutRisk(keys.filter((key) => key.userId === user.id).length, !isPlaceholderEmail(user.email))).length;
 
   return {
     build: __BUILD__,
