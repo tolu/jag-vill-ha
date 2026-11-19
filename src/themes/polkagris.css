@@ -47,14 +47,7 @@
     --candy-btn: light-dark(var(--accent), oklch(53% 0.2 25));
     --candy-btn-ink: white;
     --blush: light-dark(oklch(96% 0.03 15), oklch(25% 0.075 20));
-    /* Shine first, which makes the stripes a round stick. The stripes are a
-       real polkagris: a wide red, then a thin one in the white. */
-    --candy:
-      linear-gradient(oklch(100% 0 0 / 0.1), oklch(100% 0 0 / 0.6) 24%, oklch(100% 0 0 / 0) 50%, oklch(20% 0.1 20 / 0.2)),
-      repeating-linear-gradient(-55deg,
-        var(--stripe) 0 0.45rem, var(--stripe-gap) 0.45rem 0.85rem,
-        var(--stripe) 0.85rem 0.97rem, var(--stripe-gap) 0.97rem 1.4rem);
-
+    --paper-line: light-dark(oklch(57% 0.21 25 / 0.1), oklch(80% 0.1 20 / 0.08));
     /* The footer's short stroke is a sweet too: finer stripes for its size */
     & .site-footer > div::before {
       inline-size: 2.5rem;
@@ -68,6 +61,18 @@
   }
 
   [data-theme="polkagris"] {
+    /* Shine first, which makes the stripes a round stick. The stripes are a
+       real polkagris: a wide red, then a thin one in the white. Set on the
+       sticks themselves and not on :root: --roll is read where this is
+       declared, and it is the stick that turns. */
+    &::before, & .list-header::after {
+      --candy:
+        linear-gradient(oklch(100% 0 0 / 0.1), oklch(100% 0 0 / 0.6) 24%, oklch(100% 0 0 / 0) 50%, oklch(20% 0.1 20 / 0.2)),
+        repeating-linear-gradient(-55deg,
+          var(--stripe) var(--roll) calc(var(--roll) + 0.45rem), var(--stripe-gap) calc(var(--roll) + 0.45rem) calc(var(--roll) + 0.85rem),
+          var(--stripe) calc(var(--roll) + 0.85rem) calc(var(--roll) + 0.97rem), var(--stripe-gap) calc(var(--roll) + 0.97rem) calc(var(--roll) + 1.4rem));
+    }
+
     /* The stick across the top of the page */
     &::before {
       content: "";
@@ -77,14 +82,18 @@
       box-shadow: 0 1px 0 var(--candy-edge), 0 2px 6px oklch(from var(--stripe) l c h / 0.18);
     }
 
-    /* A blush under it, so the white page is not flat. Short enough to end
-       above the sticky filter row, which has the plain page colour. */
+    /* A blush under it, so the white page is not flat, with the hairlines of
+       waxed sweet paper in it. Short enough to end above the sticky filter
+       row, which has the plain page colour. */
     &::after {
       content: "";
       inset-block-start: 0;
       block-size: 8rem;
       z-index: -3;
-      background: linear-gradient(var(--blush), var(--bg));
+      background:
+        linear-gradient(oklch(from var(--bg) l c h / 0), var(--bg)),
+        repeating-linear-gradient(-55deg, transparent 0 0.5rem, var(--paper-line) 0.5rem calc(0.5rem + 1px)),
+        var(--blush);
     }
 
     & .list-header h1 { font-weight: 600; letter-spacing: 0; }
@@ -129,3 +138,20 @@
     & .notice { border: 1px solid color-mix(in oklch, var(--danger) 55%, var(--surface)); font-weight: 600; }
   }
 }
+
+/* The stick under the heading turns: its stripes travel one whole repeat
+   under a shine that stays put. A length, so it can be animated. */
+@property --roll {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@layer themes {
+  /* Slow, and only for those who have not asked for stillness */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-theme="polkagris"] .list-header::after { animation: polkagris-roll 7s linear infinite; }
+  }
+}
+
+@keyframes polkagris-roll { to { --roll: 1.4rem; } }

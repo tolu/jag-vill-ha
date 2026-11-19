@@ -14,10 +14,10 @@
      since the tokens on the page belong to whichever theme is worn now */
   .theme-card[data-card="ljusslinga"] {
     background:
-      radial-gradient(circle at 12% 28%, rgb(255, 91, 77) 0 0.17rem, rgb(255 91 77 / 0.3) 0.2rem, transparent 0.5rem),
-      radial-gradient(circle at 37% 40%, rgb(255, 206, 71) 0 0.17rem, rgb(255 206 71 / 0.3) 0.2rem, transparent 0.5rem),
-      radial-gradient(circle at 63% 40%, rgb(127, 208, 255) 0 0.17rem, rgb(127 208 255 / 0.3) 0.2rem, transparent 0.5rem),
-      radial-gradient(circle at 88% 28%, rgb(255, 241, 207) 0 0.17rem, rgb(255 241 207 / 0.3) 0.2rem, transparent 0.5rem),
+      radial-gradient(circle at 12% 28%, rgb(255, 252, 235) 0 0.08rem, rgb(255, 58, 48) 0.17rem, rgb(255 58 48 / 0.3) 0.2rem, transparent 0.5rem),
+      radial-gradient(circle at 37% 40%, rgb(255, 252, 235) 0 0.08rem, rgb(255, 206, 40) 0.17rem, rgb(255 206 40 / 0.3) 0.2rem, transparent 0.5rem),
+      radial-gradient(circle at 63% 40%, rgb(255, 252, 235) 0 0.08rem, rgb(52, 214, 104) 0.17rem, rgb(52 214 104 / 0.3) 0.2rem, transparent 0.5rem),
+      radial-gradient(circle at 88% 28%, rgb(255, 252, 235) 0 0.08rem, rgb(44, 150, 255) 0.17rem, rgb(44 150 255 / 0.3) 0.2rem, transparent 0.5rem),
       oklch(31% 0.06 162);
   }
 
@@ -36,13 +36,31 @@
     --font-display: "Jost", Futura, "Century Gothic", "Trebuchet MS", system-ui, sans-serif;
     /* Dark: the banner is lifted well above the page, or it stops being a banner */
     --banner-color: light-dark(oklch(31% 0.06 162), oklch(29% 0.062 160));
-    /* Dark: night gathers behind the bulbs, so their glow has something to light */
-    --banner-night: light-dark(transparent, oklch(17% 0.035 165 / 0.75));
-    /* The wire, the sockets and the bulbs as unlit glass. `round` fits a whole
-       number of swags to the screen, so the edge never cuts through a bulb. */
+    /* Night gathers behind the bulbs, so their colours have something to
+       light: nearly black at the top, the banner's green by the heading */
+    --banner-night: linear-gradient(oklch(7% 0.015 170), oklch(9% 0.02 170 / 0.9) 2.25rem, transparent 8.25rem);
+    /* One swag of the string. A whole number of them fits the screen, so the
+       edge never cuts through a bulb, and the size is known to the lights
+       that are drawn on top of it: `round` would keep it to itself. */
+    --tile: 50vw;
+    @media (width >= 30rem) { --tile: calc(100vw / 3); }
+    @media (width >= 45rem) { --tile: 25vw; }
+    @media (width >= 60rem) { --tile: 20vw; }
+    @media (width >= 75rem) { --tile: calc(100vw / 6); }
+    @media (width >= 90rem) { --tile: 12.5vw; }
+    @media (width >= 120rem) { --tile: 10vw; }
+    /* The wire, the sockets and the bulbs as unlit glass */
     --banner:
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 54'><defs><path id='p' d='M-3 4.5C-3 8-6 10-6 15.5a6 6 0 0 0 12 0C6 10 3 8 3 4.5Z'/><g id='s'><rect x='-3.4' y='-1.6' width='6.8' height='6.6' rx='1.4' fill='rgb(14,26,20)'/><path d='M-3.4 1h6.8M-3.4 3h6.8' stroke='rgb(70,92,80)' stroke-width='.7'/></g></defs><path d='M0 5Q80 25 160 5' fill='none' stroke='rgb(10,22,16)' stroke-width='1.6'/><path d='M0 4.4Q80 24.4 160 4.4' fill='none' stroke='rgb(150,180,160)' stroke-opacity='.6' stroke-width='.7'/><use href='%23p' x='20' y='9.4' fill='rgb(122,44,40)'/><use href='%23p' x='60' y='14.4' fill='rgb(128,100,40)'/><use href='%23p' x='100' y='14.4' fill='rgb(46,92,128)'/><use href='%23p' x='140' y='9.4' fill='rgb(140,132,108)'/><use href='%23s' x='20' y='9.4'/><use href='%23s' x='60' y='14.4'/><use href='%23s' x='100' y='14.4'/><use href='%23s' x='140' y='9.4'/></svg>") round no-repeat left top / 10rem auto,
-      linear-gradient(var(--banner-night), transparent 5.5rem),
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 54'><linearGradient id='w' gradientUnits='userSpaceOnUse' x1='0' x2='192'><stop offset='0.0365' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.0833' stop-color='rgb(255,58,48)' stop-opacity='.95'/><stop offset='0.1302' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.2031' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.2500' stop-color='rgb(255,128,24)' stop-opacity='.95'/><stop offset='0.2969' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.3698' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.4167' stop-color='rgb(255,206,40)' stop-opacity='.95'/><stop offset='0.4635' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.5365' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.5833' stop-color='rgb(52,214,104)' stop-opacity='.95'/><stop offset='0.6302' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.7031' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.7500' stop-color='rgb(44,150,255)' stop-opacity='.95'/><stop offset='0.7969' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.8698' stop-color='rgb(150,180,160)' stop-opacity='.3'/><stop offset='0.9167' stop-color='rgb(255,84,170)' stop-opacity='.95'/><stop offset='0.9635' stop-color='rgb(150,180,160)' stop-opacity='.3'/></linearGradient><path d='M0 5Q96 29 192 5' fill='none' stroke='rgb(6,14,10)' stroke-width='1.1'/><path d='M0 4.6Q96 28.6 192 4.6' fill='none' stroke='url(%23w)' stroke-width='.7'/><circle cx='16' cy='15.7' r='4.2' fill='rgb(127,26,21)'/><circle cx='16' cy='15.7' r='4.2' fill='none' stroke='rgb(255,255,255)' stroke-opacity='.18' stroke-width='.5'/><circle cx='48' cy='21.0' r='4.2' fill='rgb(127,58,10)'/><circle cx='48' cy='21.0' r='4.2' fill='none' stroke='rgb(255,255,255)' stroke-opacity='.18' stroke-width='.5'/><circle cx='80' cy='23.7' r='4.2' fill='rgb(127,94,17)'/><circle cx='80' cy='23.7' r='4.2' fill='none' stroke='rgb(255,255,255)' stroke-opacity='.18' stroke-width='.5'/><circle cx='112' cy='23.7' r='4.2' fill='rgb(26,98,45)'/><circle cx='112' cy='23.7' r='4.2' fill='none' stroke='rgb(255,255,255)' stroke-opacity='.18' stroke-width='.5'/><circle cx='144' cy='21.0' r='4.2' fill='rgb(22,69,112)'/><circle cx='144' cy='21.0' r='4.2' fill='none' stroke='rgb(255,255,255)' stroke-opacity='.18' stroke-width='.5'/><circle cx='176' cy='15.7' r='4.2' fill='rgb(127,38,74)'/><circle cx='176' cy='15.7' r='4.2' fill='none' stroke='rgb(255,255,255)' stroke-opacity='.18' stroke-width='.5'/><rect x='14.2' y='8.299999999999999' width='3.6' height='3.4' rx='.8' fill='rgb(16,28,22)'/><path d='M14.2 10.2h3.6' stroke='rgb(92,112,100)' stroke-width='.6'/><rect x='46.2' y='13.6' width='3.6' height='3.4' rx='.8' fill='rgb(16,28,22)'/><path d='M46.2 15.5h3.6' stroke='rgb(92,112,100)' stroke-width='.6'/><rect x='78.2' y='16.3' width='3.6' height='3.4' rx='.8' fill='rgb(16,28,22)'/><path d='M78.2 18.2h3.6' stroke='rgb(92,112,100)' stroke-width='.6'/><rect x='110.2' y='16.3' width='3.6' height='3.4' rx='.8' fill='rgb(16,28,22)'/><path d='M110.2 18.2h3.6' stroke='rgb(92,112,100)' stroke-width='.6'/><rect x='142.2' y='13.6' width='3.6' height='3.4' rx='.8' fill='rgb(16,28,22)'/><path d='M142.2 15.5h3.6' stroke='rgb(92,112,100)' stroke-width='.6'/><rect x='174.2' y='8.299999999999999' width='3.6' height='3.4' rx='.8' fill='rgb(16,28,22)'/><path d='M174.2 10.2h3.6' stroke='rgb(92,112,100)' stroke-width='.6'/></svg>") repeat-x left top / var(--tile) auto,
+      /* Another string further off, out of focus: soft discs, so none of them
+         reads as a dot beside a letter */
+      radial-gradient(circle at 7% 2.9rem, rgb(255 58 48 / 0.3) 0 0.2rem, transparent 0.5rem),
+      radial-gradient(circle at 26% 2.5rem, rgb(255 128 24 / 0.28) 0 0.14rem, transparent 0.4rem),
+      radial-gradient(circle at 44% 3rem, rgb(255 206 40 / 0.3) 0 0.18rem, transparent 0.46rem),
+      radial-gradient(circle at 63% 2.6rem, rgb(52 214 104 / 0.28) 0 0.14rem, transparent 0.4rem),
+      radial-gradient(circle at 81% 3rem, rgb(44 150 255 / 0.3) 0 0.2rem, transparent 0.5rem),
+      radial-gradient(circle at 95% 2.6rem, rgb(255 84 170 / 0.28) 0 0.14rem, transparent 0.4rem),
+      var(--banner-night),
       var(--banner-color);
     --banner-ink: oklch(96% 0.02 95);
     --banner-ink-soft: oklch(89% 0.03 120);
@@ -51,19 +69,40 @@
   }
 
   [data-theme="ljusslinga"] {
-    /* The light itself: every other bulb in each layer, so the two can take
-       turns glowing. Same tile as the wire, so they stay on their sockets. */
-    &::before, &::after {
+    /* The light itself, drawn over the unlit glass: for each bulb the pool
+       it throws below, its glow, the lit glass, and a touch on its socket. Each colour has a brightness of its
+       own, so it can keep its own time. */
+    &::before {
       content: "";
       inset-block-start: 0;
       block-size: 6rem;
-      background: round no-repeat left top / 10rem auto;
-    }
-    &::before {
-      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 54'><defs><radialGradient id='a'><stop stop-color='rgb(255,84,66)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(255,84,66)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(255,84,66)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(255,84,66)' stop-opacity='0'/></radialGradient><radialGradient id='b'><stop stop-color='rgb(96,190,255)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(96,190,255)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(96,190,255)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(96,190,255)' stop-opacity='0'/></radialGradient><radialGradient id='h' cy='.64' r='.42'><stop stop-color='white' stop-opacity='.85'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><path id='p' d='M-3 4.5C-3 8-6 10-6 15.5a6 6 0 0 0 12 0C6 10 3 8 3 4.5Z'/></defs><circle cx='20' cy='24' r='22' fill='url(%23a)'/><circle cx='100' cy='29' r='22' fill='url(%23b)'/><use href='%23p' x='20' y='9.4' fill='rgb(255,84,66)'/><use href='%23p' x='100' y='14.4' fill='rgb(96,190,255)'/><use href='%23p' x='20' y='9.4' fill='url(%23h)'/><use href='%23p' x='100' y='14.4' fill='url(%23h)'/></svg>");
-    }
-    &::after {
-      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 54'><defs><radialGradient id='a'><stop stop-color='rgb(255,196,58)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(255,196,58)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(255,196,58)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(255,196,58)' stop-opacity='0'/></radialGradient><radialGradient id='b'><stop stop-color='rgb(255,232,180)' stop-opacity='.72'/><stop offset='.35' stop-color='rgb(255,232,180)' stop-opacity='.34'/><stop offset='.7' stop-color='rgb(255,232,180)' stop-opacity='.1'/><stop offset='1' stop-color='rgb(255,232,180)' stop-opacity='0'/></radialGradient><radialGradient id='h' cy='.64' r='.42'><stop stop-color='white' stop-opacity='.85'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><path id='p' d='M-3 4.5C-3 8-6 10-6 15.5a6 6 0 0 0 12 0C6 10 3 8 3 4.5Z'/></defs><circle cx='60' cy='29' r='22' fill='url(%23a)'/><circle cx='140' cy='24' r='22' fill='url(%23b)'/><use href='%23p' x='60' y='14.4' fill='rgb(255,196,58)'/><use href='%23p' x='140' y='9.4' fill='rgb(255,236,196)'/><use href='%23p' x='60' y='14.4' fill='url(%23h)'/><use href='%23p' x='140' y='9.4' fill='url(%23h)'/></svg>");
+      background:
+        radial-gradient(circle at calc(var(--tile) * 0.0833) calc(var(--tile) * 0.0516), rgb(255 58 48 / calc(0.55 * var(--lit-1))) 0, transparent calc(var(--tile) * 0.0177)),
+        radial-gradient(circle at calc(var(--tile) * 0.25) calc(var(--tile) * 0.0792), rgb(255 128 24 / calc(0.55 * var(--lit-2))) 0, transparent calc(var(--tile) * 0.0177)),
+        radial-gradient(circle at calc(var(--tile) * 0.4167) calc(var(--tile) * 0.0932), rgb(255 206 40 / calc(0.55 * var(--lit-3))) 0, transparent calc(var(--tile) * 0.0177)),
+        radial-gradient(circle at calc(var(--tile) * 0.5833) calc(var(--tile) * 0.0932), rgb(52 214 104 / calc(0.55 * var(--lit-4))) 0, transparent calc(var(--tile) * 0.0177)),
+        radial-gradient(circle at calc(var(--tile) * 0.75) calc(var(--tile) * 0.0792), rgb(44 150 255 / calc(0.55 * var(--lit-5))) 0, transparent calc(var(--tile) * 0.0177)),
+        radial-gradient(circle at calc(var(--tile) * 0.9167) calc(var(--tile) * 0.0516), rgb(255 84 170 / calc(0.55 * var(--lit-6))) 0, transparent calc(var(--tile) * 0.0177)),
+        radial-gradient(circle at calc(var(--tile) * 0.0833) calc(var(--tile) * 0.0818), rgb(255 255 246 / var(--lit-1)) 0, rgb(255 250 226 / var(--lit-1)) calc(var(--tile) * 0.0099), rgb(255 58 48 / var(--lit-1)) calc(var(--tile) * 0.0219), transparent calc(var(--tile) * 0.0245)),
+        radial-gradient(circle at calc(var(--tile) * 0.25) calc(var(--tile) * 0.1094), rgb(255 255 246 / var(--lit-2)) 0, rgb(255 250 226 / var(--lit-2)) calc(var(--tile) * 0.0099), rgb(255 128 24 / var(--lit-2)) calc(var(--tile) * 0.0219), transparent calc(var(--tile) * 0.0245)),
+        radial-gradient(circle at calc(var(--tile) * 0.4167) calc(var(--tile) * 0.1234), rgb(255 255 246 / var(--lit-3)) 0, rgb(255 250 226 / var(--lit-3)) calc(var(--tile) * 0.0099), rgb(255 206 40 / var(--lit-3)) calc(var(--tile) * 0.0219), transparent calc(var(--tile) * 0.0245)),
+        radial-gradient(circle at calc(var(--tile) * 0.5833) calc(var(--tile) * 0.1234), rgb(255 255 246 / var(--lit-4)) 0, rgb(255 250 226 / var(--lit-4)) calc(var(--tile) * 0.0099), rgb(52 214 104 / var(--lit-4)) calc(var(--tile) * 0.0219), transparent calc(var(--tile) * 0.0245)),
+        radial-gradient(circle at calc(var(--tile) * 0.75) calc(var(--tile) * 0.1094), rgb(255 255 246 / var(--lit-5)) 0, rgb(255 250 226 / var(--lit-5)) calc(var(--tile) * 0.0099), rgb(44 150 255 / var(--lit-5)) calc(var(--tile) * 0.0219), transparent calc(var(--tile) * 0.0245)),
+        radial-gradient(circle at calc(var(--tile) * 0.9167) calc(var(--tile) * 0.0818), rgb(255 255 246 / var(--lit-6)) 0, rgb(255 250 226 / var(--lit-6)) calc(var(--tile) * 0.0099), rgb(255 84 170 / var(--lit-6)) calc(var(--tile) * 0.0219), transparent calc(var(--tile) * 0.0245)),
+        radial-gradient(circle at calc(var(--tile) * 0.0833) calc(var(--tile) * 0.0818), rgb(255 58 48 / calc(0.6 * var(--lit-1))) 0, rgb(255 58 48 / calc(0.24 * var(--lit-1))) calc(var(--tile) * 0.0328), rgb(255 58 48 / calc(0.07 * var(--lit-1))) calc(var(--tile) * 0.0708), transparent calc(var(--tile) * 0.1094)),
+        radial-gradient(circle at calc(var(--tile) * 0.25) calc(var(--tile) * 0.1094), rgb(255 128 24 / calc(0.6 * var(--lit-2))) 0, rgb(255 128 24 / calc(0.24 * var(--lit-2))) calc(var(--tile) * 0.0328), rgb(255 128 24 / calc(0.07 * var(--lit-2))) calc(var(--tile) * 0.0708), transparent calc(var(--tile) * 0.1094)),
+        radial-gradient(circle at calc(var(--tile) * 0.4167) calc(var(--tile) * 0.1234), rgb(255 206 40 / calc(0.6 * var(--lit-3))) 0, rgb(255 206 40 / calc(0.24 * var(--lit-3))) calc(var(--tile) * 0.0328), rgb(255 206 40 / calc(0.07 * var(--lit-3))) calc(var(--tile) * 0.0708), transparent calc(var(--tile) * 0.1094)),
+        radial-gradient(circle at calc(var(--tile) * 0.5833) calc(var(--tile) * 0.1234), rgb(52 214 104 / calc(0.6 * var(--lit-4))) 0, rgb(52 214 104 / calc(0.24 * var(--lit-4))) calc(var(--tile) * 0.0328), rgb(52 214 104 / calc(0.07 * var(--lit-4))) calc(var(--tile) * 0.0708), transparent calc(var(--tile) * 0.1094)),
+        radial-gradient(circle at calc(var(--tile) * 0.75) calc(var(--tile) * 0.1094), rgb(44 150 255 / calc(0.6 * var(--lit-5))) 0, rgb(44 150 255 / calc(0.24 * var(--lit-5))) calc(var(--tile) * 0.0328), rgb(44 150 255 / calc(0.07 * var(--lit-5))) calc(var(--tile) * 0.0708), transparent calc(var(--tile) * 0.1094)),
+        radial-gradient(circle at calc(var(--tile) * 0.9167) calc(var(--tile) * 0.0818), rgb(255 84 170 / calc(0.6 * var(--lit-6))) 0, rgb(255 84 170 / calc(0.24 * var(--lit-6))) calc(var(--tile) * 0.0328), rgb(255 84 170 / calc(0.07 * var(--lit-6))) calc(var(--tile) * 0.0708), transparent calc(var(--tile) * 0.1094)),
+        radial-gradient(ellipse calc(var(--tile) * 0.099) calc(var(--tile) * 0.0885) at calc(var(--tile) * 0.0833) calc(var(--tile) * 0.1182), rgb(255 58 48 / calc(0.2 * var(--lit-1))) 0, rgb(255 58 48 / calc(0.09 * var(--lit-1))) 50%, transparent),
+        radial-gradient(ellipse calc(var(--tile) * 0.099) calc(var(--tile) * 0.0885) at calc(var(--tile) * 0.25) calc(var(--tile) * 0.1458), rgb(255 128 24 / calc(0.2 * var(--lit-2))) 0, rgb(255 128 24 / calc(0.09 * var(--lit-2))) 50%, transparent),
+        radial-gradient(ellipse calc(var(--tile) * 0.099) calc(var(--tile) * 0.0885) at calc(var(--tile) * 0.4167) calc(var(--tile) * 0.1599), rgb(255 206 40 / calc(0.2 * var(--lit-3))) 0, rgb(255 206 40 / calc(0.09 * var(--lit-3))) 50%, transparent),
+        radial-gradient(ellipse calc(var(--tile) * 0.099) calc(var(--tile) * 0.0885) at calc(var(--tile) * 0.5833) calc(var(--tile) * 0.1599), rgb(52 214 104 / calc(0.2 * var(--lit-4))) 0, rgb(52 214 104 / calc(0.09 * var(--lit-4))) 50%, transparent),
+        radial-gradient(ellipse calc(var(--tile) * 0.099) calc(var(--tile) * 0.0885) at calc(var(--tile) * 0.75) calc(var(--tile) * 0.1458), rgb(44 150 255 / calc(0.2 * var(--lit-5))) 0, rgb(44 150 255 / calc(0.09 * var(--lit-5))) 50%, transparent),
+        radial-gradient(ellipse calc(var(--tile) * 0.099) calc(var(--tile) * 0.0885) at calc(var(--tile) * 0.9167) calc(var(--tile) * 0.1182), rgb(255 84 170 / calc(0.2 * var(--lit-6))) 0, rgb(255 84 170 / calc(0.09 * var(--lit-6))) 50%, transparent);
+      background-repeat: repeat-x;
+      background-size: var(--tile) calc(var(--tile) * 0.375);
     }
 
     & .list-header h1 { font-weight: 600; letter-spacing: -0.015em; }
@@ -81,11 +120,32 @@
   }
 
   /* Slow, and only for those who have not asked for stillness: a bulb dims to
-     a faint glow over its unlit glass and comes back, never off and on */
+     a faint glow over its unlit glass and comes back, never off and on. Six
+     colours, six tempos: the string never repeats itself. */
   @media (prefers-reduced-motion: no-preference) {
-    [data-theme="ljusslinga"]::before { animation: ljusslinga-glow 4.5s ease-in-out infinite alternate; }
-    [data-theme="ljusslinga"]::after { animation: ljusslinga-glow 4.5s ease-in-out -4.5s infinite alternate; }
+    [data-theme="ljusslinga"]::before {
+      animation:
+        ljusslinga-1 3.1s ease-in-out 0s infinite alternate,
+        ljusslinga-2 4.3s ease-in-out -1.4s infinite alternate,
+        ljusslinga-3 5.3s ease-in-out -2.7s infinite alternate,
+        ljusslinga-4 3.7s ease-in-out -4.1s infinite alternate,
+        ljusslinga-5 4.9s ease-in-out -0.8s infinite alternate,
+        ljusslinga-6 5.9s ease-in-out -3.3s infinite alternate;
+    }
   }
 }
 
-@keyframes ljusslinga-glow { from { opacity: 1; } to { opacity: 0.3; } }
+/* How brightly each colour burns, from 0 to 1. Numbers, so they can be animated. */
+@property --lit-1 { syntax: "<number>"; inherits: false; initial-value: 1; }
+@property --lit-2 { syntax: "<number>"; inherits: false; initial-value: 1; }
+@property --lit-3 { syntax: "<number>"; inherits: false; initial-value: 1; }
+@property --lit-4 { syntax: "<number>"; inherits: false; initial-value: 1; }
+@property --lit-5 { syntax: "<number>"; inherits: false; initial-value: 1; }
+@property --lit-6 { syntax: "<number>"; inherits: false; initial-value: 1; }
+
+@keyframes ljusslinga-1 { to { --lit-1: 0.3; } }
+@keyframes ljusslinga-2 { to { --lit-2: 0.3; } }
+@keyframes ljusslinga-3 { to { --lit-3: 0.3; } }
+@keyframes ljusslinga-4 { to { --lit-4: 0.3; } }
+@keyframes ljusslinga-5 { to { --lit-5: 0.3; } }
+@keyframes ljusslinga-6 { to { --lit-6: 0.3; } }

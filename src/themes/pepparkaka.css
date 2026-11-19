@@ -35,13 +35,14 @@
     --banner-color: light-dark(oklch(46% 0.095 52), oklch(37% 0.085 50));
     /* Baked, not painted: browner towards the edges, with a fine crumb */
     --banner:
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.16  0 0 0 0 0.07  0 0 0 0 0.02  0 0 0 -1.6 0.95'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.5'/></svg>"),
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.16  0 0 0 0 0.07  0 0 0 0 0.02  0 0 0 -1.6 0.95'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.85'/></svg>"),
+      linear-gradient(transparent calc(100% - 1rem), var(--baked)),
       radial-gradient(140% 100% at 50% 40%, transparent 35%, var(--baked)),
       var(--banner-color);
     --banner-ink: var(--icing);
     --banner-ink-soft: oklch(94% 0.03 80);
     --banner-head: 1rem;
-    --banner-foot: 1.75rem;
+    --banner-foot: 2rem;
     /* One icing for everything piped: the same white, the same 2px line */
     --icing: oklch(98.5% 0.012 85);
     --piped: 2px;
@@ -64,10 +65,23 @@
     /* A piped wave with a dot over each dip */
     & .list-header::after {
       content: "";
-      inset-block-end: 0.75rem;
+      inset-block-end: 1rem;
       block-size: 1rem;
       background: var(--icing);
       mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 16'><path d='M0 8Q8 16 16 8Q24 0 32 8' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/><circle cx='8' cy='3.5' r='1.5'/></svg>") repeat-x center / 2rem 100%;
+    }
+
+    /* The banner is a biscuit too: its lower edge is cut with a fluted cutter,
+       out of the page colour, where it has browned most.
+       Whole pixels per tile: a scaled tile leaves hairlines between flutes. */
+    & .list-header { anchor-name: --banner; }
+    &::after {
+      content: "";
+      position-anchor: --banner;
+      inset-block-start: calc(anchor(bottom) - 0.4375rem);
+      block-size: 0.5rem;
+      background: var(--bg);
+      mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 8' preserveAspectRatio='none'><path d='M0 0A8 7 0 0 0 16 0V8H0Z'/></svg>") repeat-x center bottom / 1rem 100%;
     }
 
     /* The biscuit: browned at the rim, icing piped just inside it */
@@ -84,4 +98,15 @@
       }
     }
   }
+
+  /* Once, as the page arrives, and only for those who have not asked for
+     stillness: the icing runs down from the edge and sets */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-theme="pepparkaka"]::before {
+      transform-origin: top;
+      animation: pepparkaka-run 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s backwards;
+    }
+  }
 }
+
+@keyframes pepparkaka-run { from { scale: 1 0.3; } }
