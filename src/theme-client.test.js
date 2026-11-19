@@ -6,21 +6,23 @@ async function load({ value, label, saves = true }) {
   let onChange;
   const main = { dataset: { theme: 'polkagris' } };
   const name = { textContent: 'Polkagris' };
-  const verb = { textContent: 'Byt' };
   let onClick;
+  const chosen = { value, dataset: { label }, autofocus: false };
+  const other = { value: 'other', dataset: {}, autofocus: true };
   const button = { hidden: false };
   const close = { textContent: 'Avbryt' };
   const dialog = { close: vi.fn() };
   const form = {
     action: '/lista',
     closest: (selector) => (selector === 'dialog' ? dialog : main),
-    querySelector: (selector) => (selector === '[data-save]' ? button : selector === '[data-close]' ? close : { value, dataset: { label } }),
+    querySelector: (selector) => (selector === '[data-save]' ? button : selector === '[data-close]' ? close : chosen),
+    querySelectorAll: () => [other, chosen],
     addEventListener: (type, listener) => {
       if (type === 'change') onChange = listener;
       if (type === 'click') onClick = listener;
     },
   };
-  main.querySelector = (selector) => (selector.includes('name') ? name : verb);
+  main.querySelector = () => name;
 
   const fetch = vi.fn(() => (saves ? Promise.resolve({ ok: true }) : Promise.reject(new Error('offline'))));
   const location = { reload: vi.fn() };
@@ -32,7 +34,7 @@ async function load({ value, label, saves = true }) {
   vi.resetModules();
   await import('../public/js/theme.js');
   const click = (detail, onCard = true) => onClick({ detail, target: { closest: () => (onCard ? {} : null) } });
-  return { main, name, verb, button, close, dialog, fetch, location, change: () => onChange(), click };
+  return { main, name, button, close, dialog, chosen, other, fetch, location, change: () => onChange(), click };
 }
 
 afterEach(() => vi.unstubAllGlobals());
@@ -68,19 +70,20 @@ describe('theme picker', () => {
 
     expect(page.main.dataset.theme).toBe('vinternatt');
     expect(page.name.textContent).toBe('Vinternatt');
-    expect(page.verb.textContent).toBe('Byt');
+    // focus follows the choice, for the next time the picker opens
+    expect(page.chosen.autofocus).toBe(true);
+    expect(page.other.autofocus).toBe(false);
     expect(page.fetch).toHaveBeenCalledWith('/lista', expect.objectContaining({ method: 'POST' }));
     expect(page.location.reload).not.toHaveBeenCalled();
   });
 
   it('undresses the page when no theme is chosen', async () => {
-    const page = await load({ value: '', label: 'inget' });
+    const page = await load({ value: '', label: 'Välj' });
 
     await page.change();
 
     expect(page.main.dataset.theme).toBeUndefined();
-    expect(page.name.textContent).toBe('inget');
-    expect(page.verb.textContent).toBe('Välj');
+    expect(page.name.textContent).toBe('Välj');
   });
 
   it('goes back to what the server has when the save fails', async () => {

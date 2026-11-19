@@ -45,13 +45,15 @@
   }
 
   [data-theme="vinternatt"] {
+    /* On the owner's list the corner holds the theme's name: the moon moves in beside it */
+    .topbar + & { --moon-inset: 6.5rem; }
     & .list-header h1 { font-style: italic; }
 
     /* The sky, with the moon in it */
     & .list-header { anchor-name: --banner; }
     & .list-header::before {
       background:
-        url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><path d='M19 2a12 12 0 1 0 7 17A10 10 0 0 1 19 2z' fill='rgb(255,244,214)'/></svg>") no-repeat right 1.25rem top 1rem / 1.75rem 1.75rem,
+        url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><path d='M19 2a12 12 0 1 0 7 17A10 10 0 0 1 19 2z' fill='rgb(255,244,214)'/></svg>") no-repeat right var(--moon-inset, 1.25rem) top 1rem / 1.75rem 1.75rem,
         linear-gradient(var(--sky-top), var(--sky-low));
     }
 

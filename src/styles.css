@@ -524,22 +524,37 @@
     }
   }
 
-  /* Owner's list: the line that says which theme the list wears. All of it
-     opens the picker; the last word looks like the link it is. */
+  /* Owner's list: the heading, and beside it which theme the list wears.
+     Two short lines of text, the second one the link that opens the picker.
+     On a theme's banner it takes the banner's ink. */
+  .heading-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
   .theme-line {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35em;
+    display: grid;
+    justify-items: end;
+    align-content: center;
+    gap: 0.1rem;
+    flex: none;
     min-block-size: 2.75rem;
-    margin-block-start: 0.5rem;
+    margin-block-start: 0.35rem;
     padding: 0;
     border: 0;
     background: none;
-    color: inherit;
-    font: inherit;
+    color: var(--banner-ink-soft, var(--ink-soft));
+    font: 0.8125rem/1.2 var(--font-body);
     cursor: pointer;
 
-    & .verb { color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; }
+    & .verb {
+      color: var(--banner-ink, var(--accent));
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
   }
 
   /* The picker: one card per theme. The cards' pictures come from the theme files. */

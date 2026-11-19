@@ -9,7 +9,6 @@ if (form) {
   const dialog = form.closest('dialog');
   const main = form.closest('main');
   const name = main.querySelector('[data-theme-name]');
-  const verb = main.querySelector('[data-theme-verb]');
   form.querySelector('[data-save]').hidden = true;
   form.querySelector('[data-close]').textContent = 'Stäng';
 
@@ -26,7 +25,8 @@ if (form) {
       if (chosen.value) main.dataset.theme = chosen.value;
       else delete main.dataset.theme;
       name.textContent = chosen.dataset.label;
-      verb.textContent = chosen.value ? 'Byt' : 'Välj';
+      // Next time the picker opens, focus starts on this card.
+      for (const card of form.querySelectorAll('input[name="theme"]')) card.autofocus = card === chosen;
     };
     // The old look fades into the new, for those who have not asked for stillness.
     if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(dress);

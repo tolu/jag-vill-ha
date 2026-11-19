@@ -35,7 +35,16 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
           <header>
             {/* The theme's band goes behind the heading only: the buttons stay on the plain page. */}
             <div className="list-header compact">
-              <h1>Din lista</h1>
+              {/* Beside the heading, so it takes no row of its own: which theme the list wears, and the way to change it. */}
+              <div className="heading-row">
+                <h1>Din lista</h1>
+                <button className="theme-line" type="button" {...opens('tema')}>
+                  Tema
+                  <span className="verb" data-theme-name>
+                    {themes.find(({ id }) => id === theme)?.label ?? 'Välj'}
+                  </span>
+                </button>
+              </div>
               <p className="intro">
                 Du ser inte vad som är paxat. <a href={`/${username}`}>Visa som besökare</a>
               </p>
@@ -55,13 +64,6 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
               </button>
             </div>
             <p className="hint ok copied" role="status"></p>
-            {/* Which theme the list wears. The whole line opens the picker. */}
-            <button className="theme-line" type="button" {...opens('tema')}>
-              Tema: <span data-theme-name>{themes.find(({ id }) => id === theme)?.label ?? 'inget'}</span> ·{' '}
-              <span className="verb" data-theme-verb>
-                {theme ? 'Byt' : 'Välj'}
-              </span>
-            </button>
             {needsEmail && (
               <p className="notice calm">
                 Byter du telefon kan du bli utelåst från listan. <a href="/konto#epost-rubrik">Lägg till din e-post</a>, så kan vi mejla dig in
@@ -174,13 +176,14 @@ export default function OwnerListPage({ username, avatarKey, theme, themes, need
               <input type="hidden" name="intent" value="theme" />
               <fieldset aria-label="Tema">
                 <label>
-                  <input type="radio" name="theme" value="" data-label="inget" defaultChecked={!theme} />
+                  {/* Focus starts on the chosen card: on the first one, Safari draws a second frame there. */}
+                  <input type="radio" name="theme" value="" data-label="Välj" defaultChecked={!theme} autoFocus={!theme} />
                   <span className="theme-card"></span>
                   Utan tema
                 </label>
                 {themes.map(({ id, label }) => (
                   <label key={id}>
-                    <input type="radio" name="theme" value={id} data-label={label} defaultChecked={id === theme} />
+                    <input type="radio" name="theme" value={id} data-label={label} defaultChecked={id === theme} autoFocus={id === theme} />
                     <span className="theme-card" data-card={id}></span>
                     {label}
                   </label>
