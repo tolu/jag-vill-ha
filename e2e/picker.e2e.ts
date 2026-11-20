@@ -53,6 +53,18 @@ test.describe('an existing wish', () => {
     await expect(dialog.locator('.crop-view img')).toHaveAttribute('style', /width: \d/);
   });
 
+  test('a saved picture that is gone opens on the icons', async ({ page }) => {
+    const dialog = await open(page, { picture: true });
+    const errors: Error[] = [];
+    page.on('pageerror', (error) => errors.push(error));
+    // As when another tab has replaced the picture since this page was loaded.
+    await page.route('**/bild/**', (route) => route.fulfill({ status: 404, body: 'Not found' }));
+    await box(page).click();
+    await expect(dialog.locator('.icons')).toBeVisible();
+    await expect(dialog.locator('.crop')).toBeHidden();
+    expect(errors).toEqual([]);
+  });
+
   test('Escape keeps a picture removed by mistake', async ({ page }) => {
     const dialog = await open(page, { picture: true });
     await box(page).click();
