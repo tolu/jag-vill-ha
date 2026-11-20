@@ -8,11 +8,8 @@ const pictureBytes = readFileSync(PICTURE);
 /** An address on a shop, as Chrome hands it over in a drop. Never fetched: /api/bild is answered here. */
 export const SHOP_PICTURE = 'https://butik.example/sak.jpg';
 
-/** Logs in the dev server's test owner, made on the first visit. */
-export async function login(page: Page) {
-  await page.goto('/dev/login');
-  await expect(page).toHaveURL(/\/lista$/);
-}
+/** The test owner's session, kept by owner.setup.ts. Playwright empties the folder before each run. */
+export const OWNER = 'test-results/owner.json';
 
 /** Adds a wish with a unique title, with or without a picture, and gives its id. */
 export async function addWish(page: Page, { picture = false } = {}) {

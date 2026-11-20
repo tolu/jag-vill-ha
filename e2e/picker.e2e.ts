@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { addWish, answerPictures, deleteWish, dropFromChrome, login, PICTURE, saved } from './helpers';
+import { addWish, answerPictures, deleteWish, dropFromChrome, PICTURE, saved } from './helpers';
 
 // The picture picker: the box beside "Vad vill du ha?" and the modal dialog it
 // opens. Most of what is tested here lives in /js/picker.js.
@@ -9,10 +9,6 @@ const savedPicture = (page: Page) => box(page).locator('img');
 
 test.describe('an existing wish', () => {
   let wish: { id: number; title: string };
-
-  test.beforeEach(async ({ page }) => {
-    await login(page);
-  });
 
   test.afterEach(async ({ page }) => {
     if (wish) await deleteWish(page, wish.id);
@@ -111,7 +107,7 @@ test.describe('an existing wish', () => {
 
 test.describe('a new wish', () => {
   test.beforeEach(async ({ page }) => {
-    await login(page);
+    await page.goto('/lista');
     await page.getByRole('button', { name: 'Lägg till önskning' }).click();
   });
 
@@ -164,7 +160,6 @@ test.describe('a new wish', () => {
 
 test.describe('the account picture', () => {
   test('is saved, and the e-mail stays', async ({ page }) => {
-    await login(page);
     await page.goto('/konto');
     const email = await page.locator('#epost').inputValue();
     await page.locator('.appearance.round .picker').click();
@@ -182,7 +177,6 @@ test.describe('without script', () => {
 
   test('a saved picture can still be removed', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Safari before 26.2 opens dialogs only with /js/command.js');
-    await login(page);
     const wish = await addWish(page, { picture: true });
     await page.goto(`/lista/${wish.id}`);
     await box(page).click();

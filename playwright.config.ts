@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { OWNER } from './e2e/helpers';
 
 // End-to-end tests against the dev server on throwaway data: the same server
 // as `app-test` in .claude/launch.json. Run with `npm run e2e`.
@@ -16,12 +17,14 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',
+    storageState: OWNER,
   },
   projects: [
-    { name: 'chrome', use: { ...devices['Desktop Chrome'] } },
+    { name: 'owner', testMatch: 'owner.setup.ts', use: { storageState: { cookies: [], origins: [] } } },
+    { name: 'chrome', use: { ...devices['Desktop Chrome'] }, dependencies: ['owner'] },
     // WebKit is Safari's engine: it catches what only Safari lacks.
-    { name: 'safari', use: { ...devices['Desktop Safari'] } },
-    { name: 'phone', use: { ...devices['iPhone 15'] } },
+    { name: 'safari', use: { ...devices['Desktop Safari'] }, dependencies: ['owner'] },
+    { name: 'phone', use: { ...devices['iPhone 15'] }, dependencies: ['owner'] },
   ],
   webServer: {
     command: `npm run dev -- --port ${PORT}`,
