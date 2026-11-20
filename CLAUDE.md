@@ -181,6 +181,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   it. `/api/bild` is answered by the test, never fetched from a shop.
   WebKit stands in for Safari: it caught a mouse click Safari reports as
   `detail` 0. The tests reuse a running `app-test` server, or start one.
+- In CI the e2e job runs in Playwright's Docker image. Updating
+  `@playwright/test` means updating the image's tag in `ci.yml` to the same
+  version, or the tests find no browsers.
 - Logged in, the quick way: `/dev/login` on the dev server logs in the test
   owner `testare`, made with three wishes on the first visit. The landing
   page links to it. It is behind `import.meta.env.DEV` and cut from a build.
