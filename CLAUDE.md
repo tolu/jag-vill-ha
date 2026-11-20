@@ -175,18 +175,24 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 ## Verifying
 
 - What a page does in the browser is tested in `e2e/*.e2e.ts` with
-  Playwright, not checked by hand: a fix or feature in `public/js/` or in
-  what a form sends gets an e2e test, and the test must fail without it.
+  Playwright, not checked by hand. A new feature or fix that a unit test
+  cannot reach gets an e2e test: a page, a form, a route, a script in
+  `public/js/`, or how they work together. The test must fail without it.
   Each test adds its own wish (`addWish` in `e2e/helpers.ts`) and deletes
   it. `/api/bild` is answered by the test, never fetched from a shop.
+- The e2e workers run side by side, each logged in as a test owner of its
+  own (`testare-w0` and so on, `e2e/fixtures.ts`): import `test` from
+  there. A test that needs another account makes one and deletes it on
+  `/konto` (`deleteAccount`); nothing may touch another worker's owner.
   WebKit stands in for Safari: it caught a mouse click Safari reports as
   `detail` 0. The tests reuse a running `app-test` server, or start one.
 - In CI the e2e job runs in Playwright's Docker image. Updating
   `@playwright/test` means updating the image's tag in `ci.yml` to the same
   version, or the tests find no browsers.
 - Logged in, the quick way: `/dev/login` on the dev server logs in the test
-  owner `testare`, made with three wishes on the first visit. The landing
-  page links to it. It is behind `import.meta.env.DEV` and cut from a build.
+  owner `testare`, made with three wishes on the first visit, and
+  `/dev/login?som=x` the owner `testare-x`. The landing page links to it.
+  It is behind `import.meta.env.DEV` and cut from a build.
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
 - Log in to test accounts in Playwright, not in the Browser pane: the pane
   shares cookies between all localhost ports, so a login on `app-test` logs
@@ -197,9 +203,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   owner's window width. Going straight to its address does not show that it
   can be found.
 - Without passkeys (Safari, the iOS simulator): `/dev/login` works there
-  too. `testare`'s recovery link is never mailed (`keepDevLink`). For other
-  accounts, post the e-mail to `/aterstall` and open the link from the inbox:
-  `/__void/inbox/<id>/raw?token=…`, quoted-printable.
+  too. A test owner's recovery link is never mailed (`keepDevLink`). For
+  other addresses, post the e-mail to `/aterstall` and open the link from the
+  inbox: `/__void/inbox/<id>/raw?token=…`, quoted-printable (`mailedLink`).
 - iOS simulator: `xcrun simctl boot <device>`, then open
   `http://localhost:5183/…`. Wait about 3 s after a tap that raises the
   keyboard before the screenshot: Safari is still scrolling.

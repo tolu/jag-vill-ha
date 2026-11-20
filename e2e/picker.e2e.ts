@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { addWish, answerPictures, deleteWish, dropFromChrome, PICTURE, saved } from './helpers';
 
 // The picture picker: the box beside "Vad vill du ha?" and the modal dialog it
