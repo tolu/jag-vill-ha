@@ -36,11 +36,15 @@ test.describe('an existing wish', () => {
     const seen = await page.evaluate(async () => {
       const dialog = document.getElementById('andra-utseende')!;
       const icons = dialog.querySelector<HTMLElement>('.icons')!;
+      const picture = dialog.querySelector<HTMLElement>('.crop-view img')!;
       const seen = new Set<string>();
       document.querySelector<HTMLElement>('.appearance .picker')!.click();
+      // Looks at every frame until the picture is in the frame, and a few more.
       const start = performance.now();
-      while (performance.now() - start < 800) {
+      let after = 5;
+      while (after > 0 && performance.now() - start < 2000) {
         if ((dialog as HTMLDialogElement).open) seen.add(icons.offsetParent ? 'icons' : 'frame');
+        if (/width: \d/.test(picture.getAttribute('style') ?? '')) after--;
         await new Promise((resolve) => requestAnimationFrame(resolve));
       }
       return [...seen];
