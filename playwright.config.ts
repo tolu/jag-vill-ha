@@ -8,8 +8,10 @@ const PORT = 5183;
 export default defineConfig({
   testDir: 'e2e',
   testMatch: '*.e2e.ts', // not *.test.ts, which the unit tests (`vp test`) pick up
-  fullyParallel: false, // one test owner, one database: tests run one after another
-  workers: 1,
+  // The three browsers side by side, one worker each, on one server and one
+  // test owner. Each test makes its own wish; within a browser they run in order.
+  fullyParallel: false,
+  workers: 3,
   retries: process.env.CI ? 1 : 0,
   // In CI: annotations on the pull request, and a report with the traces that
   // the e2e job uploads when a test fails.
