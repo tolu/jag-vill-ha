@@ -159,30 +159,40 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 - `npm run dev` and the `app` server keep their data in the main checkout's
   `.void`, shared by every worktree: these are the owner's own accounts.
-  Run one server on it at a time, and mind that a migration applied from one
-  branch is applied for all of them.
-- `npx void db migrate` goes to the shared data even with `LOCAL_STATE` set.
-  For `app-test`, run the migration's SQL on the sqlite file under
-  `.void/test-state/v3/d1/` and add its name to `_void_migrations`.
+  Run one server on it at a time.
+- A dev server applies pending migrations to its own data as it starts.
+  Starting `app` on a branch with a new migration applies it for every
+  worktree; restarting `app-test` applies it to the test data.
 - Anything automated uses the `app-test` server in `.claude/launch.json`. Its
   data is in this checkout's `.void/test-state` and may be thrown away.
-- `void db` commands ignore `LOCAL_STATE` and go to the shared data, `migrate`
-  too. Change the test database with `sqlite3` on its file under
-  `.void/test-state`, and add the migration's name to `_void_migrations`.
+- `void db` commands do not read `LOCAL_STATE`. They use the folder in
+  `.void/local-d1.json`, which every load of `vite.config.ts` rewrites (dev,
+  test, lint, build, the hook): the shared data, or the test data right after
+  `app-test` or `npm run e2e` started. Look before a `void db` command.
+  Change the test database with `sqlite3` on its file under `.void/test-state`.
 - `app-test` takes its admin from `.void/test-state/admin-id`: a user id.
 
 ## Verifying
 
 - What a page does in the browser is tested in `e2e/*.e2e.ts` with
-  Playwright, not checked by hand: a fix or feature in `public/js/` or in
-  what a form sends gets an e2e test, and the test must fail without it.
+  Playwright, not checked by hand. A new feature or fix that a unit test
+  cannot reach gets an e2e test: a page, a form, a route, a script in
+  `public/js/`, or how they work together. The test must fail without it.
   Each test adds its own wish (`addWish` in `e2e/helpers.ts`) and deletes
   it. `/api/bild` is answered by the test, never fetched from a shop.
+- The e2e workers run side by side, each logged in as a test owner of its
+  own (`testare-w0` and so on, `e2e/fixtures.ts`): import `test` from
+  there. A test that needs another account makes one and deletes it on
+  `/konto` (`deleteAccount`); nothing may touch another worker's owner.
   WebKit stands in for Safari: it caught a mouse click Safari reports as
   `detail` 0. The tests reuse a running `app-test` server, or start one.
+- In CI the e2e job runs in Playwright's Docker image. Updating
+  `@playwright/test` means updating the image's tag in `ci.yml` to the same
+  version, or the tests find no browsers.
 - Logged in, the quick way: `/dev/login` on the dev server logs in the test
-  owner `testare`, made with three wishes on the first visit. The landing
-  page links to it. It is behind `import.meta.env.DEV` and cut from a build.
+  owner `testare`, made with three wishes on the first visit, and
+  `/dev/login?som=x` the owner `testare-x`. The landing page links to it.
+  It is behind `import.meta.env.DEV` and cut from a build.
 - Passkeys: drive Chromium with a virtual WebAuthn authenticator.
 - Log in to test accounts in Playwright, not in the Browser pane: the pane
   shares cookies between all localhost ports, so a login on `app-test` logs
@@ -193,9 +203,9 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
   owner's window width. Going straight to its address does not show that it
   can be found.
 - Without passkeys (Safari, the iOS simulator): `/dev/login` works there
-  too. `testare`'s recovery link is never mailed (`keepDevLink`). For other
-  accounts, post the e-mail to `/aterstall` and open the link from the inbox:
-  `/__void/inbox/<id>/raw?token=…`, quoted-printable.
+  too. A test owner's recovery link is never mailed (`keepDevLink`). For
+  other addresses, post the e-mail to `/aterstall` and open the link from the
+  inbox: `/__void/inbox/<id>/raw?token=…`, quoted-printable (`mailedLink`).
 - iOS simulator: `xcrun simctl boot <device>`, then open
   `http://localhost:5183/…`. Wait about 3 s after a tap that raises the
   keyboard before the screenshot: Safari is still scrolling.

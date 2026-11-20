@@ -1,5 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
-import { addWish, answerPictures, deleteWish, dropFromChrome, login, PICTURE, saved } from './helpers';
+import type { Page } from '@playwright/test';
+import { expect, test } from './fixtures';
+import { addWish, answerPictures, deleteWish, dropFromChrome, PICTURE, saved } from './helpers';
 
 // The picture picker: the box beside "Vad vill du ha?" and the modal dialog it
 // opens. Most of what is tested here lives in /js/picker.js.
@@ -9,10 +10,6 @@ const savedPicture = (page: Page) => box(page).locator('img');
 
 test.describe('an existing wish', () => {
   let wish: { id: number; title: string };
-
-  test.beforeEach(async ({ page }) => {
-    await login(page);
-  });
 
   test.afterEach(async ({ page }) => {
     if (wish) await deleteWish(page, wish.id);
@@ -40,17 +37,33 @@ test.describe('an existing wish', () => {
     const seen = await page.evaluate(async () => {
       const dialog = document.getElementById('andra-utseende')!;
       const icons = dialog.querySelector<HTMLElement>('.icons')!;
+      const picture = dialog.querySelector<HTMLElement>('.crop-view img')!;
       const seen = new Set<string>();
       document.querySelector<HTMLElement>('.appearance .picker')!.click();
+      // Looks at every frame until the picture is in the frame, and a few more.
       const start = performance.now();
-      while (performance.now() - start < 800) {
+      let after = 5;
+      while (after > 0 && performance.now() - start < 2000) {
         if ((dialog as HTMLDialogElement).open) seen.add(icons.offsetParent ? 'icons' : 'frame');
+        if (/width: \d/.test(picture.getAttribute('style') ?? '')) after--;
         await new Promise((resolve) => requestAnimationFrame(resolve));
       }
       return [...seen];
     });
     expect(seen).toEqual(['frame']);
     await expect(dialog.locator('.crop-view img')).toHaveAttribute('style', /width: \d/);
+  });
+
+  test('a saved picture that is gone opens on the icons', async ({ page }) => {
+    const dialog = await open(page, { picture: true });
+    const errors: Error[] = [];
+    page.on('pageerror', (error) => errors.push(error));
+    // As when another tab has replaced the picture since this page was loaded.
+    await page.route('**/bild/**', (route) => route.fulfill({ status: 404, body: 'Not found' }));
+    await box(page).click();
+    await expect(dialog.locator('.icons')).toBeVisible();
+    await expect(dialog.locator('.crop')).toBeHidden();
+    expect(errors).toEqual([]);
   });
 
   test('Escape keeps a picture removed by mistake', async ({ page }) => {
@@ -111,7 +124,7 @@ test.describe('an existing wish', () => {
 
 test.describe('a new wish', () => {
   test.beforeEach(async ({ page }) => {
-    await login(page);
+    await page.goto('/lista');
     await page.getByRole('button', { name: 'Lägg till önskning' }).click();
   });
 
@@ -155,16 +168,21 @@ test.describe('a new wish', () => {
     await expect(dialog.locator('.crop')).toBeVisible();
     await expect(dialog.getByRole('button', { name: 'Klar' })).toBeInViewport({ ratio: 1 });
   });
+});
 
-  test('the box shows its pencil without hover on a touch screen', async ({ page, hasTouch }) => {
-    test.skip(!hasTouch, 'only touch screens lack hover');
+test.describe('on a touch screen', () => {
+  // Skipped before any page is opened.
+  test.skip(({ hasTouch }) => !hasTouch, 'only touch screens lack hover');
+
+  test('the box shows its pencil without hover', async ({ page }) => {
+    await page.goto('/lista');
+    await page.getByRole('button', { name: 'Lägg till önskning' }).click();
     await expect(page.locator('#ny .picker [data-icon="edit"]')).toBeVisible();
   });
 });
 
 test.describe('the account picture', () => {
   test('is saved, and the e-mail stays', async ({ page }) => {
-    await login(page);
     await page.goto('/konto');
     const email = await page.locator('#epost').inputValue();
     await page.locator('.appearance.round .picker').click();
@@ -179,10 +197,9 @@ test.describe('the account picture', () => {
 
 test.describe('without script', () => {
   test.use({ javaScriptEnabled: false });
+  test.skip(({ browserName }) => browserName === 'webkit', 'Safari before 26.2 opens dialogs only with /js/command.js');
 
-  test('a saved picture can still be removed', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Safari before 26.2 opens dialogs only with /js/command.js');
-    await login(page);
+  test('a saved picture can still be removed', async ({ page }) => {
     const wish = await addWish(page, { picture: true });
     await page.goto(`/lista/${wish.id}`);
     await box(page).click();

@@ -156,8 +156,9 @@ for (const root of document.querySelectorAll('.appearance')) {
       if (!menu.open) return;
       if (stored()) {
         const ticket = cleared;
+        // Gone if another tab has replaced it since: then the icons, as for a failed fetch.
         const blob = await fetch(preview.src)
-          .then((response) => response.blob())
+          .then((response) => (response.ok ? response.blob() : null))
           .catch(() => null);
         if (cleared !== ticket) return; // "Ta bort" was pressed while it was on its way
         if (blob) await load(blob);
