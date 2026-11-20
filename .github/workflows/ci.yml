@@ -44,6 +44,11 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Playwright's own image, with the browsers and what they need installed.
+    # Its version follows @playwright/test in package-lock.json.
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
+      options: --user 1001
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -53,10 +58,6 @@ jobs:
           cache: npm
 
       - run: npm ci
-
-      # Not cached: Playwright says restoring them takes about as long as
-      # downloading them, and the system libraries are needed either way.
-      - run: npx playwright install --with-deps chromium webkit
 
       # Starts the dev server on empty data in .void/test-state (webServer in
       # playwright.config.ts). Void applies the migrations as it starts.
