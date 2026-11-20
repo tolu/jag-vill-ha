@@ -159,16 +159,17 @@ Use npm. `vp` follows `packageManager`; never let pnpm in.
 
 - `npm run dev` and the `app` server keep their data in the main checkout's
   `.void`, shared by every worktree: these are the owner's own accounts.
-  Run one server on it at a time, and mind that a migration applied from one
-  branch is applied for all of them.
-- `npx void db migrate` goes to the shared data even with `LOCAL_STATE` set.
-  For `app-test`, run the migration's SQL on the sqlite file under
-  `.void/test-state/v3/d1/` and add its name to `_void_migrations`.
+  Run one server on it at a time.
+- A dev server applies pending migrations to its own data as it starts.
+  Starting `app` on a branch with a new migration applies it for every
+  worktree; restarting `app-test` applies it to the test data.
 - Anything automated uses the `app-test` server in `.claude/launch.json`. Its
   data is in this checkout's `.void/test-state` and may be thrown away.
-- `void db` commands ignore `LOCAL_STATE` and go to the shared data, `migrate`
-  too. Change the test database with `sqlite3` on its file under
-  `.void/test-state`, and add the migration's name to `_void_migrations`.
+- `void db` commands do not read `LOCAL_STATE`. They use the folder in
+  `.void/local-d1.json`, which every load of `vite.config.ts` rewrites (dev,
+  test, lint, build, the hook): the shared data, or the test data right after
+  `app-test` or `npm run e2e` started. Look before a `void db` command.
+  Change the test database with `sqlite3` on its file under `.void/test-state`.
 - `app-test` takes its admin from `.void/test-state/admin-id`: a user id.
 
 ## Verifying
