@@ -11,13 +11,11 @@ export default defineConfig({
   workers: 1,
   retries: process.env.CI ? 1 : 0,
   // In CI: annotations on the pull request, and a report with the traces that
-  // the e2e job uploads.
+  // the e2e job uploads when a test fails.
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: `http://localhost:${PORT}`,
-    // In CI only the retry of a failed test is recorded: recording every test
-    // costs time. A test that failed twice leaves the trace of its retry.
-    trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
+    trace: 'retain-on-failure',
   },
   projects: [
     { name: 'chrome', use: { ...devices['Desktop Chrome'] } },
