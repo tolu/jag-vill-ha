@@ -66,7 +66,7 @@ jobs:
         with:
           cache: npm
 
-      - run: node --version && npm ci
+      - run: node --version && npm ci --prefer-offline --no-audit --no-fund
 
       # Starts the dev server on empty data in .void/test-state (webServer in
       # playwright.config.ts). Void applies the migrations as it starts.
