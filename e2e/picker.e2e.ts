@@ -155,9 +155,15 @@ test.describe('a new wish', () => {
     await expect(dialog.locator('.crop')).toBeVisible();
     await expect(dialog.getByRole('button', { name: 'Klar' })).toBeInViewport({ ratio: 1 });
   });
+});
 
-  test('the box shows its pencil without hover on a touch screen', async ({ page, hasTouch }) => {
-    test.skip(!hasTouch, 'only touch screens lack hover');
+test.describe('on a touch screen', () => {
+  // Skipped before any page is opened.
+  test.skip(({ hasTouch }) => !hasTouch, 'only touch screens lack hover');
+
+  test('the box shows its pencil without hover', async ({ page }) => {
+    await page.goto('/lista');
+    await page.getByRole('button', { name: 'Lägg till önskning' }).click();
     await expect(page.locator('#ny .picker [data-icon="edit"]')).toBeVisible();
   });
 });
@@ -178,9 +184,9 @@ test.describe('the account picture', () => {
 
 test.describe('without script', () => {
   test.use({ javaScriptEnabled: false });
+  test.skip(({ browserName }) => browserName === 'webkit', 'Safari before 26.2 opens dialogs only with /js/command.js');
 
-  test('a saved picture can still be removed', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Safari before 26.2 opens dialogs only with /js/command.js');
+  test('a saved picture can still be removed', async ({ page }) => {
     const wish = await addWish(page, { picture: true });
     await page.goto(`/lista/${wish.id}`);
     await box(page).click();
