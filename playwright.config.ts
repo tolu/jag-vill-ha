@@ -10,7 +10,9 @@ export default defineConfig({
   fullyParallel: false, // one test owner, one database: tests run one after another
   workers: 1,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? 'github' : 'list',
+  // In CI: annotations on the pull request, and a report with the traces that
+  // the e2e job uploads when a test fails.
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',
